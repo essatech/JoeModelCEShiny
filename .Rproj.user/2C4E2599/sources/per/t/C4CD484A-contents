@@ -1,0 +1,16 @@
+/*
+.main-header .logo {
+  font-family: Sans-Serif;
+  color: #444 !important;
+  font-weight: bold;
+  font-size: 27px;
+  text-shadow: 1px 1px white;
+}
+
+.logo {
+  background-color: #f9f9f9 !important;
+}
+.navbar {
+  background-color: #f9f9f9 !important;
+}
+*/
