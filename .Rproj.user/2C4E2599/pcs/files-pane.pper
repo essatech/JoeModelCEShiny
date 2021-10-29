@@ -1,9 +1,13 @@
 {
     "sortOrder": [
         {
+            "columnIndex": 3,
+            "ascending": false
+        },
+        {
             "columnIndex": 2,
             "ascending": true
         }
     ],
-    "path": "C:/Users/mbayly/Desktop/Projects/EN2691 CE PopMod/main/JoeModelCEShiny"
+    "path": "C:/Users/mbayly/Desktop/Projects/EN2691 CEPopMod/main/JoeModelCEShiny/www"
 }

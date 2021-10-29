@@ -14,3 +14,37 @@
   background-color: #f9f9f9 !important;
 }
 */
+
+
+/* Variable Selector */
+.stack-box .box {
+	margin-bottom: 5px;
+	cursor: pointer;
+}
+.stack-box .box-body {
+	padding: 5px;
+}
+.stack-box p {
+	margin: 0 0 5px;
+}
+.stack-box .box:hover {
+  background-color: #5bb9f0 !important;
+}
+.stack-box.var-selected .box {
+    background-color: #103e85 !important;
+}
+.csc-box .box-body {
+    border-style: solid;
+    border-width: 4px;
+    border-color: #56e5ff;
+    border-radius: 4px;
+}
+.response-button {
+  height: 20px; width: 35px; display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.response-button i {
+ margin-top: -3px; 
+}    

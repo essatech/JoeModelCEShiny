@@ -31,7 +31,9 @@ ui <- dashboardPage(
     
     # Import custom css files to html head tag
     tags$head(
-      tags$link(rel = "stylesheet", type = "text/css", href = "ce_tool_style.css")
+      tags$link(rel = "stylesheet", type = "text/css", href = "ce_tool_style.css"),
+      tags$script(src = "./js/leaf-hover.js"),
+      tags$script(src = "./js/app_utility.js")
     ),
     
     # Import custom js files - note these are used with DT
