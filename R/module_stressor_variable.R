@@ -12,18 +12,22 @@ module_stressor_variable_ui <- function(id) {
   
   tags$div(
     class = "stack-box", id = ns("var_id"),
+    
     shinydashboard::box(
       width = 12,
       background = "light-blue",
+      
       htmlOutput(ns('variable_label')),
       htmlOutput(ns('variable_val_raw')),
+      
       tags$div(actionButton(ns("response_plot"), icon("cog"), class = "response-button"),
                style = "float: right; display: inline-block;"),
+      
       tags$p("[0.45%]", style = "float: right;"),
       
       tags$div(numericInput(ns("hiddenload"), label = "hidden", value = 0), style = "display:none;")
-    )
-  )
+    ) # end of box
+  )   # end of div
   
 }
 
@@ -47,7 +51,7 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
       
      # Set the label
      output$variable_label <- renderUI({
-       print("Variable Label")
+       #print("Variable Label")
        label <- rv_stressor_response$pretty_names[stressor_index]
        label <- paste0(label, ":  ")
        tags$p(label, style = "float: left;")
@@ -69,11 +73,13 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
      })
      
 
-     
+     # ------------------------------------------------------
      # Set selected class as selected variable
+     # Should it be styled as selected or light blue un-selected
+     # ------------------------------------------------------
        observe({
          req(input$hiddenload)
-         print("Selected Variable")
+         #print("Selected Variable")
          
          # Set the stressor response object as a reactive value
          if(!(is.na(stressor_index))) {
@@ -83,30 +89,31 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
            
            if(!(is.na(current)) & !(is.na(active))) {
              if(active == current) {
-               print("Adding class")
+               #print("Adding class")
                q_code <- paste0("jQuery('#main_map-", current, "-var_id').addClass('var-selected');")
                shinyjs::runjs(code = q_code)
              } else {
                q_code <- paste0("jQuery('#main_map-", current, "-var_id').removeClass('var-selected');")
-               runjs(code = q_code)
+               shinyjs::runjs(code = q_code)
              }
            }
          }
        })
        
        
+       # ---------------------------------------------------------
        # Listen to click events to change target variable selected
        observe({
-         # ensure UI is loaded
+         # ensure UI is loaded - do not run if not set
          req(input$hiddenload)
          # User clicks on ID
          current <- rv_stressor_response$stressor_names[stressor_index]
          # Update reactive value of target variable selected
          updateActiveVar <- function(current) {
-           print("User Click")
-           print(current)
+           #print("User Click")
+           #print(current)
            rv_stressor_response$active_layer <- current
-           print(rv_stressor_response$active_layer)
+           #print(rv_stressor_response$active_layer)
          }
          # Use mouse click
          my_id <- paste0("main_map-", current, "-var_id")

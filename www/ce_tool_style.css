@@ -47,4 +47,20 @@
 
 .response-button i {
  margin-top: -3px; 
-}    
+}
+
+.deselect-button {
+  padding: 2px 5px !important;
+  height: 27px !important;
+  color: white !important;
+  margin-left: 15px !important;
+  background-color: #0073b7 !important;
+  border-color: #0073b7 !important;
+}
+.deselect-button:hover {
+  background-color: #103e85 !important;
+  color: white !important;
+}
+.hide-this {
+  display: none !important;
+}

@@ -17,8 +17,10 @@ module_huc_results_ui <- function(id) {
     shinydashboard::box(
       width = 12,
       #htmlOutput(ns('count_huc_select')),
-      tags$h4("X watersheds selected"),
-      
+      tags$div(style = "display: flex;",
+        tags$h4(textOutput(ns("n_watersheds_selected")), style = "color: #103e85;"),
+        actionButton(ns("deselect_watersheds"), "deselect all", class = "deselect-button"),
+      ),
       
       fluidRow(
         
@@ -60,7 +62,7 @@ module_huc_results_ui <- function(id) {
         
         infoBox(title = NULL, color = 'blue', 
                 value = 
-                  actionButton("count2",
+                  actionButton(ns("scp_by_stressors"),
                                tags$b("By Stressors"),
                                class="chart-line",
                                width = "100%"),
@@ -70,8 +72,8 @@ module_huc_results_ui <- function(id) {
         
         infoBox(title = NULL, color = 'blue', 
                 value = 
-                  actionButton("count2",
-                               tags$b("Selected Watershed"),
+                  actionButton(ns("scp_for_selected_sheds"),
+                               tags$b("For Selected Watershed"),
                                class="chart-line",
                                width = "100%"),
                 icon = icon("sliders-h"),
@@ -118,20 +120,57 @@ module_huc_results_server <- function(id) {
       
       print("Calling module_huc_results_server")
       
-      #output$count_huc_select <- renderText({ 
-        # Count the numbr of selected HUCs
-        #hus_selected <- clickedIds$ids
-        #print(hus_selected)
-        
-        #if(length(hus_selected) == 0) {
-        #return(tags$h4("0 HUCs selected"))
-          
-        #} else {
-        #  nhuc <- length(hus_selected)
-        #  tags$h4(paste0(nhuc, " HUCs selected"))
-        #  
-        #}
-      #})
+      # Hide deselect HUC button on initial load
+      q_code <- paste0("jQuery('#main_map-huc_results-deselect_watersheds').addClass('hide-this');")
+      shinyjs::runjs(code = q_code)
+      shinyjs::disable("adjust_stressor_magnitude")
+      shinyjs::disable("run_ce_population_model")
+      shinyjs::disable("scp_by_stressors")
+      shinyjs::disable("scp_for_selected_sheds")
+      
+      # Show count the numbr of selected HUCs (e.g., 3 U)
+      output$n_watersheds_selected <- renderText({ 
+        hus_selected <- rv_clickedIds$ids
+        print(hus_selected)
+        if(length(hus_selected) == 0) {
+          return("0 HUCs selected - click on a unit on the map to select")
+          # Hide the deselect button
+          q_code <- paste0("jQuery('#main_map-huc_results-deselect_watersheds').addClass('hide-this');")
+          shinyjs::runjs(code = q_code)
+          # Enable other buttons dependant on selected HUCs
+          shinyjs::disable("adjust_stressor_magnitude")
+          shinyjs::disable("run_ce_population_model")
+          shinyjs::disable("scp_by_stressors")
+          shinyjs::disable("scp_for_selected_sheds")
+        } else {
+          nhuc <- length(hus_selected)
+          # Show the deselect button
+          q_code <- paste0("jQuery('#main_map-huc_results-deselect_watersheds').removeClass('hide-this');")
+          shinyjs::runjs(code = q_code)
+          # Enable other buttons dependant on selected HUCs
+          shinyjs::enable("adjust_stressor_magnitude")
+          shinyjs::enable("run_ce_population_model")
+          shinyjs::enable("scp_by_stressors")
+          shinyjs::enable("scp_for_selected_sheds")
+          if(nhuc == 1) {
+            return(paste0(nhuc, " HUC selected"))
+          } else {
+            return(paste0(nhuc, " HUCs selected"))
+          }
+        }
+      })
+      
+      # Deselect any selected watersheds - clear selection
+      observeEvent(input$deselect_watersheds, {
+        rv_clickedIds$ids <- vector() # Set to empty vector
+        q_code <- paste0("jQuery('#main_map-huc_results-deselect_watersheds').addClass('hide-this');")
+        shinyjs::runjs(code = q_code)
+        shinyjs::disable("adjust_stressor_magnitude")
+        shinyjs::disable("run_ce_population_model")
+        shinyjs::disable("scp_by_stressors")
+        shinyjs::disable("scp_for_selected_sheds")
+      })
+
       
       
       

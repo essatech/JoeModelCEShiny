@@ -73,80 +73,76 @@ reactlog::reactlog_enable()
 #-------------------------------------------------
 # Load in default stressor response relationships
 #-------------------------------------------------
+  # Load Stressor Response Files
+  file_name_stressor_response <- paste0("./data/stressor-response_fixed_ARTR.xlsx")
+  
+  # Extract the stressor response relationships
+  sr_wb_dat <- StressorResponseWorkbook(filename = file_name_stressor_response)
+  names(sr_wb_dat)
+  
+  start_time <- Sys.time()
+  
+  # Designate the stressor response object as a reactive value
+  rv_stressor_response <- reactiveValues(
+    main_sheet             = sr_wb_dat$main_sheet,
+    stressor_names         = sr_wb_dat$stressor_names,
+    pretty_names           = sr_wb_dat$pretty_names,
+    sr_dat                 = sr_wb_dat$sr_dat,
+    active_layer           = sr_wb_dat$stressor_names[1],
+    active_values_raw      = NULL,
+    active_values_response = NULL,
+    active_refresh         = start_time,
+    hover_values           = FALSE
+  )
 
-# Load Stressor Response Files
-file_name_stressor_response <- paste0("./data/stressor-response_fixed_ARTR.xlsx")
-
-# Extract the stressor response relationships
-sr_wb_dat <- StressorResponseWorkbook(filename = file_name_stressor_response)
-names(sr_wb_dat)
-
-start_time <- Sys.time()
-
-
-# Designate the stressor response object as a reactive value
-rv_stressor_response <- reactiveValues(
-  main_sheet             = sr_wb_dat$main_sheet,
-  stressor_names         = sr_wb_dat$stressor_names,
-  pretty_names           = sr_wb_dat$pretty_names,
-  sr_dat                 = sr_wb_dat$sr_dat,
-  active_layer           = sr_wb_dat$stressor_names[1],
-  active_values_raw      = NULL,
-  active_values_response = NULL,
-  active_refresh         = start_time
-)
-
+  
 #-------------------------------------------------
 # Load in default Stressor magnitude
 #-------------------------------------------------
-
-# Extract the stressor magnitude values associated with each HUC
-file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_unc_ARTR.xlsx")
-
-sm_wb_dat <-  StressorMagnitudeWorkbook(
-                  filename = file_name_stressor_magnitude,
-                  scenario_worksheet = 1) # natural_unc
-
-# Designate stressor magnitude as reactive values
-rv_stressor_magnitude <- reactiveValues(
-  sm_dat = sm_wb_dat
-)
+  # Extract the stressor magnitude values associated with each HUC
+  file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_unc_ARTR.xlsx")
+  
+  sm_wb_dat <-  StressorMagnitudeWorkbook(
+                    filename = file_name_stressor_magnitude,
+                    scenario_worksheet = 1) # natural_unc
+  
+  # Designate stressor magnitude as reactive values
+  rv_stressor_magnitude <- reactiveValues(
+    sm_dat = sm_wb_dat
+  )
 
 
 #-------------------------------------------------
-# Load in the default watersheds geojson layer
+# Map geometry and map object reactive values
 #-------------------------------------------------
-# Default layer is for Athabasca
-# Load in spatial data layer for leaflet map
-HUC_Map_default_load <- sf::st_read("./data/watersheds.gpkg")
+  # Load in the default watersheds geojson layer - Athabasca
+  hmdl <- sf::st_read("./data/watersheds.gpkg")
+  hmdl$HUC_ID <- as.numeric(hmdl$HUC_ID)
+  hmdl$uid <- paste0(hmdl$HUC_ID, "|", hmdl$NAME)
 
+  # Which variable should be displayed first - alphabetical
+  first_var <- sort(sr_wb_dat$stressor_names)[1]
+  
+  # Save default HUC to reactive values
+  rv_HUC_geom <- reactiveValues(
+    huc_geom = hmdl,              # Polygon geometry global reactive object
+    leg_col = NA,                 # Legend color to display
+    leg_lab = NA                  # Legend label to display
+  )
 
+  # Selected HUCs - Create an empty vector to hold all HUC click ids
+  rv_clickedIds <- reactiveValues(ids = vector())
+  
+  # System Capacity choropleth map 0 - 1 color ramp is global
+  color_func <- colorQuantile(c("#d7191c", "#fdae61", "#ffffbf",
+                                "#a6d96a", "#1a9641"),
+                              domain = c(0, 100),
+                              na.color = "lightgrey",
+                              n = 8)
 
-
-# JUNK TEMPORARY
-HUC.Map$HUC_10 <- as.numeric(HUC.Map$HUC_10)
-min(HUC.Map$HUC_10)
-max(HUC.Map$HUC_10)
-HUC.Map$test_val <- rnorm(n = nrow(HUC.Map))
-
-HUC.Map$uid <- paste0(HUC.Map$HUC_10, "|", HUC.Map$NAME)
-
-color_func <- colorQuantile("YlOrRd",
-                            domain = HUC.Map$test_val,
-                            na.color = "lightgrey",
-                            n = 8)
-color_vec <- color_func(HUC.Map$test_val)
-
-leg_col <- lapply(c(-1, -0.5, 0, 0.5, 1), color_func) %>% unlist()
-leg_lab <- c(-1, -0.5, 0, 0.5, 1)
-
-
-
-
-
-
-# Create an empty vector to hold all HUC click ids
-clickedIds <- reactiveValues(ids = vector())
+  # Generate legend - will likely always be 0 - 1 for system capacity
+  leg_col <- lapply(c(0, 20, 40, 60, 80, 100), color_func) %>% unlist()
+  leg_lab <- c(0, 20, 40, 60, 80, 100)
 
 
 
