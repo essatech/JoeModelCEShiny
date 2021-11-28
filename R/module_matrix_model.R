@@ -16,7 +16,7 @@ module_matrix_model_ui <- function(id) {
   tagList(
     shinydashboard::box(
       width = 12,
-      tags$h4("Modify Dose Response Functions"),
+      tags$h4("Placeholder for population model - see other code set in prep."),
     )
   )
 }

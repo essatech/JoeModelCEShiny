@@ -1,8 +1,7 @@
 #---------------------------------------------------------------------
 # Shiny Global Imports
 # This is the Shiny App global script.
-# This file is sourced and run once
-# when the app first loads
+# This file is sourced and run once when the app first loads
 # See tutorial here: https://shiny.rstudio.com/articles/scoping.html
 #--------------------------------------------------------------------
 
@@ -34,7 +33,6 @@ library(dplyr)
 library(dbplyr)
 library(config)
 library(RPostgreSQL) # DROP?
-library(reactlog)
 library(shinydashboard)
 library(shinydashboardPlus) # DROP?
 library(waiter) # DROP?
@@ -62,6 +60,7 @@ library(rmapshaper)
 
 
 # Optionally enable react log - useful for debugging
+library(reactlog)
 reactlog::reactlog_enable()
 
 
@@ -75,7 +74,7 @@ reactlog::reactlog_enable()
 # Load in default stressor response relationships
 #-------------------------------------------------
 
-# Load Stressor Magnitude and Response Files
+# Load Stressor Response Files
 file_name_stressor_response <- paste0("./data/stressor-response_fixed_ARTR.xlsx")
 
 # Extract the stressor response relationships
@@ -85,20 +84,20 @@ names(sr_wb_dat)
 start_time <- Sys.time()
 
 
-# Set the stressor response object as a reactive value
+# Designate the stressor response object as a reactive value
 rv_stressor_response <- reactiveValues(
-  main_sheet = sr_wb_dat$main_sheet,
-  stressor_names = sr_wb_dat$stressor_names,
-  pretty_names = sr_wb_dat$pretty_names,
-  sr_dat = sr_wb_dat$sr_dat,
-  active_layer = sr_wb_dat$stressor_names[1],
-  active_values_raw = NULL,
+  main_sheet             = sr_wb_dat$main_sheet,
+  stressor_names         = sr_wb_dat$stressor_names,
+  pretty_names           = sr_wb_dat$pretty_names,
+  sr_dat                 = sr_wb_dat$sr_dat,
+  active_layer           = sr_wb_dat$stressor_names[1],
+  active_values_raw      = NULL,
   active_values_response = NULL,
-  active_refresh = start_time
+  active_refresh         = start_time
 )
 
 #-------------------------------------------------
-# Load in default stressor magnitude
+# Load in default Stressor magnitude
 #-------------------------------------------------
 
 # Extract the stressor magnitude values associated with each HUC
@@ -106,28 +105,20 @@ file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_unc_ARTR.xlsx"
 
 sm_wb_dat <-  StressorMagnitudeWorkbook(
                   filename = file_name_stressor_magnitude,
-                  scenario_worksheet = "natural_unc")
+                  scenario_worksheet = 1) # natural_unc
 
-# Add stressor magnitude as reactive values
+# Designate stressor magnitude as reactive values
 rv_stressor_magnitude <- reactiveValues(
   sm_dat = sm_wb_dat
 )
 
 
 #-------------------------------------------------
-# Load in watersheds geojson
+# Load in the default watersheds geojson layer
 #-------------------------------------------------
+# Default layer is for Athabasca
 # Load in spatial data layer for leaflet map
-HUC.Map <- st_read("./data/watersheds.gpkg")
-
-# create empty vector to hold all HUC click ids
-clickedIds <- reactiveValues(ids = vector())
-
-
-
-
-
-
+HUC_Map_default_load <- sf::st_read("./data/watersheds.gpkg")
 
 
 
@@ -141,13 +132,28 @@ HUC.Map$test_val <- rnorm(n = nrow(HUC.Map))
 HUC.Map$uid <- paste0(HUC.Map$HUC_10, "|", HUC.Map$NAME)
 
 color_func <- colorQuantile("YlOrRd",
-               domain = HUC.Map$test_val,
-               na.color = "lightgrey",
-               n = 8)
+                            domain = HUC.Map$test_val,
+                            na.color = "lightgrey",
+                            n = 8)
 color_vec <- color_func(HUC.Map$test_val)
 
 leg_col <- lapply(c(-1, -0.5, 0, 0.5, 1), color_func) %>% unlist()
 leg_lab <- c(-1, -0.5, 0, 0.5, 1)
+
+
+
+
+
+
+# Create an empty vector to hold all HUC click ids
+clickedIds <- reactiveValues(ids = vector())
+
+
+
+
+
+
+
 
 
 
@@ -176,8 +182,10 @@ read.dose <- TRUE
 
 # Flag to test if user cursor is over map
 rv_map_shape <- reactiveVal(FALSE) # Single value
+
 # Placeholders for the click locations of HUC IDs
 rv_map_location <- reactiveValues(huc_id = NULL, huc_name = NULL, lat = NULL, lng = NULL) # List of values
+
 
 
 

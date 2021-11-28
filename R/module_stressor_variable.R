@@ -114,6 +114,36 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
                  updateActiveVar(current),
                  asis = TRUE)
        })
+       
+       
+       
+       
+       
+       
+       # Open the stressor response dialog box
+       observeEvent(input$response_plot, {
+         showModal(modalDialog(
+           title = "Stressor-Response Relationships: Temperature",
+           tagList(
+             tags$p("Use the table below to edit the stressor-response (dose-response) relationship for stressor: Temperature. Units are in X."),
+             tags$p("Raw Value | Mean System Capacity | SD | Lower Limit | Upper Limit"),
+             
+             fluidRow(
+               column(
+                 width = 6,
+                 actionButton("goButton3", "Save and Update", class = "btn-success", style = "color: white;")
+                 
+               )
+             )
+             
+           ),
+           easyClose = TRUE,
+           size = 'l',
+           footer = NULL
+         ))
+       })
+       
+       
 
      
     }

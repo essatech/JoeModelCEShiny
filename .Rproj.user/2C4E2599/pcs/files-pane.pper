@@ -1,13 +1,13 @@
 {
     "sortOrder": [
         {
-            "columnIndex": 3,
-            "ascending": false
-        },
-        {
             "columnIndex": 2,
             "ascending": true
+        },
+        {
+            "columnIndex": 3,
+            "ascending": false
         }
     ],
-    "path": "C:/Users/mbayly/Desktop/Projects/EN2691 CEPopMod/main/JoeModelCEShiny/www"
+    "path": "C:/Users/mbayly/Desktop/Projects/EN2691 CEPopMod/main/JoeModelCEShiny/R"
 }

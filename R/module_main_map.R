@@ -17,13 +17,14 @@ module_main_map_ui <- function(id) {
     shinydashboard::box(
       width = 12,
       
-
-      
-      
       fluidRow(
         column(width = 9,
+               
+               # Mouse-over text for basin name and HUC code
                htmlOutput(ns('txt_basin_name')),
                htmlOutput(ns('txt_huc_code')),
+               
+               # Main leaflet output with variable width and fixed height
                leafletOutput(ns("mainmap"), height = 550),
                
                  fluidRow(
@@ -32,13 +33,14 @@ module_main_map_ui <- function(id) {
                    )
                  ),
                ),
+        
         column(width = 3,
                style = "padding-left: 0; margin-left: -10px;",
                
                tags$div(
                  class = "stack-box",
                  style = "padding-left: 15px; color:#3c8dbc;",
-                 tags$p("Basin-level Stressors"),
+                 tags$b("Basin-level Stressors Dose-Response"),
                ),
                
                tags$div(
@@ -52,15 +54,13 @@ module_main_map_ui <- function(id) {
                  )
                ),
                
+               # Create the stressor variable sidebar list
                htmlOutput(ns('stressor_variable_list')),
-      
         ), 
       ),
       
-      
-    )
-    
-  )
+    ) # End of main box
+  )   # End of main tagList
 }
 
 
@@ -80,8 +80,14 @@ module_main_map_server <- function(id) {
   moduleServer(
     id,
     function(input, output, session) {
+      
       ns <- session$ns
       
+      # Call sub module for HUC results
+      module_huc_results_server("huc_results")
+      
+      
+      # Main leaflet map reactive expression
       output$mainmap <- renderLeaflet({
         
         leaflet() %>%
@@ -180,9 +186,9 @@ module_main_map_server <- function(id) {
           tdiff <- Sys.time() - ctime
           # Dont re run this more than twice a second
           if(tdiff < 0.5) {
-            print("Re-run")
+            #print("Re-run")
           } else {
-            print("ok")
+            #print("ok")
             rv_stressor_response$active_refresh <- Sys.time()
           }
           
@@ -208,23 +214,23 @@ module_main_map_server <- function(id) {
         
         # create object for clicked polygon
         click <- input$mainmap_shape_click
-        print(click)
+        #print(click)
         
         # define leaflet proxy for second regional level map
         proxy <- leafletProxy("mainmap")
-        print(click$id)
+        #print(click$id)
         # note leaflet id slot
         # append all HUC click ids in empty vector
         clickedIds$ids <- c(clickedIds$ids, click$id)
         # shapefile with all clicked polygons
         clickedPolys <- HUC.Map[HUC.Map$uid %in% clickedIds$ids, ]
-        print("clickedPolys")
-        print(clickedPolys)
+        #print("clickedPolys")
+        #print(clickedPolys)
         
         # if the current click ID [from CC_1] exists in the clicked polygon (if it has been clicked twice)
         if(click$id %in% clickedPolys$uid) {
           
-          print("Already in")
+          #print("Already in")
           
           # define vector that subsets NAME that matches CC_1 click ID
           #nameMatch <- clickedPolys@data$NAME_1[clickedPolys@data$CC_1 == click$id]
@@ -239,10 +245,10 @@ module_main_map_server <- function(id) {
           
           #map highlighted polygons
           proxy %>% addPolygons(data = clickedPolys,
-                                fillColor = "red",
+                                fillColor = "#4dfff3",
                                 fillOpacity = 0.5,
                                 weight = 2,
-                                color = "#1BF6FF",
+                                color = "grey",
                                 stroke = TRUE,
                                 label = clickedPolys$uid, 
                                 layerId = clickedPolys$uid)

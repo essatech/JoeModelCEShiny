@@ -23,17 +23,7 @@ sidebar_tab_ui <- function(id) {
       id = "tabs",
       menuItem("About", tabName = "tab_about", icon = icon("info")),
       menuItem("Map Overview", tabName = "tab_main_map", icon = icon("map")),
-      
-      menuItem(
-        "Joe Model",
-        menuSubItem("Modify Dose-Response", tabName = "tab_dose_response", icon = icon("sliders-h")),
-        menuSubItem("Run Joe Model", tabName = "tab_ce_joe_model", icon = icon("play"))
-      ),
-      menuItem(
-        "Population Model",
-        menuSubItem("Modify Dose-Response", tabName = "tab_placeholder123", icon = icon("sliders-h")),
-        menuSubItem("Run Population Model", tabName = "tab_placeholder123", icon = icon("play"))
-      ),
+      menuItem("Population Model", tabName = "tab_matrix_model", icon = icon("sliders-h")),
       menuItem("Upload Data", tabName = "tab_import_export", icon = icon("upload"))
       
     )
