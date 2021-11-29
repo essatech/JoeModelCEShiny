@@ -127,8 +127,28 @@ reactlog::reactlog_enable()
   rv_HUC_geom <- reactiveValues(
     huc_geom = hmdl,              # Polygon geometry global reactive object
     leg_col = NA,                 # Legend color to display
-    leg_lab = NA                  # Legend label to display
+    leg_lab = NA,                 # Legend label to display
+    color_df = NA                 # Color reference data frame
   )
+  
+  # Layer bounds for initial load
+  # If a new polygon file is imported this layer is updated
+  bbox <- st_bbox(hmdl)
+  rv_HUC_layer_load <- reactiveValues(
+    data = hmdl,
+    xmin = bbox$xmin,
+    ymin = bbox$ymin,
+    xmax = bbox$xmax,
+    ymax = bbox$ymax,
+    reload_map = TRUE,
+    add_polygons = FALSE
+  )
+  
+  # Trigger redraw to clear selection
+  rv_redraw <- reactiveValues(
+    redraw = 0
+  )
+    
 
   # Selected HUCs - Create an empty vector to hold all HUC click ids
   rv_clickedIds <- reactiveValues(ids = vector())

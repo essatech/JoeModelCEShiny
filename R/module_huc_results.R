@@ -169,6 +169,8 @@ module_huc_results_server <- function(id) {
         shinyjs::disable("run_ce_population_model")
         shinyjs::disable("scp_by_stressors")
         shinyjs::disable("scp_for_selected_sheds")
+        # Redraw layer and clear selection
+        rv_redraw$redraw <- 1 + rv_redraw$redraw
       })
 
       

@@ -46,8 +46,6 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
     id,
     function(input, output, session) {
      
-      print("Inside module_stressor_variable_server")
-      print(stressor_index)
       
      # Set the label
      output$variable_label <- renderUI({
@@ -152,7 +150,9 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
        
        
 
-     
+      # Finally return the stressor name
+      return(stressor_index)
+
     }
   )
 }

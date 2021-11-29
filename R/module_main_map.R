@@ -91,12 +91,46 @@ module_main_map_server <- function(id) {
       observeEvent(input$hover_values, {
         rv_stressor_response$hover_values <- input$hover_values
       })
+
+
+      # --------------------------------------
+      # Main leaflet map reactive expression
+      # --------------------------------------
+      # Main leaflet map is called here, but only static elements
+      # are included that do not need updating with dynamic events.
+      # HUCs are called later with proxy since we will update then frequently.
+      output$mainmap <- renderLeaflet({
+        print("Running renderLeaflet()...")    
+        leaflet() %>%
+          addProviderTiles(providers$Esri.WorldTopoMap, # Esri.WorldTopoMap Esri.WorldGrayCanvas
+                           options = providerTileOptions(noWrap = TRUE,
+                                                         opacity = 0.9)
+          ) %>%
+          addPolygons(data = rv_HUC_layer_load$data,
+              layerId = rv_HUC_layer_load$data$uid,
+              color = "#444444",
+              weight = 1.2,
+              smoothFactor = 0.5,
+              opacity = 0.5,
+              fillOpacity = 0.5,
+              fillColor = "#d9d9d9",
+              highlightOptions = highlightOptions(color = "white",
+                                                  weight = 2,
+                                                  bringToFront = TRUE)
+          )
+          #fitBounds(-119.04060, 52.37167, -114.78314, 54.76054)
+      })
+
       
       # ---------------------------------------------------------
       # Reactive expression to reload, repaint or redraw polygons
       # ---------------------------------------------------------
       r_huc_polygons <- reactive({
         print("r_huc_polygons() triggered ...")
+        
+        # If clear all selected - then trigger redraw.
+        rv_redraw$redraw
+
         # Name of the variable to display
         var_name <- rv_stressor_response$active_layer
 
@@ -113,7 +147,6 @@ module_main_map_server <- function(id) {
         
         # Look at relationship from response curve
         resp_curv <- rv_stressor_response$sr_dat[[var_name]]
-        # resp_curv <- sr_wb_dat$sr_dat[[var_name]]
         
         # Convert raw variable values to system capacity
         interp <- approx(x = resp_curv$value,
@@ -122,50 +155,141 @@ module_main_map_server <- function(id) {
                          yleft = 0, yright = 100)
         
         huc_geom$values_sc <- interp$y
-        
         # Apply color ramp function
         huc_geom$color_vec <- color_func(huc_geom$values_sc)
-        
+
+        # Update reference color dataframe rv to reset colors after selection
+        col_df <- data.frame(id = huc_geom$HUC_ID, col = huc_geom$color_vec)
+        rv_HUC_geom$color_df <- col_df
+
         return(huc_geom)
       })
-      
-      
+
+
       # --------------------------------------
-      # Main leaflet map reactive expression
+      # HUC polygon draw
       # --------------------------------------
-      output$mainmap <- renderLeaflet({
-        
-        print("Running renderLeaflet()...")
-        # print(head(r_huc_polygons()))
-        
-        leaflet() %>%
-          addProviderTiles(providers$Esri.WorldTopoMap, # Esri.WorldTopoMap Esri.WorldGrayCanvas
-                           options = providerTileOptions(noWrap = TRUE,
-                                                         opacity = 0.9)
-          ) %>%
-          addPolygons(data = r_huc_polygons(),
-                      layerId = r_huc_polygons()$uid,
-                      color = "#444444",
-                      weight = 1.2,
-                      smoothFactor = 0.5,
-                      opacity = 0.5,
-                      fillOpacity = 0.5,
-                      fillColor = r_huc_polygons()$color_vec,
-                      highlightOptions = highlightOptions(color = "white",
-                                                          weight = 2,
-                                                          bringToFront = TRUE)
-          ) %>%
-          addLegend("bottomright",
-                    colors = leg_col,
-                    labels = leg_lab,
-                    title = rv_stressor_response$active_layer,
-                    labFormat = labelFormat(suffix = "mg/L"),
-                    opacity = 1
-          )
+      # Draw update or edit HUC polygons on leaflet map
+      # use an observe() function to capture changes and use
+      # leafletProxy() to only update the target layer.
+      observe({
+        print("Updating polygons with observer()...")
+
+        leafletProxy("mainmap") %>%
+          clearShapes() %>%
+            # Add or update HUC polygons on the map
+            addPolygons(data = r_huc_polygons(),
+              layerId = r_huc_polygons()$uid,
+              color = "#444444",
+              weight = 1.2,
+              smoothFactor = 0.5,
+              opacity = 0.5,
+              fillOpacity = 0.5,
+              fillColor = r_huc_polygons()$color_vec,
+              highlightOptions = highlightOptions(color = "white",
+                                                  weight = 2,
+                                                  bringToFront = TRUE)
+            ) %>%
+            # Delete any old pre-existing legend
+            clearControls() %>%
+            # Add new legend
+            addLegend("bottomright",
+                      colors = leg_col,
+                      labels = leg_lab,
+                      title = rv_stressor_response$active_layer,
+                      opacity = 0.9
+            )
+
+          # Add on selected HUCs (if any)
+          selected_hucs <- isolate(rv_clickedIds$ids)
+          if(length(selected_hucs) > 0) {
+            print("Adding selected HUCs")
+            huc_geom_sel <- rv_HUC_geom$huc_geom
+
+            # Get subset of selected HUCs
+            huc_geom_sel <- huc_geom_sel[which(huc_geom_sel$uid %in% selected_hucs), ]
+            # Update special ID
+            huc_geom_sel$uid <- paste0("select|", huc_geom_sel$uid)
+            
+            # Add selected HUCs to map
+            leafletProxy("mainmap") %>%
+              addPolygons(data = huc_geom_sel,
+                layerId = huc_geom_sel$uid,
+                color = "#444444",
+                weight = 1.2,
+                smoothFactor = 0.5,
+                opacity = 0.5,
+                fillOpacity = 0.5,
+                fillColor = "#4dfff3",
+                highlightOptions = highlightOptions(color = "white",
+                                                    weight = 2,
+                                                    bringToFront = TRUE)
+              )
+          }
+
       })
+
+      
+      # ---------------------------------------------------------
+      # Mouse-Click on HUC events
+      # ---------------------------------------------------------
+      # Use a second observer to update the selected polygons...
+      # Mouse click events on a given HUC
+      observeEvent(input$mainmap_shape_click, {
+        # create object for clicked polygon
+        click <- input$mainmap_shape_click
+        # Get all the previous clicked polys
+        previous_click_ids <- rv_clickedIds$ids
+
+        # Get the HUC geom for the specific click
+        huc_geom <- rv_HUC_geom$huc_geom
+        this_uid <- gsub("select\\|", "", click$id)
+        huc_geom_single <- huc_geom[which(huc_geom$uid == this_uid), ]
+        huc_geom_single$uid <- paste0("select|", huc_geom_single$uid)
+
+        if(this_uid %in% previous_click_ids) {
+          print("Remove from selected...")
+          # Polygon has already been clicked
+          # Need to remove it from the click vector
+          new_click_vec <- previous_click_ids[previous_click_ids != this_uid]
+          rv_clickedIds$ids <- new_click_vec
+          leafletProxy("mainmap") %>%
+            removeShape(huc_geom_single$uid)
+
+        } else {
+          print("Add to selected")
+          # User select a new polygon - nedd to update the color and add it to select list
+          # Need to add it from the click vector
+          rv_clickedIds$ids <- c(rv_clickedIds$ids, this_uid)
+
+          leafletProxy("mainmap") %>%
+            addPolygons(data = huc_geom_single,
+              layerId = huc_geom_single$uid,
+              color = "#444444",
+              weight = 1.2,
+              smoothFactor = 0.5,
+              opacity = 0.5,
+              fillOpacity = 0.5,
+              fillColor = "#4dfff3",
+              highlightOptions = highlightOptions(color = "white",
+                                                  weight = 2,
+                                                  bringToFront = TRUE)
+            )
+           # End of deselect polygon and restor original color
+        } 
+        
+      })
+
+
+
+
+
       
       
+
       
+      
+    
       # ---------------------------------------------------------
       # Define the stressor variables to plot div button side bar
       # ---------------------------------------------------------
@@ -218,7 +342,6 @@ module_main_map_server <- function(id) {
         rv_stressor_response$active_values_raw <- NULL
       })
       
-
       observeEvent(input$mainmap_shape_mouseover, {
         # User hovers mouse over a polygon (layer specific)
         mainmap_shape_mouseover_info <- input$mainmap_shape_mouseover
@@ -266,81 +389,7 @@ module_main_map_server <- function(id) {
       
       
       
-      
-      # ---------------------------------------------------------
-      # Mouse-Click on HUC events
-      # ---------------------------------------------------------
-      # Mouse click events on a given HUC
-      observeEvent(input$mainmap_shape_click, {
-        
 
-      print("-------------------------------") 
-      print("Mouse-Click on HUC events") 
-
-        # create object for clicked polygon
-        click <- input$mainmap_shape_click
-        print(click) # id, lat & long ...
-        
-        # define leaflet proxy for second regional level map
-        lproxy <- leafletProxy("mainmap") # note leaflet id slot
-
-        # Subset HUC geom for all previously clicked polygons (previous rounds)
-        clickedPolys <- r_huc_polygons()[r_huc_polygons()$uid %in% rv_clickedIds$ids, ]
-        
-        # Then append all HUC click ids in empty vector and add the current click to that vector
-        rv_clickedIds$ids <- c(rv_clickedIds$ids, click$id)
-
-        print("clickedPolys")
-        print(clickedPolys)
-
-        print("click IDs")
-        print(rv_clickedIds$ids)
-        
-        # if the current click ID [from CC_1] exists in the clicked polygon (if it has been clicked twice)
-        if(click$id %in% clickedPolys$uid) {
-          
-          print("HUC has already been clicked - unselect HUC and remove from list")
-          
-          # define vector that subsets NAME that matches CC_1 click ID
-          #nameMatch <- clickedPolys@data$NAME_1[clickedPolys@data$CC_1 == click$id]
-          
-          #remove the current click$id AND its name match from the clickedPolys shapefile
-          rv_clickedIds$ids <- rv_clickedIds$ids[!rv_clickedIds$ids != click$id] 
-          #clickedIds$ids <- clickedIds$ids[!clickedIds$ids %in% nameMatch]
-          
-          #remove that highlighted polygon from the map
-          #lproxy %>% removeShape(layerId = click$id)
-          
-          
-          #map highlighted polygons
-          lproxy %>% addPolygons(data = clickedPolys,
-                                fillColor = "red",
-                                fillOpacity = 0.5,
-                                weight = 2,
-                                color = "grey",
-                                stroke = TRUE,
-                                label = clickedPolys$uid, 
-                                layerId = clickedPolys$uid)
-          
-          
-        } else {
-
-          print("Click is not in list - add new")
-
-        clickedPolys <- r_huc_polygons()[r_huc_polygons()$uid %in% rv_clickedIds$ids, ]
-
-          lproxy %>% addPolygons(data = clickedPolys,
-                                fillColor = "#4dfff3",
-                                fillOpacity = 0.5,
-                                weight = 2,
-                                color = "grey",
-                                stroke = TRUE,
-                                label = clickedPolys$uid, 
-                                layerId = clickedPolys$uid)
-        } #END CONDITIONAL
-        
-      })
-      
 
         
       
