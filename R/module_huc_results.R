@@ -25,11 +25,11 @@ module_huc_results_ui <- function(id) {
       fluidRow(
         
         infoBox(title = NULL, color = 'blue', 
-                value = 
-                  actionButton(ns("adjust_stressor_magnitude"),
-                               tags$b("Adjust Magnitude"),
-                               class="chart-line",
-                               width = "100%"),
+                value = module_huc_stressor_magnitude_ui(ns("stressor_magnitude")),
+                  #actionButton(ns("adjust_stressor_magnitude"),
+                  #             tags$b("Adjust Magnitude"),
+                  #             class="chart-line",
+                  #             width = "100%"),
                 icon = icon("sliders-h"),
                 subtitle = "Modify the stressor magnitude for selected watersheds"),
         
@@ -119,11 +119,14 @@ module_huc_results_server <- function(id) {
       ns <- session$ns
       
       print("Calling module_huc_results_server")
+
+      # Call the submodules
+      module_huc_stressor_magnitude_server("stressor_magnitude")
       
       # Hide deselect HUC button on initial load
       q_code <- paste0("jQuery('#main_map-huc_results-deselect_watersheds').addClass('hide-this');")
       shinyjs::runjs(code = q_code)
-      shinyjs::disable("adjust_stressor_magnitude")
+      #shinyjs::disable("adjust_stressor_magnitude")
       shinyjs::disable("run_ce_population_model")
       shinyjs::disable("scp_by_stressors")
       shinyjs::disable("scp_for_selected_sheds")
@@ -138,7 +141,7 @@ module_huc_results_server <- function(id) {
           q_code <- paste0("jQuery('#main_map-huc_results-deselect_watersheds').addClass('hide-this');")
           shinyjs::runjs(code = q_code)
           # Enable other buttons dependant on selected HUCs
-          shinyjs::disable("adjust_stressor_magnitude")
+          #shinyjs::disable("adjust_stressor_magnitude")
           shinyjs::disable("run_ce_population_model")
           shinyjs::disable("scp_by_stressors")
           shinyjs::disable("scp_for_selected_sheds")
@@ -148,7 +151,7 @@ module_huc_results_server <- function(id) {
           q_code <- paste0("jQuery('#main_map-huc_results-deselect_watersheds').removeClass('hide-this');")
           shinyjs::runjs(code = q_code)
           # Enable other buttons dependant on selected HUCs
-          shinyjs::enable("adjust_stressor_magnitude")
+          #shinyjs::enable("adjust_stressor_magnitude")
           shinyjs::enable("run_ce_population_model")
           shinyjs::enable("scp_by_stressors")
           shinyjs::enable("scp_for_selected_sheds")
@@ -165,7 +168,7 @@ module_huc_results_server <- function(id) {
         rv_clickedIds$ids <- vector() # Set to empty vector
         q_code <- paste0("jQuery('#main_map-huc_results-deselect_watersheds').addClass('hide-this');")
         shinyjs::runjs(code = q_code)
-        shinyjs::disable("adjust_stressor_magnitude")
+        #shinyjs::disable("adjust_stressor_magnitude")
         shinyjs::disable("run_ce_population_model")
         shinyjs::disable("scp_by_stressors")
         shinyjs::disable("scp_for_selected_sheds")
@@ -175,6 +178,8 @@ module_huc_results_server <- function(id) {
 
       
       
+      # Change the values of the underlying variables
+      # in selected HUCs
       
       observeEvent(input$adjust_stressor_magnitude, {
         showModal(modalDialog(

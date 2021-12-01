@@ -64,3 +64,7 @@
 .hide-this {
   display: none !important;
 }
+
+.no-bullet > * {
+  list-style-type: none;
+}

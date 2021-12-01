@@ -46,7 +46,8 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
     id,
     function(input, output, session) {
      
-      
+     ns <- session$ns
+
      # Set the label
      output$variable_label <- renderUI({
        #print("Variable Label")
@@ -125,14 +126,41 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
        
        
        
+      #-------------------------------------------------------
+      # Stressor response modal dialog
+      #-------------------------------------------------------
        # Open the stressor response dialog box
        observeEvent(input$response_plot, {
+        
+         print("Stressor response modal is open ...")
+
+         # Currently selected variable name
+         this_var <- isolate(rv_stressor_response$active_layer)
+         this_var_pretty <- gsub("_", " ", this_var)
+
+         # Main sheet attributes
+         this_main <- isolate(rv_stressor_response$main_sheet)
+         print(this_var)
+
          showModal(modalDialog(
-           title = "Stressor-Response Relationships: Temperature",
+           title = paste0("Stressor-Response Relationships: ", this_var_pretty),
            tagList(
-             tags$p("Use the table below to edit the stressor-response (dose-response) relationship for stressor: Temperature. Units are in X."),
-             tags$p("Raw Value | Mean System Capacity | SD | Lower Limit | Upper Limit"),
-             
+             tags$p("Use the table below to edit the stressor-response (dose-response) relationship for the selected stressor stressor."),
+             tags$b(textOutput(ns("text_preview"))),
+              fluidRow(
+                shinydashboard::box(
+                  width = 12,
+                  highchartOutput(ns("chart1"))
+                )
+              ),
+              fluidRow(
+                shinydashboard::box(
+                  width = 12,
+                  DTOutput(
+                    ns("stressor_response_dt")
+                  )
+                )
+              ),
              fluidRow(
                column(
                  width = 6,
@@ -147,6 +175,156 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
            footer = NULL
          ))
        })
+
+
+
+      #-------------------------------------------------------
+      # Stressor response modal dialog
+      #-------------------------------------------------------
+      # Add table data as data table
+      # This is the doese response relationship for each stressor
+      output$stressor_response_dt <- renderDT({
+
+        # Get all SR data
+        sr_data <- isolate(rv_stressor_response$sr_dat)
+        # Filter for target layer
+        this_var <- isolate(rv_stressor_response$active_layer) # e.g., temperature
+        table_vals <- sr_data[[this_var]] # e.g., temperature
+        print(this_var)
+
+        # Build the JS DT Data Table Object
+        DT::datatable(
+          table_vals,
+          # The Stressor column is not editable
+          editable =  TRUE, # list(target = "cell", disable = list(columns = c(1))),
+          colnames = c('Raw Value' = 'value', 'Mean System Capacity (0-100)' = 'mean_system_capacity', 
+          'SD (0-100)' = 'sd', 'Lower Limit (0)' = 'lwr', 'Upper Limit (100)' = 'upr'),
+          filter = "none",
+          selection = "single",
+          rownames = FALSE,
+          class = "cell-border stripe",
+          options = list(
+            pageLength = 500,
+            info = FALSE,
+            dom = 't',
+            ordering = FALSE,
+            columnDefs = list(list(
+              className = 'dt-left', targets = "_all"
+            ))
+          )
+        )
+      })
+
+      # Create a proxy for the above table
+      dt_proxy <- DT::dataTableProxy('stressor_response_dt')
+
+
+      #-------------------------------------------------------
+      # Populate summary statistics for stressor in modal
+      #-------------------------------------------------------
+      # Display mean min and max
+      output$text_preview <- renderText({
+        
+        this_var <- isolate(rv_stressor_response$active_layer) # e.g., temperature
+        # Stressor magnitude data
+        sm_df <- rv_stressor_magnitude$sm_dat
+        # Subset to targer variable
+        sm_sub <- sm_df[which(sm_df$Stressor == this_var), ]
+        my_mean <- round(mean(sm_sub$Mean, na.rm = TRUE), 2)
+        my_min <-  min(sm_sub$Mean, na.rm = TRUE)
+        my_max <-  max(sm_sub$Mean, na.rm = TRUE)
+
+        data_rng_txt <- paste0("HUC Values, Mean: ", my_mean, " (Min: ", my_min, ", Max: ", my_max, ")")
+        return(data_rng_txt)
+
+      })
+
+
+
+      #------------------------------------------------------------------------
+      # Update a data value cell
+      #------------------------------------------------------------------------
+      # When there is an edit to a cell
+      # update the stessor response reactive values 
+      observeEvent(input$stressor_response_dt_cell_edit, {
+        
+        # Get new value of edited cell
+        info = input$stressor_response_dt_cell_edit
+
+        # Index list of stressor names
+        this_var <- isolate(rv_stressor_response$active_layer) # e.g., temperature
+
+        # HUCs currently selected
+        selected_raw <- rv_clickedIds$ids
+        # Fix format   
+        getID <- function(x) {
+          strsplit(x, "\\|")[[1]][1]
+        }
+        selected_ids <- lapply(selected_raw, getID) %>% unlist()
+
+        info$value <- as.numeric(info$value)
+        info$value <- ifelse(is.na(info$value), 0, info$value)
+        
+        i = as.numeric(info$row)
+        j = as.numeric(info$col)
+        j <- j + 1 # Weird issue with row names missing
+        k = as.numeric(info$value)
+
+        # Ensure value is ok
+        if(j > 1) {
+          # Keep system capacity in bounds
+          k <- ifelse(k < 0, 0, k)
+          k <- ifelse(k > 100, 100, k)
+        }
+
+        var <- c("value", "mean_system_capacity", "sd", "lwr", "upr")
+            
+        print(info)
+        print(k)
+        print(i)
+        print(j)
+
+        print(" --------------------- ")
+
+        # Update stressor response value
+        rv_stressor_response$sr_dat[[this_var]][i, j] <- k
+        # Update the DT data table so the user knows what they have just done
+
+      })
+
+
+
+      #------------------------------------------------------------------------
+      # High charts data visualization
+      #------------------------------------------------------------------------
+      output$chart1 <- renderHighchart({
+
+        # Filter for target layer
+        this_var <- rv_stressor_response$active_layer # e.g., temperature
+        # Get all SR data
+        table_vals <- rv_stressor_response$sr_dat[[this_var]]
+        table_vals$lwr_sd <- table_vals$mean_system_capacity - table_vals$sd
+        table_vals$upr_sd <- table_vals$mean_system_capacity + table_vals$sd
+        table_vals <- table_vals[order(table_vals$mean_system_capacity), ]
+        table_vals <- table_vals[order(table_vals$value), ]
+          
+        hc <- table_vals %>%
+          hchart('line', hcaes(x = value, y = mean_system_capacity))
+        hc %>% 
+          #hc_add_series(type = 'line', data = table_vals$lwr_sd) %>%
+          #hc_add_series(type = 'line', data = table_vals$upr_sd) %>%
+          hc_xAxis(title = list(text = "Raw Value of Stressor")) %>%
+          hc_yAxis(title = list(text = "Mean System Capacity"), min = 0, max = 100) %>%
+          hc_colors(c("blue"))
+   
+      })
+
+
+
+
+
+
+
        
        
 

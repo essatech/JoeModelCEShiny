@@ -40,12 +40,12 @@ library(dygraphs) # DROP?
 library(shinyWidgets)
 library(dygraphs)
 library(htmlwidgets)
+library(highcharter) 
 
 library(sf)
 
 # load libraries
 library(rgdal)
-library(plyr)
 library(shiny)
 library(DT)
 library(readxl)
@@ -96,6 +96,8 @@ reactlog::reactlog_enable()
   )
 
   
+ 
+  
 #-------------------------------------------------
 # Load in default Stressor magnitude
 #-------------------------------------------------
@@ -110,7 +112,13 @@ reactlog::reactlog_enable()
   rv_stressor_magnitude <- reactiveValues(
     sm_dat = sm_wb_dat
   )
-
+  
+  
+  
+  
+  #id <- c(1701010202)
+  #sm_wb_dat[which(sm_wb_dat$HUC_ID %in% id & sm_wb_dat$Stressor == "Aug_flow"), "Mean"] <- 123
+  
 
 #-------------------------------------------------
 # Map geometry and map object reactive values

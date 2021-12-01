@@ -174,7 +174,6 @@ module_main_map_server <- function(id) {
       # leafletProxy() to only update the target layer.
       observe({
         print("Updating polygons with observer()...")
-
         leafletProxy("mainmap") %>%
           clearShapes() %>%
             # Add or update HUC polygons on the map
@@ -199,34 +198,32 @@ module_main_map_server <- function(id) {
                       title = rv_stressor_response$active_layer,
                       opacity = 0.9
             )
-
+          
+          
           # Add on selected HUCs (if any)
           selected_hucs <- isolate(rv_clickedIds$ids)
           if(length(selected_hucs) > 0) {
             print("Adding selected HUCs")
             huc_geom_sel <- rv_HUC_geom$huc_geom
-
             # Get subset of selected HUCs
             huc_geom_sel <- huc_geom_sel[which(huc_geom_sel$uid %in% selected_hucs), ]
             # Update special ID
             huc_geom_sel$uid <- paste0("select|", huc_geom_sel$uid)
-            
             # Add selected HUCs to map
             leafletProxy("mainmap") %>%
               addPolygons(data = huc_geom_sel,
                 layerId = huc_geom_sel$uid,
-                color = "#444444",
+                color = "#c2fffe",
                 weight = 1.2,
                 smoothFactor = 0.5,
-                opacity = 0.5,
-                fillOpacity = 0.5,
+                opacity = 0.9,
+                fillOpacity = 0.95,
                 fillColor = "#4dfff3",
                 highlightOptions = highlightOptions(color = "white",
                                                     weight = 2,
                                                     bringToFront = TRUE)
               )
           }
-
       })
 
       
@@ -265,11 +262,11 @@ module_main_map_server <- function(id) {
           leafletProxy("mainmap") %>%
             addPolygons(data = huc_geom_single,
               layerId = huc_geom_single$uid,
-              color = "#444444",
+              color = "#c2fffe",
               weight = 1.2,
               smoothFactor = 0.5,
-              opacity = 0.5,
-              fillOpacity = 0.5,
+              opacity = 0.9,
+              fillOpacity = 0.95,
               fillColor = "#4dfff3",
               highlightOptions = highlightOptions(color = "white",
                                                   weight = 2,
@@ -282,14 +279,6 @@ module_main_map_server <- function(id) {
 
 
 
-
-
-      
-      
-
-      
-      
-    
       # ---------------------------------------------------------
       # Define the stressor variables to plot div button side bar
       # ---------------------------------------------------------
@@ -387,17 +376,6 @@ module_main_map_server <- function(id) {
         
       })
       
-      
-      
-
-
-        
-      
-      
-      
-      
-      
-
       
       
       
