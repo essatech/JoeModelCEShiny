@@ -41,19 +41,18 @@ library(shinyWidgets)
 library(dygraphs)
 library(htmlwidgets)
 library(highcharter) 
-
 library(sf)
-
-# load libraries
 library(rgdal)
 library(shiny)
 library(DT)
 library(readxl)
 library(leaflet); library(tidyr)
 library(tidyselect)
-library(TruncatedDistributions)
+# library(TruncatedDistributions)
 library(reshape2)
 library(rmapshaper)
+library(shinycssloaders)
+
 
 #load libraries for the functions
 #library(pracma) #needed for fsolve
@@ -63,18 +62,21 @@ library(rmapshaper)
 library(reactlog)
 reactlog::reactlog_enable()
 
+# Shiny Pre-loader Spinner
+options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner.size = 3)
 
-# https://medium.com/ibm-data-ai/capture-and-leverage-mouse-locations-and-clicks-on-leaflet-map-6d8601e466a5
+
+# Useful demos - delete
 # https://github.com/IBM-DSE/Shiny-Examples-with-Blog
-
-
 
 
 #-------------------------------------------------
 # Load in default stressor response relationships
 #-------------------------------------------------
-  # Load Stressor Response Files
+  # Load Stressor Response Files 
   file_name_stressor_response <- paste0("./data/stressor-response_fixed_ARTR.xlsx")
+  file_name_stressor_response <- paste0("./data/stressor-response_fixed_sqam.xlsx")
+
   
   # Extract the stressor response relationships
   sr_wb_dat <- StressorResponseWorkbook(filename = file_name_stressor_response)
@@ -102,7 +104,10 @@ reactlog::reactlog_enable()
 # Load in default Stressor magnitude
 #-------------------------------------------------
   # Extract the stressor magnitude values associated with each HUC
-  file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_unc_ARTR.xlsx")
+  # Fixed: stressor_magnitude_fixed_rn_ARTR
+  # UNC: stressor_magnitude_unc_ARTR
+  file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_fixed_rn_ARTR.xlsx")
+  file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_fixed_rn_sqam.xlsx")
   
   sm_wb_dat <-  StressorMagnitudeWorkbook(
                     filename = file_name_stressor_magnitude,
@@ -114,17 +119,14 @@ reactlog::reactlog_enable()
   )
   
   
-  
-  
-  #id <- c(1701010202)
-  #sm_wb_dat[which(sm_wb_dat$HUC_ID %in% id & sm_wb_dat$Stressor == "Aug_flow"), "Mean"] <- 123
-  
-
+ 
 #-------------------------------------------------
 # Map geometry and map object reactive values
 #-------------------------------------------------
   # Load in the default watersheds geojson layer - Athabasca
   hmdl <- sf::st_read("./data/watersheds.gpkg")
+  hmdl <- sf::st_read("./data/sqam.gpkg")
+  
   hmdl$HUC_ID <- as.numeric(hmdl$HUC_ID)
   hmdl$uid <- paste0(hmdl$HUC_ID, "|", hmdl$NAME)
 
@@ -175,31 +177,33 @@ reactlog::reactlog_enable()
 
 
 
-
-
-
-
-
-
-#------------------------------------------
-# Define Initial Static Values
-#------------------------------------------
+#------------------------------------------------------
+# Joe Model initial default settings and result holder
+#------------------------------------------------------
 
 # Set number of Monte Carlo simulations for the Joe model
-MC.sims <- 100
+  MC.sims <- 100
 
 # Scenarios to run
-scn.run <- "natural_unc"
+  scn.run <- "natural_unc"
 
 # Boolean to trigger doses read from file
-read.dose <- TRUE
+  read.dose <- TRUE
+
+# Joe model results holder - assume multiple runs
+  rv_joe_model_results <- reactiveValues(
+    sims = list()
+  )
+# Joe model scenario name holder - assume multiple runs
+  rv_joe_model_sim_names <- reactiveValues(
+    scenario_names = list()
+  )
 
 
 
 #------------------------------------------
-# Define Reactive Values
+# Define other Reactive Values
 #------------------------------------------
-
 
 # See good tutorial for js/leaflet/shiny mouse events here: 
 # https://medium.com/ibm-data-ai/capture-and-leverage-mouse-locations-and-clicks-on-leaflet-map-6d8601e466a5

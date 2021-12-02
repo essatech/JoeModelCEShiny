@@ -45,12 +45,12 @@ module_main_map_ui <- function(id) {
                ),
                
                tags$div(
-                 class = "stack-box csc-box", id = ns("var_id"),
+                 class = "stack-box csc-box map-variable", id = ns("var_id"),
                  shinydashboard::box(
                    width = 12,
                    background = "light-blue",
                    tags$p("System Capacity", style = "float: left;"),
-                   tags$p("[0.45%]", style = "float: right;"),
+                   tags$p("[0%]", style = "float: right;"),
                    tags$div(numericInput(ns("hiddenload"), label = "hidden", value = 0), style = "display:none;")
                  )
                ),
@@ -134,29 +134,44 @@ module_main_map_server <- function(id) {
         # Name of the variable to display
         var_name <- rv_stressor_response$active_layer
 
-        # Data for HUCs (Stressor Magnitude)
-        sm_df <- rv_stressor_magnitude$sm_dat
-        sm_df <- sm_df[sm_df$Stressor == var_name, ]
-        
         # HUC spatial geometry
         huc_geom <- rv_HUC_geom$huc_geom
-        
-        # Merge stressor magnitude values to sf object
-        huc_geom$values <- NA
-        huc_geom$values <- sm_df$Mean[match(huc_geom$HUC_ID, sm_df$HUC_ID)]
-        
-        # Look at relationship from response curve
-        resp_curv <- rv_stressor_response$sr_dat[[var_name]]
-        
-        # Convert raw variable values to system capacity
-        interp <- approx(x = resp_curv$value,
-                         y = resp_curv$mean_system_capacity,
-                         xout = huc_geom$values,
-                         yleft = 0, yright = 100)
-        
-        huc_geom$values_sc <- interp$y
-        # Apply color ramp function
-        huc_geom$color_vec <- color_func(huc_geom$values_sc)
+
+        # Get values from magnitude table if normal variable
+        if(var_name != "system_capacity") {
+          
+          # Data for HUCs (Stressor Magnitude)
+          sm_df <- rv_stressor_magnitude$sm_dat
+          sm_df <- sm_df[sm_df$Stressor == var_name, ]
+          
+          # Merge stressor magnitude values to sf object
+          huc_geom$values <- NA
+          huc_geom$values <- sm_df$Mean[match(huc_geom$HUC_ID, sm_df$HUC_ID)]
+          
+          # Look at relationship from response curve
+          resp_curv <- rv_stressor_response$sr_dat[[var_name]]
+          
+          # Convert raw variable values to system capacity
+          interp <- approx(x = resp_curv$value,
+                          y = resp_curv$mean_system_capacity,
+                          xout = huc_geom$values,
+                          yleft = 0, yright = 100)
+          
+          huc_geom$values_sc <- interp$y
+ 
+        } else {
+          # Otherwise look at system capacity from Joe mode
+          res <- rv_joe_model_results$sims
+          res <- res[[length(res)]] # Get the latest result (if multiple)
+          # Take the average by each watershed
+          df_vals <- res$ce.df %>% dplyr::group_by(HUC) %>% dplyr::summarise(values_sc = mean(CE))
+          # Add values as attribute to original object
+          huc_geom$values_sc <- df_vals$values_sc[match(huc_geom$HUC_ID, df_vals$HUC)]
+          huc_geom$values_sc <- huc_geom$values_sc * 100
+        }
+
+         # Apply color ramp function
+          huc_geom$color_vec <- color_func(huc_geom$values_sc)
 
         # Update reference color dataframe rv to reset colors after selection
         col_df <- data.frame(id = huc_geom$HUC_ID, col = huc_geom$color_vec)
@@ -375,6 +390,49 @@ module_main_map_server <- function(id) {
         }
         
       })
+
+
+
+
+
+
+
+
+     # ------------------------------------------------------
+     # User clicks on System Capacity Map plot
+     # ------------------------------------------------------
+     # Listen to click events to change target variable selected
+      observe({
+        # ensure UI is loaded - do not run if not set
+        req(input$hiddenload)
+        # User clicks on ID
+        # Update reactive value for system capacity
+        updateActiveVar <- function() {
+          rv_stressor_response$active_layer <- "system_capacity"
+        }
+        # Use mouse click
+        my_id <- paste0("main_map-var_id")
+        onclick(my_id,
+                updateActiveVar(),
+                asis = TRUE)
+      })
+
+      # ------------------------------------------
+      # Update selected class on layer panel
+      observe({
+         req(input$hiddenload)
+         req(rv_stressor_response$active_layer)
+         print("Setting style...")
+         #print(active)
+         # Strip class away from any other selected
+         #q_code <- paste0("jQuery('.map-variable').removeClass('var-selected');")
+        # shinyjs::runjs(code = q_code)
+
+         # Add class to system capacity
+       #  q_code <- paste0("jQuery('#main_map-var_id').addClass('var-selected');")
+        # shinyjs::runjs(code = q_code)
+    
+       })
       
       
       

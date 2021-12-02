@@ -26,20 +26,12 @@ module_huc_results_ui <- function(id) {
         
         infoBox(title = NULL, color = 'blue', 
                 value = module_huc_stressor_magnitude_ui(ns("stressor_magnitude")),
-                  #actionButton(ns("adjust_stressor_magnitude"),
-                  #             tags$b("Adjust Magnitude"),
-                  #             class="chart-line",
-                  #             width = "100%"),
                 icon = icon("sliders-h"),
                 subtitle = "Modify the stressor magnitude for selected watersheds"),
         
         
         infoBox(title = NULL, color = 'blue', 
-                value = 
-                  actionButton(ns("run_ce_joe_model"),
-                               tags$b("Joe Model"),
-                               class="chart-line",
-                               width = "100%"),
+                value = module_joe_model_run_ui(ns("run_joe_model")),
                 icon = icon("chart-bar"),
                 subtitle = "Run the Cumulative Effects Joe Model"),
         
@@ -122,6 +114,7 @@ module_huc_results_server <- function(id) {
 
       # Call the submodules
       module_huc_stressor_magnitude_server("stressor_magnitude")
+      module_joe_model_run_server("run_joe_model")
       
       # Hide deselect HUC button on initial load
       q_code <- paste0("jQuery('#main_map-huc_results-deselect_watersheds').addClass('hide-this');")
@@ -177,76 +170,7 @@ module_huc_results_server <- function(id) {
       })
 
       
-      
-      # Change the values of the underlying variables
-      # in selected HUCs
-      
-      observeEvent(input$adjust_stressor_magnitude, {
-        showModal(modalDialog(
-          title = "Adjust Stressor Magnitude",
-          tagList(
-            tags$p("Adjust Stressor Magnitude For Selected Watersheds"),
-            
-            fluidRow(
-              shinydashboard::box(
-                numericInput("obs", "Variable A:", 10, min = 1, max = 100),
-                numericInput("obs", "Variable B:", 10, min = 1, max = 100),
-                numericInput("obs", "Variable C:", 10, min = 1, max = 100),
-                numericInput("obs", "Variable D:", 10, min = 1, max = 100),
-                numericInput("obs", "Variable E:", 10, min = 1, max = 100),
-                numericInput("obs", "Variable F:", 10, min = 1, max = 100),
-                numericInput("obs", "Variable G:", 10, min = 1, max = 100)
-              ), 
-            ),
-            fluidRow(
-              column(
-                width = 6,
-                actionButton("goButton", "Update Values", class = "btn-success", style = "color: white;")
-                
-              )
-            )
-            
-          ),
-          easyClose = TRUE,
-          size = 'l',
-          footer = NULL
-        ))
-      })
-      
-      
-      
-      
-      
-      observeEvent(input$run_ce_joe_model, {
-        showModal(modalDialog(
-          title = "Run the Cumulative Effect Joe Model",
-          tagList(
-            tags$p("Run the Cumulative Effect Joe Model For All Watersheds"),
-            
-            fluidRow(
-              shinydashboard::box(
-                radioButtons("dist", "Model Type:",
-                             c("Full Model" = "norm",
-                               "Partial Model" = "unif")),
-                numericInput("obs", "Number of Simulations:", 10, min = 1, max = 100),
-                numericInput("obs", "Name of Scenario to run:", 10, min = 1, max = 100),
-                textInput("caption", "Name of Scenario to run:", ""),
-              ), 
-            ),
-            fluidRow(
-              column(
-                width = 6,
-                actionButton("goButton2", "Run Joe Model", class = "btn-success", style = "color: white;")
-                
-              )
-            )
-            
-          ),
-          easyClose = TRUE,
-          size = 'm',
-          footer = NULL
-        ))
-      })
+
       
       
       

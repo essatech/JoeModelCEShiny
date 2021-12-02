@@ -11,7 +11,7 @@ module_stressor_variable_ui <- function(id) {
   ns <- NS(id)
   
   tags$div(
-    class = "stack-box", id = ns("var_id"),
+    class = "stack-box map-variable", id = ns("var_id"),
     
     shinydashboard::box(
       width = 12,
@@ -23,7 +23,7 @@ module_stressor_variable_ui <- function(id) {
       tags$div(actionButton(ns("response_plot"), icon("cog"), class = "response-button"),
                style = "float: right; display: inline-block;"),
       
-      tags$p("[0.45%]", style = "float: right;"),
+      tags$p("", style = "float: right;"),
       
       tags$div(numericInput(ns("hiddenload"), label = "hidden", value = 0), style = "display:none;")
     ) # end of box
