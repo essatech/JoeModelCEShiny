@@ -73,11 +73,7 @@ module_huc_results_ui <- function(id) {
         
         
         infoBox(title = NULL, color = 'blue', 
-                value = 
-                  actionButton("count2",
-                               tags$b("All Watershed"),
-                               class="chart-line",
-                               width = "100%"),
+                value = module_joe_model_csc_plots_ui(ns("joe_model_csc_plots_all")),
                 icon = icon("sliders-h"),
                 subtitle = "Plot the cumulative system capacity for all watersheds"),
         
@@ -115,7 +111,8 @@ module_huc_results_server <- function(id) {
       # Call the submodules
       module_huc_stressor_magnitude_server("stressor_magnitude")
       module_joe_model_run_server("run_joe_model")
-      
+      module_joe_model_csc_plots_server("joe_model_csc_plots_all")
+
       # Hide deselect HUC button on initial load
       q_code <- paste0("jQuery('#main_map-huc_results-deselect_watersheds').addClass('hide-this');")
       shinyjs::runjs(code = q_code)

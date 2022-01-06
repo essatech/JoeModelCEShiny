@@ -75,7 +75,7 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
 #-------------------------------------------------
   # Load Stressor Response Files 
   file_name_stressor_response <- paste0("./data/stressor-response_fixed_ARTR.xlsx")
-  file_name_stressor_response <- paste0("./data/stressor-response_fixed_sqam.xlsx")
+  #file_name_stressor_response <- paste0("./data/stressor-response_fixed_sqam.xlsx")
 
   
   # Extract the stressor response relationships
@@ -107,7 +107,9 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
   # Fixed: stressor_magnitude_fixed_rn_ARTR
   # UNC: stressor_magnitude_unc_ARTR
   file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_fixed_rn_ARTR.xlsx")
-  file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_fixed_rn_sqam.xlsx")
+  #file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_unc_ARTR.xlsx")
+  #file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_fixed_rn_sqam.xlsx")
+  
   
   sm_wb_dat <-  StressorMagnitudeWorkbook(
                     filename = file_name_stressor_magnitude,
@@ -125,7 +127,7 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
 #-------------------------------------------------
   # Load in the default watersheds geojson layer - Athabasca
   hmdl <- sf::st_read("./data/watersheds.gpkg")
-  hmdl <- sf::st_read("./data/sqam.gpkg")
+  #hmdl <- sf::st_read("./data/sqam.gpkg")
   
   hmdl$HUC_ID <- as.numeric(hmdl$HUC_ID)
   hmdl$uid <- paste0(hmdl$HUC_ID, "|", hmdl$NAME)
