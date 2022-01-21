@@ -39,7 +39,7 @@ module_joe_model_csc_plots_server <- function(id) {
       #-------------------------------------------------------
       # DISABLE AND ENABLE 
       #------------------------------------------------------- 
-      # this module is disabled if the Joe Model rsults are empty
+      # this module is disabled if the Joe Model results are empty
       observe({
         sims <- rv_joe_model_results$sims
         if(length(sims) > 0) {
