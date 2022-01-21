@@ -8,50 +8,50 @@
 # rm(list = ls())
 
 # Load local package
-library(devtools)
+library(devtools) 
 # remove.packages("JoeModelCE")
 # devtools::install(pkg = "../package/JoeModelCE/", upgrade = "always")
-# library(JoeModelCE)
+# library(JoeModelCE) 
 file.sources  <- list.files(path = "../JoeModelCE/R/", pattern="*.R")
 sapply(paste0("../JoeModelCE/R/", file.sources), source, .GlobalEnv)
 
 
 # Load necessary libraries
-library(utils)
+library(utils) # DROP
 library(dplyr)
 library(readxl)
 library(shiny)
-library(pkgload)
+library(pkgload) # DROP
 library(DT)
-library(DBI)
-library(RSQLite)
+library(DBI) # DROP
+library(RSQLite) # DROP
 library(shinyjs)
-library(shinycssloaders)
-library(lubridate)
+library(shinycssloaders) # DROP
+library(lubridate) # DROP
 library(shinyFeedback)
-library(dplyr)
 library(dbplyr)
-library(config)
-library(RPostgreSQL) # DROP?
+library(config) # DROP
+library(RPostgreSQL) # DROP
 library(shinydashboard)
-library(shinydashboardPlus) # DROP?
-library(waiter) # DROP?
-library(dygraphs) # DROP?
-library(shinyWidgets)
-library(dygraphs)
+library(shinydashboardPlus) # DROP
+library(waiter) # DROP
+library(dygraphs) # DROP
+library(shinyWidgets) # DROP
 library(htmlwidgets)
-library(highcharter) 
+library(highcharter) # DROP
 library(sf)
-library(rgdal)
-library(shiny)
+library(rgdal) # DROP
 library(DT)
 library(readxl)
-library(leaflet); library(tidyr)
-library(tidyselect)
-# library(TruncatedDistributions)
+library(leaflet)
+library(tidyr) # DROP
+library(tidyselect) # DROP
+# library(TruncatedDistributions) found on R-Forge and not CRAN: code to install and load is in "R/module_joe_model_csc_plots.R"
 library(reshape2)
-library(rmapshaper)
-library(shinycssloaders)
+library(rmapshaper) # DROP
+library(popbio)
+library(testthat)
+
 
 
 #load libraries for the functions
