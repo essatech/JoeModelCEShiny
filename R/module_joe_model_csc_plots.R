@@ -89,27 +89,27 @@ module_joe_model_csc_plots_server <- function(id) {
      #Script for plotting function 
         #of the Joe model
 
-        library(ggplot2)
-        library(plotly)
-        library(plyr)
-
-        #Need TruncatedDistributions package developed by 
-        #Rob Carnell <bertcarnell@gmail.com>
-        #found on R-Forge and not CRAN
-        if(!require("TruncatedDistributions",character.only = TRUE)) {
-        install.packages("TruncatedDistributions", repos="http://R-Forge.R-project.org")
-        }else library(TruncatedDistributions)
-
-        #theme for all plots
-        andy_theme<-theme(axis.text.y   = element_text(size=12),
-                        axis.text.x   = element_text(size=12),
-                        axis.title.y  = element_text(size=14),
-                        axis.title.x  = element_text(size=14),
-                        panel.background = element_blank(),
-                        panel.grid.major = element_blank(), 
-                        panel.grid.minor = element_blank(),
-                        axis.line = element_line(colour = "black"),
-                        panel.border = element_rect(colour = "black", fill=NA, size=0.5))
+        # library(ggplot2)
+        # library(plotly)
+        # library(plyr)
+        # 
+        # #Need TruncatedDistributions package developed by 
+        # #Rob Carnell <bertcarnell@gmail.com>
+        # #found on R-Forge and not CRAN
+        # if(!require("TruncatedDistributions",character.only = TRUE)) {
+        # install.packages("TruncatedDistributions", repos="http://R-Forge.R-project.org")
+        # }else library(TruncatedDistributions)
+        # 
+        # #theme for all plots
+        # andy_theme<-theme(axis.text.y   = element_text(size=12),
+        #                 axis.text.x   = element_text(size=12),
+        #                 axis.title.y  = element_text(size=14),
+        #                 axis.title.x  = element_text(size=14),
+        #                 panel.background = element_blank(),
+        #                 panel.grid.major = element_blank(), 
+        #                 panel.grid.minor = element_blank(),
+        #                 axis.line = element_line(colour = "black"),
+        #                 panel.border = element_rect(colour = "black", fill=NA, size=0.5))
 
 
         ##function to plot a stressor-response relationship
