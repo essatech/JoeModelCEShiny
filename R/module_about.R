@@ -12,9 +12,9 @@
 #'
 #'
 module_about_ui <- function(id) {
-
+  
   ns <- NS(id)
-
+  
   tagList(
     fluidRow(
       shinydashboard::box(
@@ -26,9 +26,11 @@ module_about_ui <- function(id) {
           
           tags$img(src = './img/cover_image.png', height = '300px'),
           
-          tags$p("Welcome to the Joe Model Cumulative Effects and Population Model Shiny app. This interactive webtool is powered by the",
-                 tags$a(href = "https://github.com/essatech/JoeModelCE","JoeModelCE R package"), 
-                 ", which is a collection of functions to support the application of the Alberta Environmental Parks Cumulative Effects Assessment Joe Model",
+          tags$p("Welcome to the Joe Model Cumulative Effects and Population Model Shiny app!"),
+          
+          tags$p("This interactive webtool is powered by the",
+                 tags$a(href = "https://github.com/essatech/JoeModelCE","JoeModelCE R package,"), 
+                 "which is a collection of functions to support the application of the Alberta Environmental Parks Cumulative Effects Assessment Joe Model",
                  tags$a(href = "https://waves-vagues.dfo-mpo.gc.ca/Library/40871344.pdf", "(AEP CEM; DFO 2019)"),
                  ", coupled with a flexible population modelling framework."),
           
@@ -52,7 +54,7 @@ module_about_ui <- function(id) {
           tags$li(
             tags$a(href = "http://www.aferu.ca/rosenfeld-lab", "Dr. Jordan Rosenfeld:"),
             "Project design and coordination; ECCS Aquatic Ecologist"),
-  
+          
           tags$li(
             tags$a(href = "https://github.com/andrewpaul68", "Dr. Andrew Paul:"),
             "Collaborator; AEP Research Scientist"),
@@ -70,21 +72,26 @@ module_about_ui <- function(id) {
             "Marc Porter, Alejandra Urcelay, and",
             tags$a(href = "https://github.com/julianheavyside", "Julian Heavyside"),
             "from",
-            tags$a(href = "https://essa.com", "ESSA Technologies Ltd.:"),
+            tags$a(href = "https://essa.com", "ESSA Technologies Ltd:"),
             "R package and Shiny app development support"),
-          ), 
-          
-          style = "font-size: 15px"),
+        ), 
+        
+        style = "font-size: 15px"),
         
         
         tags$h4("Features"),
         
         tags$div(tags$ul(
           tags$li("Run custom implementations of the Joe Model on non-standard data formats."),
-          tags$li("plaeholder ..."),
-          tags$li("plaeholder ..."),
-          tags$li("plaeholder ...")
-        ),  style = "font-size: 15px"),
+          tags$li("Batch-run the integrated Joe Model/Population model across large datasets."),
+          tags$li("Run sensitivity tests."),
+          tags$li("Explore model extensions.")
+        ),  
+        
+        style = "font-size: 15px"
+        
+        ),
+        
       ),
     )
   )

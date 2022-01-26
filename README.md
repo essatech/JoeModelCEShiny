@@ -22,7 +22,7 @@ Contributors include:
 -   [Dr. Andrew Paul](https://github.com/andrewpaul68): Collaborator; AEP Research Scientist
 -   [Dr. Kyle Wilson](https://github.com/klwilson23): Population model development.
 -   [Isuru Dharmasena](https://www.linkedin.com/in/isuru-dharmasena-90269895/?originalSubdomain=ca): Core Shiny app development
--   [Matthew Bayly](https://github.com/mattjbayly), Marc Porter, Alejandra Urcelay, and [Julian Heavyside](https://github.com/julianheavyside) from [ESSA Technologies Ltd.](https://essa.com/): R package and Shiny app development support.
+-   [Matthew Bayly](https://github.com/mattjbayly), Marc Porter, Alejandra Urcelay, and [Julian Heavyside](https://github.com/julianheavyside) from [ESSA Technologies Ltd](https://essa.com/): R package and Shiny app development support.
 
 
 ## Features
