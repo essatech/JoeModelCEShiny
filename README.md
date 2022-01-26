@@ -13,7 +13,7 @@ The `JoeModelCE` package is part of a larger initiative to develop a framework f
 
 
 #### Contributors:
-This is a broad collaboration between groups Fisheries and Oceans Canada (DFO), B.C. Ministry of Environment and Climate Change Strategy (ECCS), Alberta Environment and Parks (AEP), and Simon Fraser University (SFU. 
+This is a broad collaboration between Fisheries and Oceans Canada (DFO), B.C. Ministry of Environment and Climate Change Strategy (ECCS), Alberta Environment and Parks (AEP), and Simon Fraser University (SFU. 
 
 Contributors include:
 
