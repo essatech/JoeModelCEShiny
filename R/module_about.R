@@ -42,7 +42,7 @@ module_about_ui <- function(id) {
 Contributors include:"),
         
         tags$div(tags$ul(
-          tags$li("Jordan Rosenfled (TODO: add description) ..."),
+          tags$li("Jordan Rosenfeld (TODO: add description) ..."),
           tags$li("Andrew Paul ..."),
           tags$li("Eva Enders ..."),
           tags$li("Kyle Wilson  ..."),
