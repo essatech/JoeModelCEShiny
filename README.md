@@ -7,7 +7,7 @@
 
 ## Developing a Cumulative Effects Modelling Framework for the Recovery of Aquatic Species at Risk
 
-This is the location of the Shiny UI associated with the [`JoeModelCE`](github.com/essatech/JoeModelCE) package. `JoeModelCE` is a collection of functions to support the application of the [Alberta Environmental Parks Cumulative Effects Assessment Joe Model] (https://waves-vagues.dfo-mpo.gc.ca/Library/40871344.pdf) (AEP CEM; DFO 2019), coupled with a flexible population modelling framework.
+This is the location of the Shiny UI associated with the [`JoeModelCE`](github.com/essatech/JoeModelCE) package. `JoeModelCE` is a collection of functions to support the application of the [Alberta Environmental Parks Cumulative Effects Assessment Joe Model (AEP CEM; DFO 2019)] (https://waves-vagues.dfo-mpo.gc.ca/Library/40871344.pdf) , coupled with a flexible population modelling framework.
 
 The `JoeModelCE` package is part of a larger initiative to develop a framework for modelling cumulative impacts to Species at Risk (SAR) to guide recovery planning and adaptive management based on stressor-response functions related to taxa-specific threats.  The intent is to develop a modelling framework that can generate models across a range of complexity and data quality, treating stressor-response functions as modular entities.
 
@@ -22,7 +22,7 @@ Contributors include:
 -   [Dr. Andrew Paul](https://github.com/andrewpaul68): Collaborator; AEP Research Scientist
 -   [Dr. Kyle Wilson](https://github.com/klwilson23): Population model development.
 -   [Isuru Dharmasena](https://www.linkedin.com/in/isuru-dharmasena-90269895/?originalSubdomain=ca): Core Shiny application development
--   [Matthew Bayly](https://github.com/mattjbayly), Marc Porter, Alejandra Urcelay, and [Julian Heavyside](https://github.com/julianheavyside) from [ESSA Technologies Ltd](https://essa.com/): Support R package and Shiny App development.
+-   [Matthew Bayly](https://github.com/mattjbayly), Marc Porter, Alejandra Urcelay, and [Julian Heavyside](https://github.com/julianheavyside) from [ESSA Technologies Ltd.](https://essa.com/): Support R package and Shiny App development.
 
 
 ## Features
@@ -38,7 +38,7 @@ The easiest way to install the `JoeModelCE` package is from within the [RStudio 
 ``` r
 # You may need to install remotes
 library(remotes)
-remotes::install_github("mattjbayly/JoeModelCE")
+remotes::install_github("essatech/JoeModelCE")
 ```
 
 ## Code of Conduct
