@@ -7,9 +7,9 @@
 
 ## Developing a Cumulative Effects Modelling Framework for the Recovery of Aquatic Species at Risk
 
-This is the location of the Shiny UI associated with the [`JoeModelCE`](github.com/essatech/JoeModelCE) package. `JoeModelCE` is a collection of functions to support the application of the <a href="https://waves-vagues.dfo-mpo.gc.ca/Library/40871344.pdf" target="_blank">Alberta Environmental Parks Cumulative Effects Assessment Joe Model (DFO 2019)</a>, coupled with a flexible population modelling framework.
+This is the location of the Shiny UI associated with the [`JoeModelCE`](https://github.com/essatech/JoeModelCE) package. `JoeModelCE` is a collection of functions to support the application of the <a href="https://waves-vagues.dfo-mpo.gc.ca/Library/40871344.pdf" target="_blank">Alberta Environmental Parks Cumulative Effects Assessment Joe Model (DFO 2019)</a>, coupled with a flexible population modelling framework.
 
-The `JoeModelCE` package is part of a larger initiative to develop a framework for modelling cumulative impacts to Species at Risk (SAR) to guide recovery planning and adaptive management based on stressor-response functions related to taxa-specific threats.  The intent is to develop a modelling framework that can generate models across a range of complexity and data quality, treating stressor-response functions as modular entities.
+The `JoeModelCE` package is part of a larger initiative to develop a framework for modelling cumulative impacts to Species at Risk (SAR) to guide recovery planning and adaptive management based on stressor-response functions related to taxa-specific threats.  This framework allows users to generate models across a range of complexity and data quality, treating stressor-response functions as modular entities.
 
 
 #### Contributors:
@@ -17,12 +17,12 @@ This is a broad collaboration between Fisheries and Oceans Canada (DFO), B.C. Mi
 
 Contributors include:
 
--   [Dr. Eva Enders](https://profils-profiles.science.gc.ca/en/profile/eva-enders ): Project Lead; DFO Research Scientist
+-   [Dr. Eva Enders](https://profils-profiles.science.gc.ca/en/profile/eva-enders): Project Lead; DFO Research Scientist
 -   [Dr. Jordan Rosenfeld](http://www.aferu.ca/rosenfeld-lab): Project design and coordination; ECCS Aquatic Ecologist
 -   [Dr. Andrew Paul](https://github.com/andrewpaul68): Collaborator; AEP Research Scientist
 -   [Dr. Kyle Wilson](https://github.com/klwilson23): Population model development.
--   [Isuru Dharmasena](https://www.linkedin.com/in/isuru-dharmasena-90269895/?originalSubdomain=ca): Core Shiny application development
--   [Matthew Bayly](https://github.com/mattjbayly), Marc Porter, Alejandra Urcelay, and [Julian Heavyside](https://github.com/julianheavyside) from [ESSA Technologies Ltd.](https://essa.com/): Support R package and Shiny App development.
+-   [Isuru Dharmasena](https://www.linkedin.com/in/isuru-dharmasena-90269895/?originalSubdomain=ca): Core Shiny app development
+-   [Matthew Bayly](https://github.com/mattjbayly), Marc Porter, Alejandra Urcelay, and [Julian Heavyside](https://github.com/julianheavyside) from [ESSA Technologies Ltd.](https://essa.com/): R package and Shiny app development support.
 
 
 ## Features

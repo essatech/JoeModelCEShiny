@@ -23,33 +23,59 @@ module_about_ui <- function(id) {
         tags$div(
           
           tags$h1("Joe/Population Model CE"),
+          
           tags$img(src = './img/cover_image.png', height = '300px'),
           
-          tags$p("The Joe Model Cumulative Effects package (JoeModelCE) is a collection of functions to support the application of the ‘Alberta Environmental Parks Cumulative Effects Assessment Joe Model’ (add citation) coupled with a flexible population modelling framework. This package is accompanied by an interactive web-based R Shiny dashboard (add link). The intent of the package."),
+          tags$p("Welcome to the Joe Model Cumulative Effects and Population Model Shiny app. This interactive webtool is powered by the",
+                 tags$a(href = "https://github.com/essatech/JoeModelCE","JoeModelCE R package"), 
+                 ", which is a collection of functions to support the application of the Alberta Environmental Parks Cumulative Effects Assessment Joe Model",
+                 tags$a(href = "https://waves-vagues.dfo-mpo.gc.ca/Library/40871344.pdf", "(AEP CEM; DFO 2019)"),
+                 ", coupled with a flexible population modelling framework."),
+          
+          tags$p("This webtool is part of a larger initiative to develop a framework for modelling cumulative impacts to Species at Risk (SAR) to guide recovery planning and adaptive management based on stressor-response functions related to taxa-specific threats. This framework allows users to generate models across a range of complexity and data quality, treating stressor-response functions as modular entities."),
           
           style = "text-align: center;",
           
         ),
         
-
-        
-
-        
-        
         
         tags$h4("Contributors"),
-        tags$p("The JoeModelCE package is being developed as part of a larger initiative between groups [A], [B] & [C]. 
-Contributors include:"),
+        
+        tags$p("This project is a broad collaboration between Fisheries and Oceans Canada (DFO), B.C. Ministry of Environment and Climate Change Strategy (ECCS), Alberta Environment and Parks (AEP), and Simon Fraser University (SFU)."),
         
         tags$div(tags$ul(
-          tags$li("Jordan Rosenfeld (TODO: add description) ..."),
-          tags$li("Andrew Paul ..."),
-          tags$li("Eva Enders ..."),
-          tags$li("Kyle Wilson  ..."),
-          tags$li("Isuru Dharmasena  ..."),
-          tags$li("others ..."),
-          tags$li("ESSA Technologies Ltd ...")
-          ),  style = "font-size: 15px"),
+          
+          tags$li(
+            tags$a(href = "https://profils-profiles.science.gc.ca/en/profile/eva-enders", "Dr. Eva Enders:"),
+            "Project Lead; DFO Research Scientist"),
+          
+          tags$li(
+            tags$a(href = "http://www.aferu.ca/rosenfeld-lab", "Dr. Jordan Rosenfeld:"),
+            "Project design and coordination; ECCS Aquatic Ecologist"),
+  
+          tags$li(
+            tags$a(href = "https://github.com/andrewpaul68", "Dr. Andrew Paul:"),
+            "Collaborator; AEP Research Scientist"),
+          
+          tags$li(
+            tags$a(href = "https://github.com/klwilson23", "Dr. Kyle Wilson:"),
+            "Population model development"),
+          
+          tags$li(
+            tags$a(href = "https://www.linkedin.com/in/isuru-dharmasena-90269895/?originalSubdomain=ca", "Isuru Dharmasena:"),
+            "Core Shiny app development"),
+          
+          tags$li(
+            tags$a(href = "https://github.com/mattjbayly", "Matthew Bayly,"), 
+            "Marc Porter, Alejandra Urcelay, and",
+            tags$a(href = "https://github.com/julianheavyside", "Julian Heavyside"),
+            "from",
+            tags$a(href = "https://essa.com", "ESSA Technologies Ltd.:"),
+            "R package and Shiny app development support"),
+          ), 
+          
+          style = "font-size: 15px"),
+        
         
         tags$h4("Features"),
         
@@ -59,16 +85,7 @@ Contributors include:"),
           tags$li("plaeholder ..."),
           tags$li("plaeholder ...")
         ),  style = "font-size: 15px"),
-        
-      
-        
-
-        
       ),
     )
-
-
-
-
   )
 }
