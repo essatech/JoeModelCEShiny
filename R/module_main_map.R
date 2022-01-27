@@ -327,6 +327,7 @@ module_main_map_server <- function(id) {
           tags$p("HUC ID", style = "float: right; color:#3c8dbc;")
         }
       })
+      
       output$txt_basin_name <- renderUI({
         if(rv_map_shape()) { 
           tags$p(rv_map_location$huc_name, style = "float: left; color:#3c8dbc;")
