@@ -36,14 +36,10 @@ module_joe_model_run_server <- function(id) {
       
       print("Calling module_joe_model_run_server")
       
-
       #-------------------------------------------------------
       # DISABLE AND ENABLE 
       #------------------------------------------------------- 
       # this modal is never disabled ...
-
-
-
 
       #-------------------------------------------------------
       # START OF INPUT MODAL UI
@@ -53,12 +49,10 @@ module_joe_model_run_server <- function(id) {
         print("Joe model form click to open ...")
 
         # Gather a list of all the stessors to build the checkbox list
-
-
         showModal(modalDialog(
           title = "Run the Joe Model",
           tagList(
-
+          
             # Dynamic UI for list of checkbox elements
             fluidRow(
               shinydashboard::box(
@@ -68,6 +62,13 @@ module_joe_model_run_server <- function(id) {
                 choices = c(),
                 selected = c(),
                 inline = TRUE),
+                
+                actionButton(ns("selectall"),
+                             label = "Select/Deselect all"),
+                
+                tags$p("*Note that only variables associated with adult System Capacity can be run in the Joe Model. Other stressors linked to non-adult life stages are excluded.")
+                
+                
               )
             ),
 
@@ -83,7 +84,10 @@ module_joe_model_run_server <- function(id) {
             fluidRow(
               column(
                 width = 12,
-                actionButton(ns("go_button_run_joe"), "Run the Joe Model", class = "btn-success", style = "color: white;")
+                tags$div(
+                  class = "cta",
+                  actionButton(ns("go_button_run_joe"), "Run the Joe Model", class = "btn-success fs30px", style = "color: white;")
+                )
               )
             )
 
@@ -97,13 +101,23 @@ module_joe_model_run_server <- function(id) {
 
 
       #-------------------------------------------------------
-      # List of check box opportunities
+      # List of check box options
       #-------------------------------------------------------
       observe({
+        
         print("Building the check box group...")
         req(rv_stressor_response$stressor_names)
         req(input$open_joe_modal_form)
+        
         stressors <- rv_stressor_response$stressor_names
+        
+        # Exclude variables that are not associated with adults
+        s_options <- rv_stressor_response$main_sheet
+        s_options <- s_options[which(s_options$Life_stages == "adult"), ]
+        s_acceptable <- unique(s_options$Stressors)
+        
+        # Filter to exlcude any variables associated with early life stages
+        stressors <- stressors[which(stressors %in% s_acceptable)]
 
         if(is.null(stressors)) {
             updateCheckboxGroupInput(session,
@@ -124,6 +138,70 @@ module_joe_model_run_server <- function(id) {
 
       })
 
+      
+      #-------------------------------------------------------
+      # Select and deselect all boxes
+      #-------------------------------------------------------
+      observe({
+        req(input$selectall)
+        req(input$open_joe_modal_form)
+        req(rv_stressor_response$stressor_names)
+        
+        stressors <- rv_stressor_response$stressor_names
+      
+        # Exclude variables that are not associated with adults
+        s_options <- rv_stressor_response$main_sheet
+        s_options <- s_options[which(s_options$Life_stages == "adult"), ]
+        s_acceptable <- unique(s_options$Stressors)
+        
+        # Filter to exlcude any variables associated with early life stages
+        stressors <- stressors[which(stressors %in% s_acceptable)]
+        
+        if(input$selectall > 0) {
+          if (input$selectall %% 2 == 0) {
+            updateCheckboxGroupInput(session,
+                                     "check_box_group",
+                                     choices = stressors,
+                                     selected = stressors,
+                                     inline = TRUE)
+          } else {
+            updateCheckboxGroupInput(session,
+                                     "check_box_group",
+                                     choices = stressors,
+                                     selected = "",
+                                     inline = TRUE)
+          }
+          print(input$selectall)
+        } else {
+          print(input$selectall)
+        
+        }
+      })
+      
+      
+      #-------------------------------------------------------
+      # Enable disable Joe Model Run button
+      #-------------------------------------------------------
+      observe({
+        # req(input$check_box_group)
+        req(input$open_joe_modal_form)
+        req(input$number_of_simulations)
+        
+
+        if(!is.null(input$check_box_group) > 0 & input$number_of_simulations > 0) {
+          shinyjs::enable("go_button_run_joe")
+        } else {
+          shinyjs::disable("go_button_run_joe")
+        }
+    
+      })
+      
+      
+
+      
+      
+      
+      
 
       #-------------------------------------------------------
       # Update time estimate text
@@ -134,12 +212,25 @@ module_joe_model_run_server <- function(id) {
           dat <- rv_stressor_magnitude$sm_dat
 
           n_hucs <- length(unique(dat$HUC_ID))
-          n_stressor <- length(unique(dat$Stressor))
+          n_stressor <- length(unique(input$check_box_group))
+          n_stressor <- ifelse(length(n_stressor) == 0, 0, n_stressor)
+          n_stressor <- ifelse(is.na(n_stressor), 0, n_stressor)
           n_sims <- input$number_of_simulations
+          n_sims <- ifelse(is.na(n_sims), 0, n_sims)
+          
+          
+          # Calculate the predicted model run time in seconds
+          # Custom estimate...
+          pred_time <- 8.609907e-02 + n_hucs*3.478398e-04 + -4.307692e-02*n_stressor + 2.243825e-04*n_sims +
+            n_hucs*n_sims*5.485097e-04 + n_hucs*n_stressor*2.085363e-03 +  n_stressor*n_sims*-2.982730e-04 +
+            n_hucs*n_stressor*n_sims*2.615058e-05
+          
+          # Place holder for Joe Model estimated run times
+          rv_joe_model_run_time$run_time_seconds <-  pred_time
         
           tl <- tagList(
                 tags$p(paste0("Review: (n) HUCs: ", n_hucs, " (n) Stressors: ", n_stressor, " (n) replicates: ", n_sims)),
-                tags$p("Warning: the run time estimate for the model run is: ## seconds")
+                tags$p(paste0("The run time estimate for the model run is: ", pretty_print_seconds(pred_time)))
           )
           
         return(tl)
@@ -152,6 +243,16 @@ module_joe_model_run_server <- function(id) {
       #-------------------------------------------------------
       # Run the Joe model and store the results
       observeEvent(input$go_button_run_joe, {
+        
+          # Get the estimated run time 
+          e_run_time <- pretty_print_seconds(rv_joe_model_run_time$run_time_seconds)
+
+          # Show a loading spinner to the user
+          show_modal_spinner(
+            spin = "hollow-dots",
+            color = "#0073b7",
+            text = paste0("Running the Joe Model.. The estimated runtime is ", e_run_time)
+          )
 
           # Gather the inputs
           # Stressor RESPONSE workbook data (reactive value)
@@ -180,11 +281,12 @@ module_joe_model_run_server <- function(id) {
           # End of partial model filters
           
           print("Running the Joe Model...")
+
           # Try running the Joe model
           jm <- JoeModel_Run(
               dose = sm_wb_dat_in,
               sr_wb_dat = sr_wb_dat_in,
-              MC.sims = n_mc_sims
+              MC_sims = n_mc_sims
           )
 
           print("Finished the Joe Model run...")
@@ -197,6 +299,14 @@ module_joe_model_run_server <- function(id) {
           # Also store the name of the simulation (if set by user)
           sim_name <- input$name_of_simulation
           rv_joe_model_sim_names$scenario_names[[simulation_index]] <- sim_name
+          
+          # Update the active layer on the map to show 
+          rv_stressor_response$active_layer <- "system_capacity"
+          print(rv_stressor_response$active_layer)
+          
+          
+          # Stop the loading spinner
+          remove_modal_spinner()
 
           # Close the modal
           removeModal()

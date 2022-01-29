@@ -12,33 +12,35 @@ library(devtools)
 # remove.packages("JoeModelCE")
 # devtools::install(pkg = "../package/JoeModelCE/", upgrade = "always")
 # library(JoeModelCE) 
-file.sources  <- list.files(path = "../JoeModelCE/R/", pattern="*.R")
+file.sources  <- list.files(path = "../JoeModelCE/R/", pattern = "*.R")
 sapply(paste0("../JoeModelCE/R/", file.sources), source, .GlobalEnv)
 
 
 # Load necessary libraries
-library(utils) # DROP
+#library(utils) # DROP
 library(dplyr)
 library(readxl)
 library(shiny)
-library(pkgload) # DROP
+#library(pkgload) # DROP
 library(DT)
-library(DBI) # DROP
-library(RSQLite) # DROP
+#library(DBI) # DROP
+#library(RSQLite) # DROP
 library(shinyjs)
 library(shinycssloaders) # DROP
 library(lubridate) # DROP
 library(shinyFeedback)
 library(dbplyr)
 library(config) # DROP
-library(RPostgreSQL) # DROP
+#library(RPostgreSQL) # DROP
 library(shinydashboard)
-library(shinydashboardPlus) # DROP
+library(shinydashboardPlus)
+library(shinybusy)
 library(waiter) # DROP
-library(dygraphs) # DROP
+#library(dygraphs) # DROP
 library(shinyWidgets) # DROP
 library(htmlwidgets)
-library(highcharter) # DROP
+library(highcharter) # KEEP .. maybe drop
+library(dygraphs) # use this instead of high chaets...
 library(sf)
 library(rgdal) # DROP
 library(DT)
@@ -62,11 +64,14 @@ library(testthat)
 library(reactlog)
 reactlog::reactlog_enable()
 
+# TODO: remove this for deploy - puase on error
+# options(shiny.error = browser)
+
 # Shiny Pre-loader Spinner
 options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner.size = 3)
 
 
-# Useful demos - delete
+# Useful leaflet demos - TODO delete
 # https://github.com/IBM-DSE/Shiny-Examples-with-Blog
 
 
@@ -98,8 +103,7 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
   )
 
   
- 
-  
+
 #-------------------------------------------------
 # Load in default Stressor magnitude
 #-------------------------------------------------
@@ -144,7 +148,8 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
   )
   
   # Layer bounds for initial load
-  # If a new polygon file is imported this layer is updated
+  # If a new polygon file is imported the layer is updated
+  # and map zoom and pan should change
   bbox <- st_bbox(hmdl)
   rv_HUC_layer_load <- reactiveValues(
     data = hmdl,
@@ -165,17 +170,17 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
   # Selected HUCs - Create an empty vector to hold all HUC click ids
   rv_clickedIds <- reactiveValues(ids = vector())
   
-  # System Capacity choropleth map 0 - 1 color ramp is global
+  # System Capacity Choropleth Map 
+  # Color ramp is 0 - 100 (global) across all variables
   color_func <- colorQuantile(c("#d7191c", "#fdae61", "#ffffbf",
                                 "#a6d96a", "#1a9641"),
                               domain = c(0, 100),
                               na.color = "lightgrey",
                               n = 8)
 
-  # Generate legend - will likely always be 0 - 1 for system capacity
+  # Generate legend - will always be 0 - 100 for system capacity
   leg_col <- lapply(c(0, 20, 40, 60, 80, 100), color_func) %>% unlist()
   leg_lab <- c(0, 20, 40, 60, 80, 100)
-
 
 
 
@@ -200,7 +205,10 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
   rv_joe_model_sim_names <- reactiveValues(
     scenario_names = list()
   )
-
+# Place holder for Joe Model estimated run times
+  rv_joe_model_run_time <- reactiveValues(
+    run_time_seconds = list()
+  )
 
 
 #------------------------------------------

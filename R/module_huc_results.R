@@ -1,7 +1,7 @@
-#' Module HUC Results Summary
+#' Module HUC Results Summary Section
 #'
 #' The UI portion of the huc_results module
-#' 
+#'
 #' @importFrom shiny NS tagList fluidRow column actionButton tags
 #' @importFrom shinydashboard box
 #'
@@ -10,80 +10,99 @@
 #' @return a tagList containing UI elements
 #'
 module_huc_results_ui <- function(id) {
-  
   ns <- NS(id)
   
-  tagList(
-    shinydashboard::box(
-      width = 12,
-      #htmlOutput(ns('count_huc_select')),
-      tags$div(style = "display: flex;",
-        tags$h4(textOutput(ns("n_watersheds_selected")), style = "color: #103e85;"),
-        actionButton(ns("deselect_watersheds"), "deselect all", class = "deselect-button"),
-      ),
-      
-      fluidRow(
-        
-        infoBox(title = NULL, color = 'blue', 
-                value = module_huc_stressor_magnitude_ui(ns("stressor_magnitude")),
-                icon = icon("sliders-h"),
-                subtitle = "Modify the stressor magnitude for selected watersheds"),
-        
-        
-        infoBox(title = NULL, color = 'blue', 
-                value = module_joe_model_run_ui(ns("run_joe_model")),
-                icon = icon("chart-bar"),
-                subtitle = "Run the Cumulative Effects Joe Model"),
-        
-        
-        infoBox(title = NULL, color = 'blue', 
-                value = 
-                  actionButton(ns("run_ce_population_model"),
-                               tags$b("Population Model"),
-                               class="chart-line",
-                               width = "100%"),
-                icon = icon("chart-line"),
-                subtitle = "Run the population model for selected watersheds"),
-      ),
-      
-      fluidRow(
-        tags$h4("System Capacity Plots"),
-      ),
-      
-      fluidRow(
-        
-        infoBox(title = NULL, color = 'blue', 
-                value = 
-                  actionButton(ns("scp_by_stressors"),
-                               tags$b("By Stressors"),
-                               class="chart-line",
-                               width = "100%"),
-                icon = icon("sliders-h"),
-                subtitle = "Plot the system capacity across stressors for selected watersheds"),
-        
-        
-        infoBox(title = NULL, color = 'blue', 
-                value = 
-                  actionButton(ns("scp_for_selected_sheds"),
-                               tags$b("For Selected Watershed"),
-                               class="chart-line",
-                               width = "100%"),
-                icon = icon("sliders-h"),
-                subtitle = "Plot the cumulative system capacity for selected watersheds"),
-        
-        
-        infoBox(title = NULL, color = 'blue', 
-                value = module_joe_model_csc_plots_ui(ns("joe_model_csc_plots_all")),
-                icon = icon("sliders-h"),
-                subtitle = "Plot the cumulative system capacity for all watersheds"),
-        
-      ),
-      
-      
-      
-    )
+  tagList(shinydashboard::box(
+    width = 12,
     
-  )
+    tags$div(
+      style = "display: flex;",
+      tags$h4(textOutput(ns(
+        "n_watersheds_selected"
+      )), style = "color: #103e85;"),
+      actionButton(ns("deselect_watersheds"), "deselect all", class = "deselect-button"),
+    ),
+    
+    fluidRow(
+      infoBox(
+        title = NULL,
+        color = 'blue',
+        value = module_huc_stressor_magnitude_ui(ns("stressor_magnitude")),
+        icon = icon("sliders-h"),
+        subtitle = "Modify the stressor magnitude for selected watersheds"
+      ),
+      
+      
+      infoBox(
+        title = NULL,
+        color = 'blue',
+        value = module_joe_model_run_ui(ns("run_joe_model")),
+        icon = icon("chart-bar"),
+        subtitle = "Run the Cumulative Effects Joe Model"
+      ),
+      
+      
+      infoBox(
+        title = NULL,
+        color = 'blue',
+        value =
+          actionButton(
+            ns("run_ce_population_model"),
+            tags$b("Population Model"),
+            class = "chart-line",
+            width = "100%"
+          ),
+        icon = icon("chart-line"),
+        subtitle = "Run the population model for selected watersheds"
+      ),
+    ),
+    
+    fluidRow(tags$h4("System Capacity Plots"),),
+    
+    fluidRow(
+      infoBox(
+        title = NULL,
+        color = 'blue',
+        value =
+          actionButton(
+            ns("scp_by_stressors"),
+            tags$b("By Stressors"),
+            class = "chart-line",
+            width = "100%"
+          ),
+        icon = icon("sliders-h"),
+        subtitle = "Plot the system capacity across stressors for selected watersheds"
+      ),
+      
+      
+      infoBox(
+        title = NULL,
+        color = 'blue',
+        value =
+          actionButton(
+            ns("scp_for_selected_sheds"),
+            tags$b("Selected Watershed"),
+            class = "chart-line",
+            width = "100%"
+          ),
+        icon = icon("sliders-h"),
+        subtitle = "Plot the cumulative system capacity for selected watersheds"
+      ),
+      
+      
+      infoBox(
+        title = NULL,
+        color = 'blue',
+        value = module_joe_model_csc_plots_ui(ns("joe_model_csc_plots_all")),
+        icon = icon("sliders-h"),
+        subtitle = "Plot the cumulative system capacity for all watersheds"
+      ),
+      
+    ),
+    
+    
+    
+  ))
   
 }
 
@@ -101,110 +120,113 @@ module_huc_results_ui <- function(id) {
 #' @return None
 #'
 module_huc_results_server <- function(id) {
-  moduleServer(
-    id,
-    function(input, output, session) {
-      ns <- session$ns
-      
-      print("Calling module_huc_results_server")
-
-      # Call the submodules
-      module_huc_stressor_magnitude_server("stressor_magnitude")
-      module_joe_model_run_server("run_joe_model")
-      module_joe_model_csc_plots_server("joe_model_csc_plots_all")
-
-      # Hide deselect HUC button on initial load
-      q_code <- paste0("jQuery('#main_map-huc_results-deselect_watersheds').addClass('hide-this');")
-      shinyjs::runjs(code = q_code)
-      #shinyjs::disable("adjust_stressor_magnitude")
-      shinyjs::disable("run_ce_population_model")
-      shinyjs::disable("scp_by_stressors")
-      shinyjs::disable("scp_for_selected_sheds")
-      
-      # Show count the numbr of selected HUCs (e.g., 3 U)
-      output$n_watersheds_selected <- renderText({ 
-        hus_selected <- rv_clickedIds$ids
-        print(hus_selected)
-        if(length(hus_selected) == 0) {
-          return("0 HUCs selected - click on a unit on the map to select")
-          # Hide the deselect button
-          q_code <- paste0("jQuery('#main_map-huc_results-deselect_watersheds').addClass('hide-this');")
-          shinyjs::runjs(code = q_code)
-          # Enable other buttons dependant on selected HUCs
-          #shinyjs::disable("adjust_stressor_magnitude")
-          shinyjs::disable("run_ce_population_model")
-          shinyjs::disable("scp_by_stressors")
-          shinyjs::disable("scp_for_selected_sheds")
-        } else {
-          nhuc <- length(hus_selected)
-          # Show the deselect button
-          q_code <- paste0("jQuery('#main_map-huc_results-deselect_watersheds').removeClass('hide-this');")
-          shinyjs::runjs(code = q_code)
-          # Enable other buttons dependant on selected HUCs
-          #shinyjs::enable("adjust_stressor_magnitude")
-          shinyjs::enable("run_ce_population_model")
-          shinyjs::enable("scp_by_stressors")
-          shinyjs::enable("scp_for_selected_sheds")
-          if(nhuc == 1) {
-            return(paste0(nhuc, " HUC selected"))
-          } else {
-            return(paste0(nhuc, " HUCs selected"))
-          }
-        }
-      })
-      
-      # Deselect any selected watersheds - clear selection
-      observeEvent(input$deselect_watersheds, {
-        rv_clickedIds$ids <- vector() # Set to empty vector
-        q_code <- paste0("jQuery('#main_map-huc_results-deselect_watersheds').addClass('hide-this');")
-        shinyjs::runjs(code = q_code)
-        #shinyjs::disable("adjust_stressor_magnitude")
-        shinyjs::disable("run_ce_population_model")
-        shinyjs::disable("scp_by_stressors")
-        shinyjs::disable("scp_for_selected_sheds")
-        # Redraw layer and clear selection
-        rv_redraw$redraw <- 1 + rv_redraw$redraw
-      })
-
-      
-
-      
-      
-      
-      
-      observeEvent(input$run_ce_population_model, {
-        showModal(modalDialog(
-          title = "Run the Population Model",
-          tagList(
-            tags$p("Run the population model with cumulative effects for selected watersheds"),
-            
-            fluidRow(
-              column(
-                width = 6,
-                actionButton("goButton3", "Run Population Model", class = "btn-success", style = "color: white;")
-                
-              )
-            )
-            
-          ),
-          easyClose = TRUE,
-          size = 'l',
-          footer = NULL
-        ))
-      })
-      
-      
-      
-      
-      
-      
-      
-      
-      
-
-      
-      
-    }
-    
-  )
+  moduleServer(id,
+               function(input, output, session) {
+                 ns <- session$ns
+                 
+                 print("Calling module_huc_results_server")
+                 
+                 # Call the submodules
+                 module_huc_stressor_magnitude_server("stressor_magnitude")
+                 module_joe_model_run_server("run_joe_model")
+                 module_joe_model_csc_plots_server("joe_model_csc_plots_all")
+                 
+                 # Hide deselect HUC deselect button on initial load
+                 # Also assume no watersheds are selected
+                 q_code <-
+                   paste0(
+                     "jQuery('#main_map-huc_results-deselect_watersheds').addClass('hide-this');"
+                   )
+                 shinyjs::runjs(code = q_code)
+                 #shinyjs::disable("adjust_stressor_magnitude")
+                 shinyjs::disable("run_ce_population_model")
+                 shinyjs::disable("scp_by_stressors")
+                 shinyjs::disable("scp_for_selected_sheds")
+                 
+                 # Show count the number of selected HUCs (e.g., 3 U)
+                 output$n_watersheds_selected <- renderText({
+                   hus_selected <- rv_clickedIds$ids
+                   print(hus_selected)
+                   if (length(hus_selected) == 0) {
+                     return("0 HUCs selected - click on a unit on the map to select")
+                     # Hide the deselect button
+                     q_code <-
+                       paste0(
+                         "jQuery('#main_map-huc_results-deselect_watersheds').addClass('hide-this');"
+                       )
+                     shinyjs::runjs(code = q_code)
+                     # Enable other buttons dependant on selected HUCs
+                     #shinyjs::disable("adjust_stressor_magnitude")
+                     shinyjs::disable("run_ce_population_model")
+                     shinyjs::disable("scp_by_stressors")
+                     shinyjs::disable("scp_for_selected_sheds")
+                   } else {
+                     nhuc <- length(hus_selected)
+                     # Show the deselect button
+                     q_code <-
+                       paste0(
+                         "jQuery('#main_map-huc_results-deselect_watersheds').removeClass('hide-this');"
+                       )
+                     shinyjs::runjs(code = q_code)
+                     # Enable other buttons dependant on selected HUCs
+                     #shinyjs::enable("adjust_stressor_magnitude")
+                     shinyjs::enable("run_ce_population_model")
+                     shinyjs::enable("scp_by_stressors")
+                     shinyjs::enable("scp_for_selected_sheds")
+                     if (nhuc == 1) {
+                       return(paste0(nhuc, " HUC selected"))
+                     } else {
+                       return(paste0(nhuc, " HUCs selected"))
+                     }
+                   }
+                 })
+                 
+                 # Deselect any selected watersheds - clear selection
+                 observeEvent(input$deselect_watersheds, {
+                   rv_clickedIds$ids <- vector() # Set to empty vector
+                   q_code <-
+                     paste0(
+                       "jQuery('#main_map-huc_results-deselect_watersheds').addClass('hide-this');"
+                     )
+                   shinyjs::runjs(code = q_code)
+                   #shinyjs::disable("adjust_stressor_magnitude")
+                   shinyjs::disable("run_ce_population_model")
+                   shinyjs::disable("scp_by_stressors")
+                   shinyjs::disable("scp_for_selected_sheds")
+                   # Redraw layer and clear selection
+                   rv_redraw$redraw <- 1 + rv_redraw$redraw
+                 })
+                 
+   
+                 observeEvent(input$run_ce_population_model, {
+                   showModal(
+                     modalDialog(
+                       title = "Run the Population Model",
+                       tagList(
+                         tags$p(
+                           "Run the population model with cumulative effects for selected watersheds"
+                         ),
+                         
+                         fluidRow(column(
+                           width = 6,
+                           actionButton(
+                             "goButton3",
+                             "Run Population Model",
+                             class = "btn-success",
+                             style = "color: white;"
+                           )
+                           
+                         ))
+                         
+                       ),
+                       easyClose = TRUE,
+                       size = 'l',
+                       footer = NULL
+                     )
+                   )
+                 })
+                 
+                 
+                 
+               })
 }

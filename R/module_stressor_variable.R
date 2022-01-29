@@ -52,7 +52,7 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
      output$variable_label <- renderUI({
        #print("Variable Label")
        label <- rv_stressor_response$pretty_names[stressor_index]
-       label <- paste0(label, ":  ")
+       label <- paste0(label, "  ")
        tags$p(label, style = "float: left;")
       })
      
@@ -109,10 +109,8 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
          current <- rv_stressor_response$stressor_names[stressor_index]
          # Update reactive value of target variable selected
          updateActiveVar <- function(current) {
-           #print("User Click")
-           #print(current)
+           print(paste0("User click.. update to layer... ", current))
            rv_stressor_response$active_layer <- current
-           #print(rv_stressor_response$active_layer)
          }
          # Use mouse click
          my_id <- paste0("main_map-", current, "-var_id")
@@ -132,49 +130,55 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
        # Open the stressor response dialog box
        observeEvent(input$response_plot, {
         
-         print("Stressor response modal is open ...")
-
+         # Dont load until button clicked
+         req(input$hiddenload)
+         
+         this_var <- rv_stressor_response$pretty_names[stressor_index]
+         print(paste0("Stressor response modal is open for ... ", this_var))
+         
          # Currently selected variable name
-         this_var <- isolate(rv_stressor_response$active_layer)
+         # note can not use this_var <- rv_stressor_response$active_layer
+         
          this_var_pretty <- gsub("_", " ", this_var)
-
+         
          # Main sheet attributes
-         this_main <- isolate(rv_stressor_response$main_sheet)
-         print(this_var)
+         this_main <- rv_stressor_response$main_sheet
 
          showModal(modalDialog(
-           title = paste0("Stressor-Response Relationships: ", this_var_pretty),
+           title = paste0("Stressor-Response Relationship: ", this_var_pretty),
            tagList(
-             tags$p("Use the table below to edit the stressor-response (dose-response) relationship for the selected stressor stressor."),
+             tags$p("Use the table below to edit and adjust the stressor-response (dose-response) relationship for the selected stressor. Click on cells in the table to adjust values. The graph shows the dose:response relationship between the raw stressor values (x-axis) and the mean system capacity (y-axis). The red line shows the mean value, and the shading represents uncertainty in the relationship. The red shading represents one standard deviation, and the grey shading represents the upper and lower bounds of min and max values."),
              tags$b(textOutput(ns("text_preview"))),
               fluidRow(
                 shinydashboard::box(
                   width = 12,
-                  highchartOutput(ns("chart1"))
+                  dygraphOutput(ns("dose_response_plot"))
                 )
               ),
               fluidRow(
                 shinydashboard::box(
                   width = 12,
+                  tags$p("Double-click a cell to edit its value."),
                   DTOutput(
                     ns("stressor_response_dt")
-                  )
+                  ),
+                  actionButton(ns("close_sr_modal"), "Close stressor-response module", style = "margin: 15px;")
                 )
-              ),
-             fluidRow(
-               column(
-                 width = 6,
-                 actionButton("goButton3", "Save and Update", class = "btn-success", style = "color: white;")
-                 
-               )
-             )
-             
+              )
            ),
            easyClose = TRUE,
            size = 'l',
            footer = NULL
          ))
        })
+     
+     
+     #-------------------------------------------------------
+     # Close stressor response modal with custom button
+     #-------------------------------------------------------
+     observeEvent(input$close_sr_modal, {
+       removeModal()
+     })
 
 
 
@@ -190,7 +194,8 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
         # Filter for target layer
         this_var <- isolate(rv_stressor_response$active_layer) # e.g., temperature
         table_vals <- sr_data[[this_var]] # e.g., temperature
-        print(this_var)
+        
+        print(paste0(this_var, " in renderDT() - line 189"))
 
         # Build the JS DT Data Table Object
         DT::datatable(
@@ -295,37 +300,46 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
 
 
       #------------------------------------------------------------------------
-      # High charts data visualization
+      # renderDygraph charts data visualization
       #------------------------------------------------------------------------
-      output$chart1 <- renderHighchart({
+      output$dose_response_plot <- renderDygraph({
 
         # Filter for target layer
         this_var <- rv_stressor_response$active_layer # e.g., temperature
+        
+        print(paste0(this_var, " this_var in renderDygraph()"))
         # Get all SR data
         table_vals <- rv_stressor_response$sr_dat[[this_var]]
         table_vals$lwr_sd <- table_vals$mean_system_capacity - table_vals$sd
         table_vals$upr_sd <- table_vals$mean_system_capacity + table_vals$sd
         table_vals <- table_vals[order(table_vals$mean_system_capacity), ]
         table_vals <- table_vals[order(table_vals$value), ]
-          
-        hc <- table_vals %>%
-          hchart('line', hcaes(x = value, y = mean_system_capacity))
-        hc %>% 
-          #hc_add_series(type = 'line', data = table_vals$lwr_sd) %>%
-          #hc_add_series(type = 'line', data = table_vals$upr_sd) %>%
-          hc_xAxis(title = list(text = "Raw Value of Stressor")) %>%
-          hc_yAxis(title = list(text = "Mean System Capacity"), min = 0, max = 100) %>%
-          hc_colors(c("blue"))
-   
+        
+        # Fix lower and upper sd bounds to be within range of limits
+        table_vals$lwr_sd <- ifelse(table_vals$lwr_sd < table_vals$lwr, table_vals$lwr, table_vals$lwr_sd)
+        table_vals$upr_sd <- ifelse(table_vals$upr_sd > table_vals$upr, table_vals$upr, table_vals$upr_sd)
+        
+        # Ensure no bad values
+        table_vals <- table_vals[, c("value", "mean_system_capacity", "lwr", "upr", "lwr_sd", "upr_sd")]
+        
+        # Pretty label for plot
+        pretty_lab <- gsub("_", " ", paste0("Stressor-Response curve for ", this_var))
+        
+        # X-axis mouse-over formatting
+        myvFormatter <- "function formatValue(v) {
+              var prefix = 'Raw Stressor: ';
+              return prefix + String(v);
+        }"
+        
+        # Start and return the dygraph plot
+        dygraph(table_vals, main = pretty_lab) %>%
+          dyAxis("x", label = "Raw Stressor Values", valueFormatter = JS(myvFormatter)) %>%
+          dyAxis("y", label = "Mean System Capacity (%)") %>%
+          dySeries(c("lwr", "mean_system_capacity", "upr"), label = "msc", color = "grey") %>%
+          dySeries(c("lwr_sd", "mean_system_capacity", "upr_sd"), label = "Mean Sys. Cap.", color = "red")
+        
       })
 
-
-
-
-
-
-
-       
        
 
       # Finally return the stressor name

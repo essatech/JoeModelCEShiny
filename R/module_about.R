@@ -4,6 +4,7 @@
 #' 
 #' @importFrom shiny NS tagList fluidRow column actionButton tags
 #' @importFrom shinydashboard box
+#' @importFrom li shiny
 #'
 #' @param id The id for this module
 #'
