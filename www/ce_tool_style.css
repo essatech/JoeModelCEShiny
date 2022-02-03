@@ -1,19 +1,39 @@
-/*
-.main-header .logo {
-  font-family: Sans-Serif;
-  color: #444 !important;
-  font-weight: bold;
-  font-size: 27px;
-  text-shadow: 1px 1px white;
+/* Color Palette 
+  #79b7c5 - light blue primary color
+  #3b9ab2 - dark blue banner background
+  #ebcc2a - light yellow for highlighting
+  #ede140 - super bright - only for highlight
+  #e0af00 - dark yellow/orange for special text accent
+  #f22300 - red stands out for special buttons
+*/
+
+
+/* Dark yellow accent text */
+.dy-accent {
+  color: #3b9ab2;
 }
 
-.logo {
-  background-color: #f9f9f9 !important;
+.main-header .logo {
+  font-family: "Space Grotesk Bold", -apple-system, BlinkMacSystemFont, Roboto, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-weight: bold;
 }
-.navbar {
-  background-color: #f9f9f9 !important;
+.main-title {
+  font-family: "Space Grotesk Bold", -apple-system, BlinkMacSystemFont, Roboto, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-weight: bold;
+  font-size: 60px;
+  padding-bottom: 40px;
+  color: #e15038;
+  text-shadow: 0 0 2px #000000, 0 0 5px #000000;
 }
-*/
+
+.cover-background {
+    background-image: url(background-c-min.jpeg);
+    background-color: #ffffff;
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: 100% auto;
+}
+
 
 
 /* Variable Selector */
@@ -28,17 +48,27 @@
 	margin: 0 0 5px;
 }
 .stack-box .box:hover {
-  background-color: #5bb9f0 !important;
+  background-color: #e0af00 !important;
+}
+.stack-box .box:active {
+  background-color: #ede140 !important;
 }
 .stack-box.var-selected .box {
-    background-color: #103e85 !important;
+  background-color: #183e47 !important;
 }
+
+.stack-box-border {
+  border-width: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 95%;
+}
+
 .csc-box .box-body {
     border-style: solid;
-    border-width: 4px;
-    border-color: #56e5ff;
-    border-radius: 4px;
+    border-width: 1px;
+    border-radius: 3px;
 }
+
 .response-button {
   height: 20px; width: 35px; display: flex;
   align-items: center;
@@ -54,13 +84,14 @@
   height: 27px !important;
   color: white !important;
   margin-left: 15px !important;
-  background-color: #0073b7 !important;
-  border-color: #0073b7 !important;
+  background-color: #3b9ab2 !important;
+  border-color: white !important;
 }
 .deselect-button:hover {
-  background-color: #103e85 !important;
+  background-color: #183e47 !important;
   color: white !important;
 }
+
 .hide-this {
   display: none !important;
 }
@@ -75,6 +106,27 @@
 .fs30px {
   font-size: 30px;
 }
+
+.section-heading {
+  color: #444;
+  font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.info-box-text {
+  color: #6a6a6a;
+  text-align: center;
+  font-size: 90%;
+}
+
+.ce-header-font {
+  font-family: "Space Grotesk Bold", -apple-system, BlinkMacSystemFont, Roboto, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-weight: bold;
+}
+
 
 #load_joe_model {
              position: fixed;

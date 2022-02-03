@@ -16,7 +16,7 @@ module_main_map_ui <- function(id) {
   tagList(
     shinydashboard::box(
       width = 12,
-      
+
       fluidRow(
         column(width = 9,
                
@@ -34,30 +34,39 @@ module_main_map_ui <- function(id) {
                  ),
                ),
         
-        column(width = 3,
-               style = "padding-left: 0; margin-left: -10px;",
-               
-               tags$div(
-                 class = "stack-box",
-                 style = "padding-left: 15px; color:#3c8dbc;",
-                 tags$b("Stressor Dose-Response Relationships"),
-                 checkboxInput(ns("hover_values"), "Show values on mouse hover", FALSE),
-               ),
-               
-               tags$div(
-                 class = "stack-box csc-box map-variable", id = ns("var_id"),
-                 shinydashboard::box(
-                   width = 12,
-                   background = "light-blue",
-                   tags$p("System Capacity", style = "float: left;"),
-                   tags$p("[0%]", style = "float: right;"),
-                   tags$div(numericInput(ns("hiddenload"), label = "hidden", value = 0), style = "display:none;")
-                 )
-               ),
-               
-               # Create the stressor variable sidebar list
-               htmlOutput(ns('stressor_variable_list')),
-        ), 
+        column(
+          width = 3,
+          style = "padding-left: 0; margin-left: -10px;",
+          
+          shinydashboard::box(
+            width = 12,
+            
+            tags$div(
+              class = "stack-box section-heading",
+              style = "padding-left: 15px;",
+              tags$b("Stressors"),
+              checkboxInput(ns("hover_values"), "Show raw values on mouse hover (slow)", FALSE),
+            ),
+            
+            tags$div(
+              class = "stack-box csc-box map-variable hide-this",
+              id = ns("var_id"),
+              shinydashboard::box(
+                width = 12,
+                background = "light-blue",
+                tags$p("System Capacity", style = "float: left;"),
+                #tags$p("[0%]", style = "float: right;"),
+                tags$div(numericInput(
+                  ns("hiddenload"), label = "hidden", value = 0
+                ), style = "display:none;")
+              )
+            ),
+            
+            # Create the stressor variable sidebar list
+            htmlOutput(ns('stressor_variable_list')),
+          ),
+          
+        ),
       ),
       
     ) # End of main box
@@ -322,17 +331,17 @@ module_main_map_server <- function(id) {
       # ---------------------------------------------------------
       output$txt_huc_code <- renderUI({
         if(rv_map_shape()) { 
-          tags$p(rv_map_location$huc_id, style = "float: right; color:#3c8dbc;")
+          tags$p(rv_map_location$huc_id, style = "float: right; color:#3b9ab2;")
         } else {
-          tags$p("HUC ID", style = "float: right; color:#3c8dbc;")
+          tags$p("HUC ID", style = "float: right; color:#3b9ab2;")
         }
       })
       
       output$txt_basin_name <- renderUI({
         if(rv_map_shape()) { 
-          tags$p(rv_map_location$huc_name, style = "float: left; color:#3c8dbc;")
+          tags$p(rv_map_location$huc_name, style = "float: left; color:#3b9ab2;")
         } else {
-          tags$p("Basin Name", style = "float: left; color:#3c8dbc;")
+          tags$p("Basin Name", style = "float: left; color:#3b9ab2;")
         }
       })
       
@@ -366,17 +375,11 @@ module_main_map_server <- function(id) {
           if(input$hover_values) {
             # Get target values for each variable
             # to prevent lag only run every half second
-            ctime <- rv_stressor_response$active_refresh
-            tdiff <- Sys.time() - ctime
-            # Dont re run this more than twice a second
-            if(tdiff < 0.5) {
-              #print("Re-run")
-            } else {
-              #print("ok")
-              rv_stressor_response$active_refresh <- Sys.time()
-            }
             target_vals <- rv_stressor_magnitude$sm_dat %>% 
               dplyr::filter(HUC_ID == huc_id) %>% dplyr::select("Stressor", "Mean")
+            
+            
+            
             # Set active values
             if(nrow(target_vals) > 0) {
               rv_stressor_response$active_values_raw <- target_vals

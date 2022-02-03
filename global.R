@@ -53,6 +53,7 @@ library(reshape2)
 library(rmapshaper) # DROP
 library(popbio)
 library(testthat)
+library(ggplot2)
 
 
 
@@ -79,7 +80,7 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
 # Load in default stressor response relationships
 #-------------------------------------------------
   # Load Stressor Response Files 
-  file_name_stressor_response <- paste0("./data/stressor-response_fixed_ARTR.xlsx")
+  file_name_stressor_response <- paste0("./data/stressor_response_fixed_ARTR.xlsx")
   #file_name_stressor_response <- paste0("./data/stressor-response_fixed_sqam.xlsx")
 
   
@@ -110,8 +111,8 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
   # Extract the stressor magnitude values associated with each HUC
   # Fixed: stressor_magnitude_fixed_rn_ARTR
   # UNC: stressor_magnitude_unc_ARTR
-  file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_fixed_rn_ARTR.xlsx")
   #file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_unc_ARTR.xlsx")
+  file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_fixed_rn_ARTR.xlsx")
   #file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_fixed_rn_sqam.xlsx")
   
   
@@ -172,8 +173,8 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
   
   # System Capacity Choropleth Map 
   # Color ramp is 0 - 100 (global) across all variables
-  color_func <- colorQuantile(c("#d7191c", "#fdae61", "#ffffbf",
-                                "#a6d96a", "#1a9641"),
+  color_func <- colorQuantile(c("#f22300", "#e0af00", "#ebcc2a",
+                                "#79b7c5", "#3b9ab2"),
                               domain = c(0, 100),
                               na.color = "lightgrey",
                               n = 8)

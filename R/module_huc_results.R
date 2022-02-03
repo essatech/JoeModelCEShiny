@@ -17,9 +17,9 @@ module_huc_results_ui <- function(id) {
     
     tags$div(
       style = "display: flex;",
-      tags$h4(textOutput(ns(
+      tags$h5(textOutput(ns(
         "n_watersheds_selected"
-      )), style = "color: #103e85;"),
+      )), class = "dy-accent"),
       actionButton(ns("deselect_watersheds"), "deselect all", class = "deselect-button"),
     ),
     
@@ -56,6 +56,9 @@ module_huc_results_ui <- function(id) {
         subtitle = "Run the population model for selected watersheds"
       ),
     ),
+    
+    
+    
     
     fluidRow(tags$h4("System Capacity Plots"),),
     
@@ -212,7 +215,7 @@ module_huc_results_server <- function(id) {
                            actionButton(
                              "goButton3",
                              "Run Population Model",
-                             class = "btn-success",
+                             class = "btn-danger",
                              style = "color: white;"
                            )
                            

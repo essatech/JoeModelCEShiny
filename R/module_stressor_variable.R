@@ -16,11 +16,12 @@ module_stressor_variable_ui <- function(id) {
     shinydashboard::box(
       width = 12,
       background = "light-blue",
+      class = "stack-box-border",
       
       htmlOutput(ns('variable_label')),
       htmlOutput(ns('variable_val_raw')),
       
-      tags$div(actionButton(ns("response_plot"), icon("cog"), class = "response-button"),
+      tags$div(actionButton(ns("response_plot"), icon("chart-line"), class = "response-button"),
                style = "float: right; display: inline-block;"),
       
       tags$p("", style = "float: right;"),
@@ -65,8 +66,8 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
          raw_vals <- rv_stressor_response$active_values_raw$Mean
          names <- rv_stressor_response$active_values_raw$Stressor
          target_val <- raw_vals[which(names == sname)]
-         target_val <- ifelse(is.na(target_val), " ", target_val)
-         tags$p(target_val, style = "float: left; display:inline;")
+         target_val <- ifelse(is.na(target_val), " ", paste0(" ", target_val))
+         tags$p(target_val, style = "float: left; display:inline; padding-left: 8px; font-size: 90%;")
        }
 
      })
@@ -134,7 +135,7 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
          req(input$hiddenload)
          
          this_var <- rv_stressor_response$pretty_names[stressor_index]
-         print(paste0("Stressor response modal is open for ... ", this_var))
+         # print(paste0("Stressor response modal is open for ... ", this_var))
          
          # Currently selected variable name
          # note can not use this_var <- rv_stressor_response$active_layer
@@ -188,15 +189,16 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
       # Add table data as data table
       # This is the doese response relationship for each stressor
       output$stressor_response_dt <- renderDT({
+        
+        # Do not run on app load
+        req(rv_stressor_response$active_layer)
 
         # Get all SR data
-        sr_data <- isolate(rv_stressor_response$sr_dat)
+        sr_data <- rv_stressor_response$sr_dat
         # Filter for target layer
-        this_var <- isolate(rv_stressor_response$active_layer) # e.g., temperature
+        this_var <- rv_stressor_response$active_layer # e.g., temperature
         table_vals <- sr_data[[this_var]] # e.g., temperature
         
-        print(paste0(this_var, " in renderDT() - line 189"))
-
         # Build the JS DT Data Table Object
         DT::datatable(
           table_vals,
@@ -258,6 +260,8 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
 
         # Index list of stressor names
         this_var <- isolate(rv_stressor_response$active_layer) # e.g., temperature
+        
+        # print(paste0("Edit value for ... ", this_var))
 
         # HUCs currently selected
         selected_raw <- rv_clickedIds$ids
@@ -284,12 +288,6 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
 
         var <- c("value", "mean_system_capacity", "sd", "lwr", "upr")
             
-        print(info)
-        print(k)
-        print(i)
-        print(j)
-
-        print(" --------------------- ")
 
         # Update stressor response value
         rv_stressor_response$sr_dat[[this_var]][i, j] <- k
@@ -307,7 +305,7 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
         # Filter for target layer
         this_var <- rv_stressor_response$active_layer # e.g., temperature
         
-        print(paste0(this_var, " this_var in renderDygraph()"))
+        # print(paste0(this_var, " this_var in renderDygraph()"))
         # Get all SR data
         table_vals <- rv_stressor_response$sr_dat[[this_var]]
         table_vals$lwr_sd <- table_vals$mean_system_capacity - table_vals$sd

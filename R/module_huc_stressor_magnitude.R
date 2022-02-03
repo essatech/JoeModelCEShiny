@@ -110,8 +110,8 @@ module_huc_stressor_magnitude_server <- function(id) {
                      id   <- strsplit(selected_raw, "\\|")[[1]][1]
                      name <- strsplit(selected_raw, "\\|")[[1]][2]
                      tl <- tagList(
-                       tags$h3(name, style = "color: #103e85;"),
-                       tags$h4(paste0("HUC ID: ", id), style = "color: #0073b7;"),
+                       tags$h3(name, style = "color: #e0af00;"),
+                       tags$h4(paste0("HUC ID: ", id), style = "color: #e0af00;"),
                        tags$p(
                          "Click on cells in the table below to update the stressor magnitude for the selected unit. Adjust the mean value for each stressor (Mean), the standard deviation (SD), the distribution type (options are: “normal”), the lower limit and upper limit (for stochastic simulations)."
                        ),

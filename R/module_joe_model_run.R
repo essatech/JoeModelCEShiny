@@ -86,7 +86,7 @@ module_joe_model_run_server <- function(id) {
                 width = 12,
                 tags$div(
                   class = "cta",
-                  actionButton(ns("go_button_run_joe"), "Run the Joe Model", class = "btn-success fs30px", style = "color: white;")
+                  actionButton(ns("go_button_run_joe"), "Run the Joe Model", class = "btn-danger fs30px", style = "color: white;")
                 )
               )
             )
@@ -270,6 +270,7 @@ module_joe_model_run_server <- function(id) {
           # For partial model filter out non-target variables from respective datasets
           print("Filter out for partial model...")
           selected_variables <- input$check_box_group
+          
           # Filter main sheet
           sr_wb_dat_in$main_sheet <- sr_wb_dat_in$main_sheet[which(sr_wb_dat$main_sheet$Stressors %in% selected_variables), ]
           # Stressor names
@@ -280,15 +281,20 @@ module_joe_model_run_server <- function(id) {
           print(names(sr_wb_dat_in$sr_dat))
           # End of partial model filters
           
+          # Filter the stressor magnitude too
+          sm_wb_dat_in <- sm_wb_dat_in[which(sm_wb_dat_in$Stressor %in% selected_variables), ]
+          
           print("Running the Joe Model...")
 
+          
           # Try running the Joe model
           jm <- JoeModel_Run(
               dose = sm_wb_dat_in,
               sr_wb_dat = sr_wb_dat_in,
               MC_sims = n_mc_sims
           )
-
+        
+          
           print("Finished the Joe Model run...")
           # Store the scenario in the list object - index + 1 to prevent overwrite
           simulation_index <- length(rv_joe_model_results$sims) + 1
@@ -303,6 +309,13 @@ module_joe_model_run_server <- function(id) {
           # Update the active layer on the map to show 
           rv_stressor_response$active_layer <- "system_capacity"
           print(rv_stressor_response$active_layer)
+          
+          
+          # Display the system capacity varible selector on the map page
+          # note that the system capacity variable selector was set to 
+          # display: none to avoid switching to variable before model run.
+          # From ID main_map-var_id remove CLASS hide-this
+          removeClass(id = "main_map-var_id", class = "hide-this", asis = TRUE)
           
           
           # Stop the loading spinner
