@@ -19,15 +19,24 @@ module_about_ui <- function(id) {
     class = "cover-background",
     
     tags$div(
+      class = "neat-text",
       
       style = "justify-content: center;
     text-align: center;",
       
       tags$h1("Joe Model Cumulative Effect Tool", class = "main-title"),
 
-      shiny::HTML(
-        '<iframe width="650" height="350" src="https://www.youtube.com/embed/cLLuuV_57JY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
-      ),
+
+        shiny::HTML(
+          '<iframe 
+          style = "border-style: solid;
+      border-width: 5px;
+      border-radius: 4px;
+      border-color: #e0af00;"
+          width="655" height="355" src="https://www.youtube.com/embed/cLLuuV_57JY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
+        ),
+
+
       
       shiny::br(),
       
@@ -37,10 +46,8 @@ module_about_ui <- function(id) {
         
       shinydashboard::box(
         width = NULL,
-        
-        tags$p(
-          "Welcome to the Joe Model Cumulative Effects and Population Model Shiny app!"
-        ),
+      
+        tags$h4("Welcome to the Joe Model Cumulative Effects and Population Model Shiny app!", class = "ce-header-font"),
 
         tags$p(
           "This interactive webtool is powered by the",
@@ -61,7 +68,7 @@ module_about_ui <- function(id) {
       ),
       
       tags$div(
-        tags$ul(
+        tags$ul(style = "list-style-type:none",
           tags$li(
             tags$a(href = "https://profils-profiles.science.gc.ca/en/profile/eva-enders", "Dr. Eva Enders:"),
             "Project Lead; DFO Research Scientist"
@@ -102,7 +109,7 @@ module_about_ui <- function(id) {
       
       tags$h3("Features", class = "ce-header-font"),
       
-      tags$div(tags$ul(
+      tags$div(tags$ul(style = "list-style-type:none",
         tags$li(
           "Run custom implementations of the Joe Model on non-standard data formats."
         ),

@@ -78,12 +78,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                          
                          fluidRow(column(
                            width = 12,
-                           actionButton(
-                             "goButton",
-                             "Update Values",
-                             class = "btn-success",
-                             style = "color: white;"
-                           )
+                           actionButton(ns("close_sm_modal"), "Close stressor-magnitude module", style = "margin: 15px;")
                          ))
                        ),
                        easyClose = TRUE,
@@ -94,6 +89,13 @@ module_huc_stressor_magnitude_server <- function(id) {
                  }) # END OF INPUT MODAL UI
                  #-------------------------------------------------------
                  
+                 
+                 #-------------------------------------------------------
+                 # Close stressor response modal with custom button
+                 #-------------------------------------------------------
+                 observeEvent(input$close_sm_modal, {
+                   removeModal()
+                 })
                  
                  
                  #-------------------------------------------------------
@@ -110,15 +112,15 @@ module_huc_stressor_magnitude_server <- function(id) {
                      id   <- strsplit(selected_raw, "\\|")[[1]][1]
                      name <- strsplit(selected_raw, "\\|")[[1]][2]
                      tl <- tagList(
-                       tags$h3(name, style = "color: #e0af00;"),
-                       tags$h4(paste0("HUC ID: ", id), style = "color: #e0af00;"),
+                       tags$h4(name, style = "color: #3c8dbc;"),
+                       tags$h4(paste0("HUC ID: ", id), style = "color: #3c8dbc;"),
                        tags$p(
-                         "Click on cells in the table below to update the stressor magnitude for the selected unit. Adjust the mean value for each stressor (Mean), the standard deviation (SD), the distribution type (options are: “normal”), the lower limit and upper limit (for stochastic simulations)."
+                         "Click on cells in the table below to update the stressor magnitude for the selected unit. Adjust the mean value for each stressor (Mean), the standard deviation (SD), the distribution type (options are: normal or lognormal), the lower limit and upper limit (for stochastic simulations)."
                        ),
                        tags$div(
                          class = "no-bullet",
                          shinydashboard::taskItem(
-                           value = 17,
+                           value = ns("msc_selection"),
                            color = "red",
                            "Mean Cumulative System Capacity"
                          )
@@ -195,6 +197,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                      table_vals$Up_Limit <- round(table_vals$Up_Limit, 2)
                    }
                    
+
                    # If nothing selected then return an empty dataframe
                    if (length(selected_ids) == 0) {
                      table_vals <-
@@ -225,6 +228,31 @@ module_huc_stressor_magnitude_server <- function(id) {
                        )
                    }
                    
+                   
+                   # --------------------------------------------
+                   # Populate the temporary placeholder CSC value
+                   if(length(selected_ids) > 0) {
+                     
+                     # Get the stressor magnitude
+                     dr <- rv_stressor_magnitude$sm_dat
+                     dr <- dr[which(dr$HUC_ID %in% selected_ids), ]
+                     # Set SD to 0 for mean value
+                     dr$SD <- 0
+                     
+                     jm <- JoeModel_Run(
+                       dose = dr,
+                       sr_wb_dat = rv_stressor_response,
+                       MC_sims = 1) 
+                     # Update the placeholder for the sm
+                     rv_clickedIds_csc$csc <- mean(jm$ce.df$CE, na.rm = TRUE)
+                     
+                   } else {
+                     # Set to NA
+                     rv_clickedIds_csc$csc <- NA
+                   }
+                   
+                   
+                   
                    # Build the JS DT Data Table Object
                    DT::datatable(
                      table_vals,
@@ -245,6 +273,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                    )
                    
                  })
+                 
                  
                  # Create a proxy for the above table
                  dt_proxy <- DT::dataTableProxy('stressor_inputs')
@@ -312,6 +341,20 @@ module_huc_stressor_magnitude_server <- function(id) {
                    }
                    
                  })
+                 
+                 
+                 #-------------------------------------------------------------
+                 # Update the mean system capacity for the selection
+                 #-------------------------------------------------------------
+                 output$msc_selection <- renderText({
+                   msc <- rv_clickedIds_csc$csc
+                   return(msc)
+                 })
+                 
+                 
+                 
+                 
+                 
                  
                })
 }

@@ -19,19 +19,23 @@
 }
 .main-title {
   font-family: "Space Grotesk Bold", -apple-system, BlinkMacSystemFont, Roboto, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-weight: bold;
+  font-weight: bolder;
   font-size: 60px;
   padding-bottom: 40px;
-  color: #e15038;
-  text-shadow: 0 0 2px #000000, 0 0 5px #000000;
+  color: #ea2200;
+  -webkit-text-stroke: 2px #3e3e3e;
 }
 
 .cover-background {
-    background-image: url(background-c-min.jpeg);
-    background-color: #ffffff;
+    background-image: url('background-c-min.jpeg');
     background-repeat: no-repeat;
     background-position: center top;
     background-size: 100% auto;
+    background-color: #FFFFFF;
+}
+
+.neat-text > p {
+  text-align: justify;
 }
 
 
@@ -99,6 +103,10 @@
 .no-bullet > * {
   list-style-type: none;
 }
+.no-bullet h3 {
+  font-size: 16px !important;
+  color: black !important;
+}
 
 .cta {
   text-align: center;
@@ -126,6 +134,8 @@
   font-family: "Space Grotesk Bold", -apple-system, BlinkMacSystemFont, Roboto, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-weight: bold;
 }
+
+    
 
 
 #load_joe_model {

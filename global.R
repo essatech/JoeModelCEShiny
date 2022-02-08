@@ -17,26 +17,20 @@ sapply(paste0("../JoeModelCE/R/", file.sources), source, .GlobalEnv)
 
 
 # Load necessary libraries
-#library(utils) # DROP
 library(dplyr)
 library(readxl)
 library(shiny)
-#library(pkgload) # DROP
 library(DT)
-#library(DBI) # DROP
-#library(RSQLite) # DROP
 library(shinyjs)
 library(shinycssloaders) # DROP
 library(lubridate) # DROP
 library(shinyFeedback)
 library(dbplyr)
 library(config) # DROP
-#library(RPostgreSQL) # DROP
 library(shinydashboard)
 library(shinydashboardPlus)
 library(shinybusy)
 library(waiter) # DROP
-#library(dygraphs) # DROP
 library(shinyWidgets) # DROP
 library(htmlwidgets)
 library(highcharter) # KEEP .. maybe drop
@@ -167,9 +161,12 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
     redraw = 0
   )
     
-
+  
   # Selected HUCs - Create an empty vector to hold all HUC click ids
   rv_clickedIds <- reactiveValues(ids = vector())
+  # Selected HUCs Cumulative System Capacity - store temporary CSC for selected HUCs
+  rv_clickedIds_csc <- reactiveValues(csc = NA)
+  
   
   # System Capacity Choropleth Map 
   # Color ramp is 0 - 100 (global) across all variables

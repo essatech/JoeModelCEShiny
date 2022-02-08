@@ -44,8 +44,9 @@ module_main_map_ui <- function(id) {
             tags$div(
               class = "stack-box section-heading",
               style = "padding-left: 15px;",
-              tags$b("Stressors"),
+              tags$b("Stressors Variables"),
               checkboxInput(ns("hover_values"), "Show raw values on mouse hover (slow)", FALSE),
+              module_all_sr_curves_ui(ns("all_sr_curves"))
             ),
             
             tags$div(
@@ -95,6 +96,7 @@ module_main_map_server <- function(id) {
       
       # Call sub module for HUC results
       module_huc_results_server("huc_results")
+      module_all_sr_curves_server("all_sr_curves")
 
       # Toggle mouse-over huc values on and off
       observeEvent(input$hover_values, {
