@@ -109,10 +109,10 @@ module_joe_model_run_server <- function(id) {
         req(rv_stressor_response$stressor_names)
         req(input$open_joe_modal_form)
         
-        stressors <- rv_stressor_response$stressor_names
+        stressors <- isolate(rv_stressor_response$stressor_names)
         
         # Exclude variables that are not associated with adults
-        s_options <- rv_stressor_response$main_sheet
+        s_options <- isolate(rv_stressor_response$main_sheet)
         s_options <- s_options[which(s_options$Life_stages == "adult"), ]
         s_acceptable <- unique(s_options$Stressors)
         
@@ -143,6 +143,7 @@ module_joe_model_run_server <- function(id) {
       # Select and deselect all boxes
       #-------------------------------------------------------
       observe({
+        print("select deletect joe model variables ...")
         req(input$selectall)
         req(input$open_joe_modal_form)
         req(rv_stressor_response$stressor_names)
@@ -208,7 +209,9 @@ module_joe_model_run_server <- function(id) {
       #-------------------------------------------------------
       # Time estimate would presumably be a produce of the number of sims, number of hucs and number of stressors
       output$text_time_estimate <- renderUI({
-          
+        
+          print("joe model time estimate...")
+        
           dat <- rv_stressor_magnitude$sm_dat
 
           n_hucs <- length(unique(dat$HUC_ID))
@@ -286,7 +289,6 @@ module_joe_model_run_server <- function(id) {
           
           print("Running the Joe Model...")
 
-          
           # Try running the Joe model
           jm <- JoeModel_Run(
               dose = sm_wb_dat_in,

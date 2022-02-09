@@ -33,11 +33,10 @@ module_about_ui <- function(id) {
       border-width: 5px;
       border-radius: 4px;
       border-color: #e0af00;"
-          width="655" height="355" src="https://www.youtube.com/embed/cLLuuV_57JY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
+          width="655" height="355" src="https://www.youtube.com/embed/VUrTUt6yaMc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
         ),
 
 
-      
       shiny::br(),
       
       fluidRow(

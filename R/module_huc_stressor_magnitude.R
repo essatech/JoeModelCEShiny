@@ -63,6 +63,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                  #-------------------------------------------------------
                  # Change the values of the underlying variables for selected HUCs
                  observeEvent(input$adjust_stressor_magnitude, {
+                   
                    print("Stressor magnitude modal is open ...")
                    
                    showModal(
@@ -101,9 +102,10 @@ module_huc_stressor_magnitude_server <- function(id) {
                  #-------------------------------------------------------
                  # Populate modal text based on selection
                  #-------------------------------------------------------
-                 # If one watershed selected return name and description
+                 # If only one watershed selected return name and description
                  # If multiple watersheds selected then show number selected and provide instruction to user
                  output$text_preview <- renderUI({
+                   
                    selected_raw <- rv_clickedIds$ids
                    tl <- NULL
                    
@@ -118,12 +120,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                          "Click on cells in the table below to update the stressor magnitude for the selected unit. Adjust the mean value for each stressor (Mean), the standard deviation (SD), the distribution type (options are: normal or lognormal), the lower limit and upper limit (for stochastic simulations)."
                        ),
                        tags$div(
-                         class = "no-bullet",
-                         shinydashboard::taskItem(
-                           value = ns("msc_selection"),
-                           color = "red",
-                           "Mean Cumulative System Capacity"
-                         )
+                         uiOutput(ns("csc_huc_indicator"))
                        )
                      )
                    }
@@ -143,12 +140,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                          "Multiple HUCs selected. Use the table below to set stressor magnitude values for the selected HUCs. Note that entering a value in any of the cells will update the values for all the selected HUCs. Leave values blank to keep original values for each HUC."
                        ),
                        tags$div(
-                         class = "no-bullet",
-                         shinydashboard::taskItem(
-                           value = 50,
-                           color = "green",
-                           "Mean Cumulative System Capacity"
-                         )
+                         uiOutput(ns("csc_huc_indicator"))
                        )
                      )
                    }
@@ -169,6 +161,8 @@ module_huc_stressor_magnitude_server <- function(id) {
                  
                  output$stressor_inputs <- renderDT({
                    
+                   print("Stressor magnitude DT...")
+                   
                    # HUCs currently selected
                    selected_raw <- rv_clickedIds$ids
                    
@@ -178,23 +172,88 @@ module_huc_stressor_magnitude_server <- function(id) {
                    }
                    selected_ids <- lapply(selected_raw, getID) %>% unlist()
                    
+                   
+                   
+                   # --------------------------------------------
+                   # Populate the temporary placeholder CSC value
+                   # --------------------------------------------
+                   if(length(selected_ids) > 0) {
+                     print("Populate placeholder csc value - A...")
+                     
+                     # Get the stressor magnitude
+                     dr <- rv_stressor_magnitude$sm_dat
+                     dr <- dr[which(dr$HUC_ID %in% selected_ids), ]
+                     # Set SD to 0 for mean value
+                     dr$SD <- 0
+                     
+                     # Make a copy of the sr_wb_dat data to 
+                     # run the Joe model just once
+                     sr_wb_dat_copy <- list()
+                     sr_wb_dat_copy$main_sheet <- isolate(rv_stressor_response$main_sheet)
+                     sr_wb_dat_copy$stressor_names <- isolate(rv_stressor_response$stressor_names)
+                     sr_wb_dat_copy$pretty_names <- isolate(rv_stressor_response$pretty_names)
+                     sr_wb_dat_copy$sr_dat <- isolate(rv_stressor_response$sr_dat)
+                     
+                     jm <- JoeModel_Run(
+                       dose = dr,
+                       sr_wb_dat = sr_wb_dat_copy,
+                       MC_sims = 1)
+                     
+                     # Temporary CSC for this HUC with these params...
+                     rv_clickedIds_csc$csc <- mean(jm$ce.df$CE, na.rm = TRUE)
+                     
+                     print(round(rv_clickedIds_csc$csc, 3))
+                     # Look at MSC for other variables...
+                     var_csc <- data.frame(
+                       snames = jm$sc.dose.df$Stressor,
+                       sys_cap = round(jm$sc.dose.df$sys.cap * 100, 1)
+                     )
+                     # Group by stressor if multiple
+                     var_csc <- var_csc %>% group_by(snames) %>% summarise(sys_cap = mean(sys_cap, na.rm = TRUE))
+                     # Update reactive placeholder value
+                     rv_clickedIds_csc$var_csc <- var_csc
+
+                   } else {
+                     # Set to NA
+                     rv_clickedIds_csc$csc <- NA
+                     rv_clickedIds_csc$var_csc <- NA
+                     print("Reset HUC csc...")
+                   }
+                   
+                   
+                   # --------------------------------------------
+                   # Build Data Table
+                   # --------------------------------------------
+                   
                    # Get values if single HUC or set as NA if multi
                    if (length(selected_ids) == 1) {
                      # Use render DT with proxy to avoid reload on edit...
-                     raw_data <- isolate(rv_stressor_magnitude$sm_dat)
+                     raw_data <- rv_stressor_magnitude$sm_dat
                      table_vals <- raw_data %>% filter(HUC_ID == selected_ids)
                      table_vals <- table_vals[order(table_vals$Stressor),]
+                     
+                     # Merge on temporary System Capacity Estimate
+                     tsysm_capv <- rv_clickedIds_csc$var_csc 
+                     table_vals <- base::merge(table_vals, tsysm_capv,
+                                         by.x = "Stressor", by.y = "snames",
+                                         all.x = TRUE, all.y = FALSE)
+                    
                      table_vals <-
                        table_vals[, c("Stressor",
                                       "Mean",
                                       "SD",
                                       "Distribution",
                                       "Low_Limit",
-                                      "Up_Limit")]
+                                      "Up_Limit",
+                                      "sys_cap")]
+                     table_vals$SysCap <- table_vals$sys_cap
+                     table_vals$sys_cap <- NULL
                      table_vals$Mean <- round(table_vals$Mean, 2)
                      table_vals$SD <- round(table_vals$SD, 2)
                      table_vals$Low_Limit <- round(table_vals$Low_Limit, 2)
                      table_vals$Up_Limit <- round(table_vals$Up_Limit, 2)
+                     # Ensure to set SysCap to nonblank if not for Joe
+                     table_vals$SysCap <- ifelse(is.na(table_vals$SysCap), "Pop.", table_vals$SysCap)
                    }
                    
 
@@ -207,15 +266,21 @@ module_huc_stressor_magnitude_server <- function(id) {
                          SD = NA,
                          Distribution = NA,
                          Low_Limit = NA,
-                         Up_Limit = NA
+                         Up_Limit = NA,
+                         SysCap = NA
                        )
-                     table_vals <- table_vals[0,]
+                     table_vals <- table_vals[0, ]
                    }
                    
                    # If multiple HUCs selected then return a dataframe for each variable
                    # but keep values empty since only select will be edited
                    if (length(selected_ids) > 1) {
-                     snames <- rv_stressor_response$stressor_names
+                     
+                     raw_data <- isolate(rv_stressor_magnitude$sm_dat)
+                     table_vals <- raw_data %>% filter(HUC_ID %in% selected_ids)
+                     table_vals <- table_vals[order(table_vals$Stressor), ]
+                     snames <- sort(unique(table_vals$Stressor))
+                     
                      snames <- sort(snames)
                      table_vals <-
                        data.frame(
@@ -226,40 +291,28 @@ module_huc_stressor_magnitude_server <- function(id) {
                          Low_Limit = NA,
                          Up_Limit = NA
                        )
+                     # Merge on system capacity estimates per stressor
+                     tsysm_capv <- rv_clickedIds_csc$var_csc 
+                     table_vals <- base::merge(table_vals, tsysm_capv,
+                                               by.x = "Stressor", by.y = "snames",
+                                               all.x = TRUE, all.y = FALSE)
+                     table_vals$SysCap <- round(table_vals$sys_cap, 1)
+                     table_vals$sys_cap <- NULL
+                     
+                     # Ensure to set SysCap to nonblank if not for Joe
+                     table_vals$SysCap <- ifelse(is.na(table_vals$SysCap), "Pop.", table_vals$SysCap)
                    }
                    
-                   
-                   # --------------------------------------------
-                   # Populate the temporary placeholder CSC value
-                   if(length(selected_ids) > 0) {
-                     
-                     # Get the stressor magnitude
-                     dr <- rv_stressor_magnitude$sm_dat
-                     dr <- dr[which(dr$HUC_ID %in% selected_ids), ]
-                     # Set SD to 0 for mean value
-                     dr$SD <- 0
-                     
-                     jm <- JoeModel_Run(
-                       dose = dr,
-                       sr_wb_dat = rv_stressor_response,
-                       MC_sims = 1) 
-                     # Update the placeholder for the sm
-                     rv_clickedIds_csc$csc <- mean(jm$ce.df$CE, na.rm = TRUE)
-                     
-                   } else {
-                     # Set to NA
-                     rv_clickedIds_csc$csc <- NA
-                   }
-                   
-                   
-                   
+
+
                    # Build the JS DT Data Table Object
                    DT::datatable(
                      table_vals,
                      # The Stressor column is not editable
-                     editable = list(target = "cell", disable = list(columns = c(1))),
+                     editable = list(target = "cell", disable = list(columns = c(0, 6))),
                      filter = "none",
                      selection = "single",
+                     rownames = FALSE,
                      class = "cell-border stripe",
                      options = list(
                        pageLength = 500,
@@ -285,12 +338,9 @@ module_huc_stressor_magnitude_server <- function(id) {
                  # When there is an edit to a cell
                  # update the stessor magnitude reactive values
                  observeEvent(input$stressor_inputs_cell_edit, {
+                   
                    # Get new value of edited cell
                    info = input$stressor_inputs_cell_edit
-                   
-                   # Index list of stressor names
-                   snames <-
-                     sort(isolate(rv_stressor_response$stressor_names))
                    
                    # HUCs currently selected
                    selected_raw <- rv_clickedIds$ids
@@ -301,12 +351,20 @@ module_huc_stressor_magnitude_server <- function(id) {
                    selected_ids <- lapply(selected_raw, getID) %>% unlist()
                    
                    
+                   # Index list of stressor names (which value was clicked)
+                   raw_data <- isolate(rv_stressor_magnitude$sm_dat)
+                   table_vals <- raw_data %>% filter(HUC_ID %in% selected_ids)
+                   table_vals <- table_vals[order(table_vals$Stressor), ]
+                   snames <- sort(unique(table_vals$Stressor))
+                   
+                   
                    if (info$value == "") {
                      print("Take no action")
                    } else {
                      if (info$value == "normal") {
                        
                      } else {
+                       
                        info$value <- as.numeric(info$value)
                        info$value <- ifelse(is.na(info$value), 0, info$value)
                        
@@ -325,16 +383,19 @@ module_huc_stressor_magnitude_server <- function(id) {
                        print(info)
                        print(info$value)
                        print(snames[i])
-                       print(var[j])
+                       print(var[j + 1])
                        print(selected_ids)
                        print(" --------------------- ")
                        
+                       browser()
+                       
+
                        # Update stressor magnitude value for HUC or selected HUCs
                        # Update the reactive values
                        rv_stressor_magnitude$sm_dat[which(
                          rv_stressor_magnitude$sm_dat$HUC_ID %in% selected_ids &
                            rv_stressor_magnitude$sm_dat$Stressor == snames[i]
-                       ), var[j]] <- info$value
+                       ), var[j + 1]] <- info$value
                        
                        # Update the DT data table so the user knows what they have just done
                      }
@@ -346,9 +407,28 @@ module_huc_stressor_magnitude_server <- function(id) {
                  #-------------------------------------------------------------
                  # Update the mean system capacity for the selection
                  #-------------------------------------------------------------
-                 output$msc_selection <- renderText({
+                 output$csc_huc_indicator <- renderUI({
                    msc <- rv_clickedIds_csc$csc
-                   return(msc)
+                   
+                   alert_col <- "#a8a8a8"
+                   alert_col <- ifelse(msc < 0.2, "#d7191c50", alert_col)
+                   alert_col <- ifelse(msc >= 0.2, "#fdae6150", alert_col)
+                   alert_col <- ifelse(msc >= 0.5, "#a6d96a50", alert_col)
+                   alert_col <- ifelse(msc >= 0.7, "#1a964150", alert_col)
+                   alert_col_border <- paste0(alert_col, "30")
+                   
+                   
+                   alert_style <- paste0("background: ",alert_col,";
+                    border: #73737330;
+                    border-style: solid;
+                    border-width: 5px;
+                    border-radius: 10px;
+                    padding: 3px;
+                    color: 'black;")
+                   
+                   print(paste0("HUC csc is: ", msc, "..."))
+                   tags$h4(paste0("Mean System Capacity: ", round(msc * 100, 1), "%"), style = alert_style)
+                   
                  })
                  
                  

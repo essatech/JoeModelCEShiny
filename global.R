@@ -165,7 +165,7 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
   # Selected HUCs - Create an empty vector to hold all HUC click ids
   rv_clickedIds <- reactiveValues(ids = vector())
   # Selected HUCs Cumulative System Capacity - store temporary CSC for selected HUCs
-  rv_clickedIds_csc <- reactiveValues(csc = NA)
+  rv_clickedIds_csc <- reactiveValues(csc = NA, var_csc = NA)
   
   
   # System Capacity Choropleth Map 
