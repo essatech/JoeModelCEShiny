@@ -387,8 +387,6 @@ module_huc_stressor_magnitude_server <- function(id) {
                        print(selected_ids)
                        print(" --------------------- ")
                        
-                       browser()
-                       
 
                        # Update stressor magnitude value for HUC or selected HUCs
                        # Update the reactive values

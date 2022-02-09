@@ -168,6 +168,11 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
   rv_clickedIds_csc <- reactiveValues(csc = NA, var_csc = NA)
   
   
+  # Timer to prevent caching
+  # (nessessary in some modules for css issues with dygraphs)
+  rv_timer <- reactiveValues(time = Sys.time())
+  
+  
   # System Capacity Choropleth Map 
   # Color ramp is 0 - 100 (global) across all variables
   color_func <- colorQuantile(c("#f22300", "#e0af00", "#ebcc2a",

@@ -61,11 +61,19 @@ module_joe_model_csc_plots_server <- function(id) {
         showModal(modalDialog(
           title = "Cumulative System Capacity Plots",
           tagList(
+              shinydashboard::box(
+                width = 12,
+                fluidRow(
+                  column(DT::dataTableOutput(ns("csc_tables")), width = 8),
+                  column(plotOutput(ns("csc_hist")), width = 4)
+                )
+              ),
             fluidRow(
               shinydashboard::box(
                 width = 12,
-                plotOutput(ns("csc_plots"),
-                    height = "1100px")
+                "csc_plots go here...",
+                #plotOutput(ns("csc_plots"),
+                #    height = "1100px")
               )
             ),
           ),
@@ -77,13 +85,107 @@ module_joe_model_csc_plots_server <- function(id) {
       #-------------------------------------------------------
 
 
+      
+      
+      #-------------------------------------------------------
+      # Generate CSC Joe Model Summary Tables
+      #-------------------------------------------------------
+      output$csc_tables <- renderDataTable({
+        
+        # Build summary table of Joe Model results
+        # Get the most recent result set
+        simulation_index <- length(rv_joe_model_results$sims)
+        # Get the Joe model results object 
+        jmr <- rv_joe_model_results$sims[[simulation_index]]
+        
+        # Summary across simulations
+        # Look at system wide CE scores
+        sim_scores <- jmr$ce.df %>% group_by(simulation) %>%
+          summarise(
+            CE_mean = mean(CE, na.rm = TRUE)
+          )
+        
+        s_obj_sim <- summary(sim_scores$CE_mean * 100, na.rm = TRUE)
+        
+        # Summary across HUCs
+        # Look at system wide CE scores
+        h_scores <- jmr$ce.df %>% group_by(HUC) %>%
+          summarise(
+            CE_mean = mean(CE, na.rm = TRUE)
+          )
+        
+        s_obj_huc <- summary(h_scores$CE_mean * 100, na.rm = TRUE)
+        
+        df_csc_res <- data.frame(sims = as.matrix(s_obj_sim)[,1], hucs = as.matrix(s_obj_huc)[,1])
+        df_csc_res <- round(df_csc_res, 1)
+        
+        # List the min and max HUCs
+        boxplot(round(h_scores$CE_mean * 100, 1), horizontal = TRUE, frame = FALSE, xlab = "MSC (%) Across all HUCs for all simulations")
+        
 
-
+        # Build the JS DT Data Table Object
+        my_dt <- DT::datatable(
+          df_csc_res,
+          editable =  FALSE,
+          caption = "Mean system capacity summary tables across all simulations for the entire system (Across Simulations) and across individual HUCs (Across HUCs)",  
+          colnames = c('Global Mean SC (per simulation, %)' = 'sims', 'Mean SC Across HUCs (%)' = 'hucs'),
+          filter = "none",
+          selection = "single",
+          rownames = TRUE,
+          class = "cell-border stripe",
+          options = list(
+            pageLength = 500,
+            info = FALSE,
+            dom = 't',
+            ordering = FALSE,
+            columnDefs = list(list(
+              className = 'dt-left', targets = "_all"
+            ))
+          )
+        )
+        
+      })
+      
+      
+      
+      #-------------------------------------------------------
+      # Historgram for CSC per HUC
+      #-------------------------------------------------------
+      output$csc_hist <- renderPlot({
+        
+        # Build summary table of Joe Model results
+        # Get the most recent result set
+        simulation_index <- length(rv_joe_model_results$sims)
+        # Get the Joe model results object 
+        jmr <- rv_joe_model_results$sims[[simulation_index]]
+        
+        # Summary across HUCs
+        # Look at system wide CE scores
+        h_scores <- jmr$ce.df %>% group_by(HUC) %>%
+          summarise(
+            CE_mean = mean(CE, na.rm = TRUE)
+          )
+        
+        hist(h_scores$CE_mean * 100, xlab = "mean sys. capacity per HUC (%)", main = "Across HUCs")
+      
+      })
+      
+      
+      
       #-------------------------------------------------------
       # Generate CSC Joe Model Plots
       #-------------------------------------------------------
       # Generate plots for the latest 
       output$csc_plots <- renderPlot({
+        
+        
+
+        
+        
+        
+        
+        
+        browser()
 
 
      #Script for plotting function 
