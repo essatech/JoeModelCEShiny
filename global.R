@@ -16,7 +16,7 @@ file.sources  <- list.files(path = "../JoeModelCE/R/", pattern = "*.R")
 sapply(paste0("../JoeModelCE/R/", file.sources), source, .GlobalEnv)
 
 
-# Load necessary libraries
+# Load necessary packages
 library(dplyr)
 library(readxl)
 library(shiny)
