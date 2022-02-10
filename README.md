@@ -7,7 +7,7 @@
 
 ## Developing a Cumulative Effects Modelling Framework for the Recovery of Aquatic Species at Risk
 
-This is the location of the Shiny UI associated with the [`JoeModelCE`](https://github.com/essatech/JoeModelCE) package. `JoeModelCE` is a collection of functions to support the application of the <a href="https://waves-vagues.dfo-mpo.gc.ca/Library/40871344.pdf" target="_blank">Alberta Environmental Parks Cumulative Effects Assessment Joe Model (DFO 2019)</a>, coupled with a flexible population modelling framework.
+This is the location of the Shiny UI associated with the [`JoeModelCE`](https://github.com/essatech/JoeModelCE) package. `JoeModelCE` is a collection of functions to support the application of the <a href="https://waves-vagues.dfo-mpo.gc.ca/Library/40871344.pdf" target="_blank">Alberta Environment and Parks Cumulative Effects Assessment Joe Model (DFO 2019)</a>, coupled with a flexible population modelling framework.
 
 The `JoeModelCE` package is part of a larger initiative to develop a framework for modelling cumulative impacts to Species at Risk (SAR) to guide recovery planning and adaptive management based on stressor-response functions related to taxa-specific threats.  This framework allows users to generate models across a range of complexity and data quality, treating stressor-response functions as modular entities.
 
