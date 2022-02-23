@@ -1,4 +1,4 @@
-#' Joe Model Cumulative System Capacity Plots UI
+#' Joe Model Cumulative System Capacity Plots UI - For Selected HUCs
 #'
 #' Define parameters and run the Joe Model
 #' 
@@ -6,20 +6,20 @@
 #'
 #' @return a tagList containing UI elements
 #'
-module_joe_model_csc_plots_ui <- function(id) {
+module_joe_model_csc_plots_selected_ui <- function(id) {
   
   ns <- NS(id)
   # Single action button to call modal
-  actionButton(ns("open_joe_modal_csc_plots_all"),
-                  tags$b("All waterseds"),
-                  class="chart-line",
-                  width = "100%")
-
+  actionButton(ns("open_joe_modal_csc_plots_selected"),
+               tags$b("Selected watersheds"),
+               class="chart-line",
+               width = "100%")
+  
 }
 
 
 
-#' Joe Model Cumulative System Capacity Plots Server
+#' Joe Model Cumulative System Capacity Plots Server - For Selected HUCs
 #'
 #' Server and modal content for the Joe model server
 #'
@@ -27,52 +27,64 @@ module_joe_model_csc_plots_ui <- function(id) {
 #'
 #' @return None
 #'
-module_joe_model_csc_plots_server <- function(id) {
+module_joe_model_csc_plots_selected_server <- function(id) {
   moduleServer(
     id,
     function(input, output, session) {
       
       ns <- session$ns
       
-      print("Calling module_joe_model_csc_plots_server")
+      print("Calling module_joe_model_csc_plots_selected_server")
       
       #-------------------------------------------------------
       # DISABLE AND ENABLE 
       #------------------------------------------------------- 
-      # this module is disabled if the Joe Model results are empty
+      # this modal is disabled if the Joe Model results are empty
+      # this modal is also disabled if there is no selection
       observe({
         sims <- rv_joe_model_results$sims
         if(length(sims) > 0) {
-          shinyjs::enable("open_joe_modal_csc_plots_all")
+          selected <- rv_clickedIds$ids
+          if(length(selected) == 0) {
+            shinyjs::disable("open_joe_modal_csc_plots_selected")
+          } else {
+            shinyjs::enable("open_joe_modal_csc_plots_selected")
+          }
         } else {
-          shinyjs::disable("open_joe_modal_csc_plots_all")
+          shinyjs::disable("open_joe_modal_csc_plots_selected")
+          
         }
       })
-
-
-
-
+      
+      
+      
+      
       #-------------------------------------------------------
       # START OF INPUT MODAL UI
       #-------------------------------------------------------      
-      # Display the CSC plots for all watersheds
-      observeEvent(input$open_joe_modal_csc_plots_all, {
-        print("Joe model form click to open ...")
+      # Display the CSC plots for SELECTED watersheds
+      observeEvent(input$open_joe_modal_csc_plots_selected, {
+        
+        print("Joe model results for selected HUCs modal ...")
         # Gather a list of all the stessors to build the checkbox list
         showModal(modalDialog(
-          title = "Cumulative System Capacity Plots",
+          title = "Cumulative System Capacity Plots - Selected HUCs",
           tagList(
-              shinydashboard::box(
-                width = 12,
-                fluidRow(
-                  column(DT::dataTableOutput(ns("csc_tables")), width = 8),
-                  column(plotOutput(ns("csc_hist")), width = 4)
-                )
+            shinydashboard::box(
+              width = 12,
+              fluidRow(
+                tags$p("Selected HUCs"),
+                uiOutput(ns("list_selected_hucs"))
               ),
+              fluidRow(
+                column(DT::dataTableOutput(ns("csc_tables")), width = 8),
+                column(plotOutput(ns("csc_hist")), width = 4)
+              )
+            ),
             fluidRow(
               shinydashboard::box(
                 width = 12,
-                actionButton(ns("csc_show_all_plots"), "display individual plots for all HUCs (slow rendering)"),
+                actionButton(ns("csc_show_all_plots"), "display individual plots for selected HUCs (slow rendering)"),
                 plotOutput(ns("csc_plot_panel")),
               )
             ),
@@ -83,14 +95,30 @@ module_joe_model_csc_plots_server <- function(id) {
         ))
       }) # END OF INPUT MODAL UI
       #-------------------------------------------------------
-
-
       
+      
+      
+      #------------------------------------------------------
+      # Labels of selected HUCs
+      #------------------------------------------------------
+      output$list_selected_hucs <- renderUI({
+        selected <- rv_clickedIds$ids
+        name_list <- list()
+        for(i in 1:length(selected)) {
+          name_list[[i]] <- tags$div(selected[i])
+        }
+        res_n <- htmltools::tagList(name_list)
+      })
       
       #-------------------------------------------------------
       # Generate CSC Joe Model Summary Tables
       #-------------------------------------------------------
       output$csc_tables <- renderDataTable({
+        
+        selected <- rv_clickedIds$ids
+        selected_ids <- strsplit(selected, "\\|")
+        selected_ids <- sapply(selected_ids, `[`, 1)
+        selected_ids <- as.numeric(as.character(selected_ids))
         
         # Build summary table of Joe Model results
         # Get the most recent result set
@@ -98,6 +126,10 @@ module_joe_model_csc_plots_server <- function(id) {
         # Get the Joe model results object 
         jmr <- rv_joe_model_results$sims[[simulation_index]]
         
+        # Subset for selection
+        jmr$ce.df <- jmr$ce.df[which(jmr$ce.df$HUC %in% selected_ids), ]
+        
+
         # Summary across simulations
         # Look at system wide CE scores
         sim_scores <- jmr$ce.df %>% group_by(simulation) %>%
@@ -119,13 +151,13 @@ module_joe_model_csc_plots_server <- function(id) {
         df_csc_res <- data.frame(sims = as.matrix(s_obj_sim)[,1], hucs = as.matrix(s_obj_huc)[,1])
         df_csc_res <- round(df_csc_res, 1)
         
-
+        
         # Build the JS DT Data Table Object
         my_dt <- DT::datatable(
           df_csc_res,
           editable =  FALSE,
-          caption = "Mean system capacity summary tables across all simulations for the entire system (Across Simulations) and across individual HUCs (Across HUCs)",  
-          colnames = c('Global Mean SC (per simulation, %)' = 'sims', 'Mean SC Across HUCs (%)' = 'hucs'),
+          caption = "Mean system capacity summary tables across all simulations for selected HUCs (subset)",  
+          colnames = c('Global Mean SC (per simulation, %)' = 'sims', 'Mean SC Across Selected HUCs (%)' = 'hucs'),
           filter = "none",
           selection = "single",
           rownames = TRUE,
@@ -140,7 +172,7 @@ module_joe_model_csc_plots_server <- function(id) {
             ))
           )
         )
-
+        
       })
       
       
@@ -150,11 +182,20 @@ module_joe_model_csc_plots_server <- function(id) {
       #-------------------------------------------------------
       output$csc_hist <- renderPlot({
         
+        selected <- rv_clickedIds$ids
+        selected_ids <- strsplit(selected, "\\|")
+        selected_ids <- sapply(selected_ids, `[`, 1)
+        selected_ids <- as.numeric(as.character(selected_ids))
+        
         # Build summary table of Joe Model results
         # Get the most recent result set
         simulation_index <- length(rv_joe_model_results$sims)
         # Get the Joe model results object 
         jmr <- rv_joe_model_results$sims[[simulation_index]]
+        
+        # Subset for selection
+        jmr$ce.df <- jmr$ce.df[which(jmr$ce.df$HUC %in% selected_ids), ]
+        
         
         # Summary across HUCs
         # Look at system wide CE scores
@@ -163,8 +204,8 @@ module_joe_model_csc_plots_server <- function(id) {
             CE_mean = mean(CE, na.rm = TRUE)
           )
         
-        hist(h_scores$CE_mean * 100, xlab = "mean sys. capacity per HUC (%)", main = "Across HUCs")
-      
+        hist(h_scores$CE_mean * 100, xlab = "mean sys. capacity per HUC (%)", main = "Selected HUCs")
+        
       })
       
       
@@ -175,11 +216,19 @@ module_joe_model_csc_plots_server <- function(id) {
       # Set trigger to load all plots..
       pp <- eventReactive(input$csc_show_all_plots, {
         
+        selected <- rv_clickedIds$ids
+        selected_ids <- strsplit(selected, "\\|")
+        selected_ids <- sapply(selected_ids, `[`, 1)
+        selected_ids <- as.numeric(as.character(selected_ids))
+        
         # Build summary table of Joe Model results
         # Get the most recent result set
         simulation_index <- length(rv_joe_model_results$sims)
         # Get the Joe model results object 
         jmr <- rv_joe_model_results$sims[[simulation_index]]
+        
+        # Subset for selection
+        jmr$ce.df <- jmr$ce.df[which(jmr$ce.df$HUC %in% selected_ids), ]
         
         
         # Get the Joe Model result object
@@ -298,30 +347,32 @@ module_joe_model_csc_plots_server <- function(id) {
         
         # Hide trigger button after pressed
         shinyjs::hide("csc_show_all_plots")
-
+        
         return(big_plot)
-
+        
       })
       
       
       # Make plot height dynamic
       heightSize <- reactive({
         print("Adjust csc plot height size...")
-        # Get the Joe model results object 
-        simulation_index <- length(rv_joe_model_results$sims)
-        jmr <- rv_joe_model_results$sims[[simulation_index]]
-        n_hucs <- unique(jmr$ce.df$HUC)
-        my_df_rows <- length(n_hucs) / 5 # 5 columns
+        # Number of selected HUC
+        selected <- rv_clickedIds$ids
+        selected_ids <- strsplit(selected, "\\|")
+        selected_ids <- sapply(selected_ids, `[`, 1)
+        selected_ids <- as.numeric(as.character(selected_ids))
+        
+        my_df_rows <- length(selected_ids) / 5 # 5 columns
         plot_height <- 60 + as.integer(120 * my_df_rows)
         print(plot_height)
-        
-        return(plot_height)
 
+        return(plot_height)
+        
       })
       
       # Generate plots for the latest 
       output$csc_plot_panel <- renderPlot({
-
+        
         print("renderPlot...")
         if(input$csc_show_all_plots == 0) {
           return(NULL)
@@ -333,9 +384,9 @@ module_joe_model_csc_plots_server <- function(id) {
       }, height = heightSize)
       
       
-
       
-   
+      
+      
     }
   )
 }

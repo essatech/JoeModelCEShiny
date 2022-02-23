@@ -5,7 +5,7 @@
 # See tutorial here: https://shiny.rstudio.com/articles/scoping.html
 #--------------------------------------------------------------------
 
-# rm(list = ls())
+rm(list = ls())
 
 # Load local package
 library(devtools) 
@@ -120,6 +120,17 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
   )
   
   
+#------------------------------------------------------
+# Load in the life stages file for the population model
+#------------------------------------------------------
+  life_stages <- read.csv("./data/life cycles.csv")
+  
+  # Set as a reactive object
+  rv_life_stages <- reactiveValues(
+    dat = life_stages
+  )
+  
+
  
 #-------------------------------------------------
 # Map geometry and map object reactive values
@@ -171,6 +182,10 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
   # Timer to prevent caching
   # (nessessary in some modules for css issues with dygraphs)
   rv_timer <- reactiveValues(time = Sys.time())
+  
+  # Show all csc plots (time consuming)
+  rv_show_all_plots <- reactiveValues(show_all = NULL)
+  
   
   
   # System Capacity Choropleth Map 
@@ -226,7 +241,6 @@ rv_map_shape <- reactiveVal(FALSE) # Single value
 
 # Placeholders for the click locations of HUC IDs
 rv_map_location <- reactiveValues(huc_id = NULL, huc_name = NULL, lat = NULL, lng = NULL) # List of values
-
 
 
 

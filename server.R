@@ -8,9 +8,11 @@
 #--------------------------------------------------------------------
 server <- function(input, output, session) {
   
-  # Call module server functions
+  # Call main module server functions
   module_main_map_server("main_map")
   module_stressor_variable_server("stressor_variable")
+  module_matrix_model_server("matrix_model")
+  
   
   # Call the server function portion of the `scenario_table_module.R` module file
   print("Called scenario_table - ok")

@@ -60,50 +60,46 @@ module_huc_results_ui <- function(id) {
     
     
     
-    fluidRow(tags$h4("System Capacity Plots"),),
-    
-    fluidRow(
-      infoBox(
-        title = NULL,
-        color = 'blue',
-        value =
-          actionButton(
-            ns("scp_by_stressors"),
-            tags$b("By Stressors"),
-            class = "chart-line",
-            width = "100%"
+    div(id = ns("sys_cap_buttons_all"),
+        
+        fluidRow(tags$h4("System Capacity Plots")),
+        
+        fluidRow(
+          infoBox(
+            title = NULL,
+            color = 'blue',
+            value =
+              actionButton(
+                ns("scp_by_stressors"),
+                tags$b("By Stressors"),
+                class = "chart-line",
+                width = "100%"
+              ),
+            icon = icon("sliders-h"),
+            subtitle = "Plot the system capacity across stressors for selected watersheds"
           ),
-        icon = icon("sliders-h"),
-        subtitle = "Plot the system capacity across stressors for selected watersheds"
-      ),
-      
-      
-      infoBox(
-        title = NULL,
-        color = 'blue',
-        value =
-          actionButton(
-            ns("scp_for_selected_sheds"),
-            tags$b("Selected Watershed"),
-            class = "chart-line",
-            width = "100%"
+          
+          
+          infoBox(
+            title = NULL,
+            color = 'blue',
+            value = module_joe_model_csc_plots_selected_ui(ns("open_joe_modal_csc_plots_selected")),
+            icon = icon("sliders-h"),
+            subtitle = "Plot the cumulative system capacity for selected watersheds"
           ),
-        icon = icon("sliders-h"),
-        subtitle = "Plot the cumulative system capacity for selected watersheds"
-      ),
-      
-      
-      infoBox(
-        title = NULL,
-        color = 'blue',
-        value = module_joe_model_csc_plots_ui(ns("joe_model_csc_plots_all")),
-        icon = icon("sliders-h"),
-        subtitle = "Plot the cumulative system capacity for all watersheds"
-      ),
-      
-    ),
-    
-    
+          
+          
+          infoBox(
+            title = NULL,
+            color = 'blue',
+            value = module_joe_model_csc_plots_ui(ns("joe_model_csc_plots_all")),
+            icon = icon("sliders-h"),
+            subtitle = "Plot the cumulative system capacity for all watersheds"
+          ),
+          
+        ),
+        ), 
+
     
   ))
   
@@ -133,6 +129,8 @@ module_huc_results_server <- function(id) {
                  module_huc_stressor_magnitude_server("stressor_magnitude")
                  module_joe_model_run_server("run_joe_model")
                  module_joe_model_csc_plots_server("joe_model_csc_plots_all")
+                 module_joe_model_csc_plots_selected_server("open_joe_modal_csc_plots_selected")
+                 
                  
                  # Hide deselect HUC deselect button on initial load
                  # Also assume no watersheds are selected
@@ -145,6 +143,8 @@ module_huc_results_server <- function(id) {
                  shinyjs::disable("run_ce_population_model")
                  shinyjs::disable("scp_by_stressors")
                  shinyjs::disable("scp_for_selected_sheds")
+                 
+            
                  
                  # Show count the number of selected HUCs (e.g., 3 U)
                  output$n_watersheds_selected <- renderText({
@@ -198,6 +198,20 @@ module_huc_results_server <- function(id) {
                    shinyjs::disable("scp_for_selected_sheds")
                    # Redraw layer and clear selection
                    rv_redraw$redraw <- 1 + rv_redraw$redraw
+                 })
+                 
+                 
+                 # Show or hide the csc result buttons
+                 observe({
+                   print("Joe model has...")
+                   sim_index <- rv_joe_model_results$sims
+                   if(length(sim_index) < 1) {
+                     print("...not been run (hide buttons)")
+                     shinyjs::hide("sys_cap_buttons_all")
+                   } else {
+                     print("...has been run (show buttons)")
+                     shinyjs::show("sys_cap_buttons_all")
+                   }
                  })
                  
    
