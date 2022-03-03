@@ -48,6 +48,7 @@ library(rmapshaper) # DROP
 library(popbio)
 library(testthat)
 library(ggplot2)
+library(shinyvalidate)
 
 
 
@@ -123,6 +124,7 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
 #------------------------------------------------------
 # Load in the life stages file for the population model
 #------------------------------------------------------
+  # When app launches defaults will be loaded from this file
   life_stages <- read.csv("./data/life cycles.csv")
   
   # Set as a reactive object
@@ -130,8 +132,16 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
     dat = life_stages
   )
   
-
- 
+  rv_eigen_analysis <- reactiveValues(
+    dat = list()
+  )
+  rv_ea_errors <- reactiveValues(
+    possible_error_state = FALSE,
+    possible_error_msg = ""
+  )
+  
+  
+  
 #-------------------------------------------------
 # Map geometry and map object reactive values
 #-------------------------------------------------
@@ -249,7 +259,7 @@ rv_map_location <- reactiveValues(huc_id = NULL, huc_name = NULL, lat = NULL, ln
 # Deployment reminder checklist
 #------------------------------------------
 # turn off reactlog::reactlog_enable()
-# turn on preloader
+# turn on preloader in ui.R (preloader)
 # load package functions into app
 
 

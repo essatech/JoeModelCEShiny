@@ -1,4 +1,4 @@
-#' Matrix Model INPUTS UI
+#' Matrix Model Inputs UI
 #'
 #' The UI portion of the matrix model
 #'
@@ -12,7 +12,8 @@
 module_matrix_model_inputs_ui <- function(id) {
   ns <- NS(id)
   
-  tagList(class = "popmode_input",
+  tagList(
+    class = "popmode_input",
     tags$h4("Survival Parameters"),
     
     
@@ -199,12 +200,10 @@ module_matrix_model_inputs_ui <- function(id) {
     
     tags$h4("Other Parameters"),
     
-    fluidRow(
-      column(
-        width = 6,
-        numericInput(ns("SR"), label = "sex ratio", value = life_stages$Value[which(life_stages$Name == "SR")]),
-      )
-    )
+    fluidRow(column(
+      width = 6,
+      numericInput(ns("SR"), label = "Sex ratio (portion female at birth)", value = life_stages$Value[which(life_stages$Name == "SR")]),
+    ))
     
   )
 }
@@ -219,9 +218,194 @@ module_matrix_model_inputs_ui <- function(id) {
 module_matrix_model_inputs_server <- function(id) {
   moduleServer(id,
                function(input, output, session) {
+                 
                  ns <- session$ns
                  
-                 print("matrix model inputs server")
+                 
+                 # Add form validators (front-end only)
+                 btwn_01 <- function(value) {
+                   if(is.null(value)) {
+                     return("Cannot be blank")
+                   }
+                   if(is.na(value)) {
+                     return("Cannot be blank")
+                   }
+                   if(class(value) != "numeric" & class(value) != "integer") {
+                     return("Must be a number")
+                   }
+                   if (value > 1) {
+                     return("Value must be between 0 and 1")
+                   }
+                   if (value < 0) {
+                     return("Value must be between 0 and 1")
+                   }
+                 }
+                 simp_num <- function(value) {
+                   if(is.null(value)) {
+                     return("Cannot be blank")
+                   }
+                   if(is.na(value)) {
+                     return("Cannot be blank")
+                   }
+                   if(class(value) != "numeric" & class(value) != "integer") {
+                     return("Must be a number")
+                   }
+                 }
+                 gtr_0 <- function(value) {
+                   if(is.null(value)) {
+                     return("Cannot be blank")
+                   }
+                   if(is.na(value)) {
+                     return("Cannot be blank")
+                   }
+                   if(class(value) != "numeric" & class(value) != "integer") {
+                     return("Must be a number")
+                   }
+                   if (value <= 0) {
+                     return("Value must be between greater than 0")
+                   }
+                 }
+                 
+                 
+                 
+                 iv <- InputValidator$new()
+                 iv$add_rule("k", simp_num)
+                 iv$add_rule("events", simp_num)
+                 iv$add_rule("eps", simp_num)
+                 iv$add_rule("int", simp_num)
+                 iv$add_rule("SE", btwn_01)
+                 iv$add_rule("S0", btwn_01)
+                 iv$add_rule("SR", btwn_01)
+                 iv$add_rule("surv_1", btwn_01)
+                 iv$add_rule("surv_2", btwn_01)
+                 iv$add_rule("surv_3", btwn_01)
+                 iv$add_rule("surv_4", btwn_01)
+                 iv$add_rule("year_1", gtr_0)
+                 iv$add_rule("year_2", gtr_0)
+                 iv$add_rule("year_3", gtr_0)
+                 iv$add_rule("year_4", gtr_0)
+                 iv$add_rule("cr_E", simp_num)
+                 iv$add_rule("cr_0", simp_num)
+                 iv$add_rule("cr_1", simp_num)
+                 iv$add_rule("cr_2", simp_num)
+                 iv$add_rule("cr_3", simp_num)
+                 iv$add_rule("cr_4", simp_num)
+                 iv$add_rule("mat_1", btwn_01)
+                 iv$add_rule("mat_2", btwn_01)
+                 iv$add_rule("mat_3", btwn_01)
+                 iv$add_rule("mat_4", btwn_01)
+                 iv$add_rule("eps_sd", simp_num)
+                 iv$add_rule("egg_rho", simp_num)
+                 iv$add_rule("M.cv", simp_num)
+                 iv$add_rule("M.rho", simp_num)
+                 iv$enable()
+                 
+
+                 
+                 # Listen for any changes to matrix model input parameters
+                 #  and on change update the reactive values object
+                 # rv_life_stages$dat
+                 observe({
+                   # Do not run if any input is null (update while typing...)
+                   req(input$k >= 0)
+                   req(input$events >= 0)
+                   req(input$eps >= 0)
+                   req(input$int > 0)
+                   req(input$SE >= 0 & input$SE <= 1)
+                   req(input$S0 >= 0 & input$S0 <= 1)
+                   req(input$SR >= 0 & input$SR <= 1)
+                   req(input$surv_1 >= 0 & input$surv_1 <= 1)
+                   req(input$surv_2 >= 0 & input$surv_2 <= 1)
+                   req(input$surv_3 >= 0 & input$surv_3 <= 1)
+                   req(input$surv_4 >= 0 & input$surv_4 <= 1)
+                   req(input$year_1 > 0)
+                   req(input$year_2 > 0)
+                   req(input$year_3 > 0)
+                   req(input$year_4 > 0)
+                   req(input$cr_E >= 0)
+                   req(input$cr_0 >= 0)
+                   req(input$cr_1 >= 0)
+                   req(input$cr_2 >= 0)
+                   req(input$cr_3 >= 0)
+                   req(input$cr_4 >= 0)
+                   req(input$mat_1 >= 0 & input$mat_1 <= 1)
+                   req(input$mat_2 >= 0 & input$mat_2 <= 1)
+                   req(input$mat_3 >= 0 & input$mat_3 <= 1)
+                   req(input$mat_4 >= 0 & input$mat_4 <= 1)
+                   req(input$eps_sd >= 0)
+                   req(input$egg_rho >= 0)
+                   req(input$M.cv >= 0)
+                   req(input$M.rho >= 0)
+                   req(rv_life_stages$dat)
+                   
+                   print("updating pop. model inputs...")
+                   
+                   isolate({
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "k")] <-
+                       input$k
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "events")] <-
+                       input$events
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "eps")] <-
+                       input$eps
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "int")] <-
+                       input$int
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "SE")] <-
+                       input$SE
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "S0")] <-
+                       input$S0
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "SR")] <-
+                       input$SR
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "surv_1")] <-
+                       input$surv_1
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "surv_2")] <-
+                       input$surv_2
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "surv_3")] <-
+                       input$surv_3
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "surv_4")] <-
+                       input$surv_4
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "year_1")] <-
+                       input$year_1
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "year_2")] <-
+                       input$year_2
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "year_3")] <-
+                       input$year_3
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "year_4")] <-
+                       input$year_4
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "cr_E")] <-
+                       input$cr_E
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "cr_0")] <-
+                       input$cr_0
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "cr_1")] <-
+                       input$cr_1
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "cr_2")] <-
+                       input$cr_2
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "cr_3")] <-
+                       input$cr_3
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "cr_4")] <-
+                       input$cr_4
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "mat_1")] <-
+                       input$mat_1
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "mat_2")] <-
+                       input$mat_2
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "mat_3")] <-
+                       input$mat_3
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "mat_4")] <-
+                       input$mat_4
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "eps_sd")] <-
+                       input$eps_sd
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "egg_rho")] <-
+                       input$egg_rho
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "M.cv")] <-
+                       input$M.cv
+                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "M.rho")] <-
+                       input$M.rho
+                   })
+                   
+                 })
+                 
+                 
+                 
+
                  
                  
                })
