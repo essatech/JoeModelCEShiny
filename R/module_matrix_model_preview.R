@@ -167,6 +167,7 @@ module_matrix_model_preview_server <- function(id) {
                                                 Mean = CE_df$Mean, SD = CE_df$SD, Distribution = CE_df$Distribution,
                                                 Low_Limit = CE_df$Low_Limit, Up_Limit = CE_df$Up_Limit)
                        
+                       # browser()
                        jm <- JoeModelCE::JoeModel_Run(
                          dose = smw_sample,
                          sr_wb_dat = sr,

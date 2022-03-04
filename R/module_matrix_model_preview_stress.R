@@ -14,7 +14,7 @@ module_matrix_model_preview_stress_ui <- function(id) {
   
   tagList(tags$div(fluidRow(
     column(
-      width = 1,
+      width = 2,
       style = "text-align: center; vertical-align: middle;",
       checkboxInput(
         ns("pm_ps_check"),
@@ -24,7 +24,7 @@ module_matrix_model_preview_stress_ui <- function(id) {
       )
     ),
     column(
-      width = 11,
+      width = 10,
       shinydashboardPlus::accordion(
         id = ns("accordion1"),
         accordionItem(

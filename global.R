@@ -79,7 +79,7 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
 # Load in default stressor response relationships
 #-------------------------------------------------
   # Load Stressor Response Files 
-  file_name_stressor_response <- paste0("./data/stressor_response_fixed_ARTR.xlsx")
+  file_name_stressor_response <- paste0("./data/stressor_response_demo.xlsx")
   #file_name_stressor_response <- paste0("./data/stressor-response_fixed_sqam.xlsx")
 
   
@@ -111,7 +111,7 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
   # Fixed: stressor_magnitude_fixed_rn_ARTR
   # UNC: stressor_magnitude_unc_ARTR
   #file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_unc_ARTR.xlsx")
-  file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_fixed_rn_ARTR.xlsx")
+  file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_demo.xlsx")
   #file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_fixed_rn_sqam.xlsx")
   
   
