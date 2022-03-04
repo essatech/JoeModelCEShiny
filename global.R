@@ -49,6 +49,8 @@ library(popbio)
 library(testthat)
 library(ggplot2)
 library(shinyvalidate)
+library(ggthemes)
+library(plotly)
 
 
 
@@ -140,6 +142,14 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
     possible_error_msg = ""
   )
   
+  rv_show_sample_plot <- reactiveValues(
+    open = FALSE
+  )
+  
+  rv_pop_sample_plot_data <- reactiveValues(
+    dat = list(),
+    run_counter = 1
+  )
   
   
 #-------------------------------------------------

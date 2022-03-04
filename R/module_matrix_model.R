@@ -28,66 +28,13 @@ module_matrix_model_ui <- function(id) {
               shinydashboard::box(
                 width = 12,
                 tags$div(tags$h4("Matrix Elements"), style = "text-aling: center;"),
-                module_matrix_model_preview_ui(ns("mm_preview"))
+                module_matrix_model_elements_ui(ns("mm_elements"))
               ),
               
               shinydashboard::box(
                 width = 12,
-                tags$div(tags$h4("Population Projection Preview"), style = "text-aling: center;"),
-                
-                shinydashboard::box(
-                  width = 12,
-                  tags$div(
-                    class = "lam_bb",
-                    tags$p(
-                      "Run a time series projection preview for a hypothetical sample population",
-                    ),
-                    
-                    fluidRow(
-                      column(width = 6,
-                             numericInput(
-                               ns("nsekjr"), label = "n years", value = 50
-                             ),),
-                      column(width = 6,
-                             numericInput(
-                               ns("hkjlhkjh"), label = "n replicates", value = 10
-                             ),)
-                    ),
-                    
-                    actionButton(
-                      ns("demo_projection"),
-                      "Demo Projection Time Series",
-                      class = "btn btn-info",
-                      style = "color:white;"
-                    )
-                  ),
-                  
-                ),
-                
-                
-                shinydashboard::box(
-                  width = 12,
-          
-                  tags$div(
-                    class = "demo_stressors",
-                    tags$p(
-                      "Set hypothetical stressor values for the sample population projection preview"
-                    ),
-                    
-                    numericInput(ns("njhjhkum"), label = "Temperature_adult", value = 0),
-                    numericInput(ns("jlkjlk"), label = "Temperature_parr", value = 0),
-                    numericInput(ns("uiou"), label = "Total_Mortality", value = 0),
-                    numericInput(ns("ljlkjl"), label = "Habitat_loss", value = 0),
-                    numericInput(ns("nmmn"), label = "Spring_flow_alevin", value = 0),
-                    numericInput(ns("ssdfaf"), label = "Spring_flow_sub", value = 0),
-                    
-                  ),
-                  
-                  
-                  
-                ),
-                
-                
+                tags$div(tags$h4("Population Projection Preview (Sandbox)"), style = "text-aling: center;"),
+                module_matrix_model_preview_ui(ns("mm_preview"))
               ),
               
             )
@@ -110,6 +57,7 @@ module_matrix_model_server <- function(id) {
                  
                  # Call sub module for HUC results
                  module_matrix_model_inputs_server("mm_inputs")
+                 module_matrix_model_elements_server("mm_elements")
                  module_matrix_model_preview_server("mm_preview")
                  
                  

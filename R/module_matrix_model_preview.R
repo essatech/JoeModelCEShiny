@@ -1,4 +1,4 @@
-#' Matrix Model PREVIEW UI
+#' Matrix Model preview UI
 #'
 #' The UI portion of the matrix model
 #'
@@ -15,46 +15,55 @@ module_matrix_model_preview_ui <- function(id) {
   tagList(
     shinydashboard::box(
       width = 12,
-      
-      tags$b("Density-Independent Components", style = "text-align: center;"),
-      
-      tags$table(class = "lam_v", style = "width: 100%;",
-                 uiOutput(ns(
-                   "dens_independent_comp"
-                 ))),
-      
-      tags$br(),
-      
       tags$div(
         class = "lam_bb",
-        actionButton(ns("eigen_analysis"), "Full Eigen Enalysis")
-      )
-      
+        tags$p(
+          "Run a time series projection preview for a hypothetical sample population",
+        ),
+        
+        fluidRow(
+          column(width = 6,
+                 numericInput(
+                   ns("test_n_years"), label = "n years", value = 50
+                 )),
+          column(width = 6,
+                 numericInput(
+                   ns("test_n_replicates"),
+                   label = "n replicates",
+                   value = 10
+                 ))
+        ),
+        
+        actionButton(
+          ns("demo_projection"),
+          "Demo Projection Time Series",
+          class = "btn btn-info",
+          style = "color:white;"
+        )
+      ),
     ),
     
     shinydashboard::box(
       width = 12,
-      tags$b("Density-Dependent Components", style = "text-align: center;"),
-      
-      tags$table(
-        class = "",
-        style = "width: 100%;",
-        tags$tr(tags$td("Adult K"),
-                tags$td("100")),
+      tags$div(
+        class = "demo_stressors",
+        tags$p(
+          "Set hypothetical stressor values for the sample population projection preview"
+        ),
+        numericInput(ns("njhjhkum"), label = "Temperature_adult", value = 0),
+        numericInput(ns("jlkjlk"), label = "Temperature_parr", value = 0),
+        numericInput(ns("uiou"), label = "Total_Mortality", value = 0),
+        numericInput(ns("ljlkjl"), label = "Habitat_loss", value = 0),
+        numericInput(ns("nmmn"), label = "Spring_flow_alevin", value = 0),
+        numericInput(ns("ssdfaf"), label = "Spring_flow_sub", value = 0),
       ),
-      
-    ),
-    
-    
+    )
     
   )
-  
-  
-  
 }
 
 
-#' Matrix Model PREVIEW SERVER
+#' Matrix Model preview SERVER
 #'
 #' @param none
 #'
@@ -64,248 +73,251 @@ module_matrix_model_preview_server <- function(id) {
   moduleServer(id,
                function(input, output, session) {
                  ns <- session$ns
+                 print("matrix model preview server...")
                  
-                 print("matrix model preview server")
+                 
+                 
+                 
+                 
+                 
                  
                  
                  #-------------------------------------------------------
-                 # Density-Independent Components
+                 # Run a sample projection...
                  #-------------------------------------------------------
-                 observe({
-                   
-                   print("pop mod dens-indepent matrix elements...")
-                   
-                   # Reset assume we are clear of errors ...
+                 observeEvent(input$demo_projection, {
                    isolate({
-                     rv_ea_errors$possible_error_state <- FALSE
-                     rv_ea_errors$possible_error_msg <- ""
+                     rv_show_sample_plot$open <- FALSE
+                     test_n_years <- input$test_n_years
+                     test_n_replicates <- input$test_n_replicates
+                     dat <- rv_life_stages$dat
+                     
                    })
-
                    
+                   
+                   print("RUN A SAMPLE POP PROJECTION...")
                    # Gather population model inputs
-                   dat <- rv_life_stages$dat
-                   
                    # Setup objects for population model
                    pop_mod_setup <-
                      pop_model_setup(life_cycles = dat)
+                   # Build matrix elements for population model
+                   pop_mod_mat <-
+                     pop_model_matrix_elements(pop_mod_setup = pop_mod_setup)
                    
-                   if (pop_mod_setup$possible_error_state != "All Good") {
-                     print("Bad error settings")
-                     rv_ea_errors$possible_error_state <- TRUE
-                     rv_ea_errors$possible_error_msg <-
-                       pop_mod_setup$possible_error_state
-                     
-                   } else {
-                     
-                     # Build matrix elements for population model
-                     pop_mod_mat <-
-                       pop_model_matrix_elements(pop_mod_setup = pop_mod_setup)
-                     
-                     # Preview density-independent transition projection_matrix
-                     A <- pop_mod_mat$projection_matrix
-                     # Assign nicknames for each stage
-                     snames <-
-                       c("egg_yoy", "juv", "subadult", "adult")
-                     rownames(A) <- colnames(A) <- snames
-                     # Simple density-independent lambda estimate
-                     lambda <- popbio::lambda(A)
-                     # Simple Eigen analysis
-                     ea <- popbio::eigen.analysis(A)
-                     
-                     lambda <- round(ea$lambda1, 2)
-                     damping_ratio <- round(ea$damping.ratio, 2)
-                     gen_time <-
-                       round(popbio::generation.time(A), 1)
-                     net_repo_rate <-
-                       round(popbio::net.reproductive.rate(A), 2)
-                     
-                     # Add objects to list
-                     rv_eigen_analysis$dat$lambda <- lambda
-                     rv_eigen_analysis$dat$damping_ratio <- damping_ratio
-                     rv_eigen_analysis$dat$gen_time <- gen_time
-                     rv_eigen_analysis$dat$net_repo_rate <- net_repo_rate
-                     rv_eigen_analysis$dat$ea <- ea
-                     rv_eigen_analysis$dat$pop_mod_mat <- pop_mod_mat
-                     
-                   }
                    
-                 })
-                 
-
-                 # Calculate density-independent matrix elements...
-                 output$dens_independent_comp <- renderUI({
-
-                   if (rv_ea_errors$possible_error_state) {
-                     # error state - return error message
-                     tl <- tags$tr(tags$td(rv_ea_errors$possible_error_msg), class = "error-state")
-                     return(tl)
-                   } else {
-                     tl <- tagList(
-                       tags$tr(tags$td("Lambda: "),
-                               tags$td(rv_eigen_analysis$dat$lambda),),
-                       tags$tr(tags$td("Damping Ratio: "),
-                               tags$td(rv_eigen_analysis$dat$damping_ratio),),
-                       tags$tr(tags$td("Generation Time: "),
-                               tags$td(rv_eigen_analysis$dat$gen_time),),
-                       tags$tr(
-                         tags$td("Net Reproductive Rate: "),
-                         tags$td(rv_eigen_analysis$dat$net_repo_rate),
+                   # Set the K.adj (K adjustment prior to pop model run)
+                   life_histories <- pop_mod_mat$life_histories
+                   # Mathematical expression of the transition matrix
+                   life_stages_symbolic <-
+                     pop_mod_mat$life_stages_symbolic
+                   # Mathematical expression of the density matrix
+                   density_stage_symbolic <-
+                     pop_mod_mat$density_stage_symbolic
+                   
+                   
+                   all_outputs <- list()
+                   
+                   for (ii in 1:test_n_replicates) {
+                     # Run simple population projection - project forward through time
+                     baseline <-
+                       Projection_DD(
+                         M.mx = life_stages_symbolic,
+                         # projection matrix expression
+                         D.mx = density_stage_symbolic,
+                         # density-dependence matrix
+                         H.mx = NULL,
+                         dat = life_histories,
+                         # life history data
+                         K = life_histories$Ka,
+                         # initial pop size as stage-structure vector
+                         Nyears = test_n_years,
+                         # years to run simulation
+                         p.cat = 0,
+                         # Probability of catastrophe
+                         CE_df = NULL
                        )
-                     )
-                     return(tl)
+                     # Gather
+                     all_outputs[[ii]] <- baseline
                    }
-                 })
-                 
-                 
-                 
-                 # Transition matrix data table
-                 output$dt_transition_matrix <- renderDataTable({
-                   # Get the transition matrix
-                   A <- round(rv_eigen_analysis$dat$pop_mod_mat$projection_matrix, 3)
-                   # Add names to column
-                   mnames <- c("Egg / YoY", "Juveniles", "Sub-Adults", "Adults")
-                   colnames(A) <- mnames
-                   rownames(A) <- mnames
-                   # Build the JS DT Data Table Object
-                   DT::datatable(
-                     A,
-                     editable =  FALSE,
-                     caption = "Transition matrix",
-                     filter = "none",
-                     selection = "single",
-                     rownames = TRUE,
-                     class = "cell-border stripe",
-                     options = list(
-                       pageLength = 500,
-                       info = FALSE,
-                       dom = 't',
-                       ordering = FALSE,
-                       columnDefs = list(list(
-                         className = 'dt-left', targets = "_all"
-                       ))
-                     )
-                   )
-                 })
-                 
-                 # Sensitivities matrix data table
-                 output$dt_sensitivities_matrix <- renderDataTable({
-                   A2 <- round(rv_eigen_analysis$dat$ea$sensitivities, 3)
-                   mnames <- c("Egg / YoY", "Juveniles", "Sub-Adults", "Adults")
-                   colnames(A2) <- mnames
-                   rownames(A2) <- mnames
-                   DT::datatable(
-                     A2,
-                     editable =  FALSE,
-                     caption = "Sensitivity Matrix",
-                     filter = "none",
-                     selection = "single",
-                     rownames = TRUE,
-                     class = "cell-border stripe",
-                     options = list(
-                       pageLength = 500,
-                       info = FALSE,
-                       dom = 't',
-                       ordering = FALSE,
-                       columnDefs = list(list(
-                         className = 'dt-left', targets = "_all"
-                       ))
-                     )
-                   )
-                 })
                    
-                 # elasticities matrix data table
-                 output$dt_elasticities_matrix <- renderDataTable({
-                   A3 <- round(rv_eigen_analysis$dat$ea$elasticities, 3)
-                   mnames <- c("Egg / YoY", "Juveniles", "Sub-Adults", "Adults")
-                   colnames(A3) <- mnames
-                   rownames(A3) <- mnames
-                   DT::datatable(
-                     A3,
-                     editable =  FALSE,
-                     caption = "Elasticities Matrix",
-                     filter = "none",
-                     selection = "single",
-                     rownames = TRUE,
-                     class = "cell-border stripe",
-                     options = list(
-                       pageLength = 500,
-                       info = FALSE,
-                       dom = 't',
-                       ordering = FALSE,
-                       columnDefs = list(list(
-                         className = 'dt-left', targets = "_all"
-                       ))
-                     )
-                   )
+                   
+                   # Get the run counter
+                   run_counter <-
+                     rv_pop_sample_plot_data$run_counter
+                   
+                   # Send to reactive object
+                   rv_pop_sample_plot_data$dat[[run_counter]] <-
+                     all_outputs
+                   
+                   # Update the run counter
+                   rv_pop_sample_plot_data$run_counter <-
+                     run_counter + 1
+                   
+                   # Open the modal
+                   rv_show_sample_plot$open <- TRUE
+                   
                  })
-                   
-                 # other matrix data table
-                 output$dt_other_matrix <- renderDataTable({
-                   repro <- round(rv_eigen_analysis$dat$ea$repro.value, 2)
-                   ss <- round(rv_eigen_analysis$dat$ea$stable.stage, 2)
-                   repro <- data.frame(t(repro))
-                   ss <- data.frame(t(ss))
-                   repro_ss <- rbind(repro, ss)
-                   colnames(repro_ss) <- c("Egg / YoY", "Juveniles", "Sub-Adults", "Adults")
-                   rownames(repro_ss) <- c("Repro. Value", "Stable Stage")
-                   DT::datatable(
-                     repro_ss,
-                     editable =  FALSE,
-                     caption = "Reproductive Values & Stable Stage",
-                     filter = "none",
-                     selection = "single",
-                     rownames = TRUE,
-                     class = "cell-border stripe",
-                     options = list(
-                       pageLength = 500,
-                       info = FALSE,
-                       dom = 't',
-                       ordering = FALSE,
-                       columnDefs = list(list(
-                         className = 'dt-left', targets = "_all"
-                       ))
-                     )
-                   )
-                 })                  
-                   
-                 output$lambda_txt <- renderText({ paste0("Lambda: ", rv_eigen_analysis$dat$lambda) })
                  
+                 
+                 
+                 
+                 
+                 # --------------------------------------
+                 # Render plots for preview modal
+                 # --------------------------------------
+                 
+                 output$samp_adults <- renderPlotly({
+                   print("Plotting adults...")
+                   
+                   plot_type <- input$samp_plot_type
+                   
+                   #browser()
+                   
+                   # Get the current run
+                   isolate({
+                     crun <- rv_pop_sample_plot_data$run_counter
+                   })
+                   crun <- crun - 1
 
-                 #-------------------------------------------------------
-                 # Density-Independent Modal
-                 #-------------------------------------------------------
-                 observeEvent(input$eigen_analysis, {
-                   showModal(modalDialog(
-                     title = "Full Matrix Eigen Analysis",
-                     tagList(
-                         tags$p("The following tables represent outputs from an eigen analysis of the stage-structured matrix model. Note that these values are only relevant for density-independent growth conditions and will be misleading if not interpreted alongside density-dependent constraints."),
-                    
-                         tags$p(textOutput(ns("lambda_txt"))),
-                         tags$p("The Lambda value represents the intrinsic population growth rate (at stable stage & equilibrium conditions). Lambda values greater than 1.0 indicate the population will increase and lambda values less than one indicate the population will decrease."),
-                         
-                         
-                         tags$p("The following table shows the transition matrix for density-independent growth. The values represented here are adjusted for survival, growth, reproduction & the sex ratio, but they do not consider density-dependent constraints on population growth."),
-                         DT::dataTableOutput(ns("dt_transition_matrix")),
-                         tags$br(),
+                  
+                   # Get data for current
+                   pdat <- rv_pop_sample_plot_data$dat[[crun]]
+                   
+                   # Switch to target variable
+                   if(plot_type == "adult" | plot_type == "subadult" | plot_type == "juv" | plot_type == "yoy") {
+                     t_var <- "N"
+                   }
+                   
+                   if(plot_type == "lambda") {
+                     t_var <- "lambdas"
+                   }
+                   
+                   
+                   
+                   get_n_obj <- function(obj, name = "") {
+                     obj <- obj[[name]]
+                     obj <- as.data.frame(obj)
+                     obj$year <- 1:nrow(obj)
+                     obj
+                   }
+                   
+                   pdata_1 <- lapply(pdat, get_n_obj, name = t_var)
+                   pdata_1 <- do.call("rbind", pdata_1)
+                   pdata_1$sim <- "one"
+                   
+                   
+                   # Gather values for previous run
+                   if(crun > 1) {
+                     pdat_old <- rv_pop_sample_plot_data$dat[[crun - 1]]
+                     pdata_1_old <- lapply(pdat_old, get_n_obj, name = t_var)
+                     pdata_1_old <- do.call("rbind", pdata_1_old)
+                     pdata_1_old$sim <- "two"
+                     
+                     # Merge 
+                     pdata_1 <- rbind(pdata_1, pdata_1_old)
+                     
+                   }
+                   
+                   my_y_min <- 0
+                   
+                   # Switch to target variable
+                   if(plot_type == "yoy") {
+                     pdata_1$value <- pdata_1$V1
+                     mtitle <- "YoY/Fry Abundance"
+                     y_axe <- "N"
+                   }
+                   if(plot_type == "juv") {
+                     pdata_1$value <- pdata_1$V2
+                     mtitle <- "Juvenile Abundance"
+                     y_axe <- "N"
+                   }
+                   if(plot_type == "subadult") {
+                     pdata_1$value <- pdata_1$V3
+                     mtitle <- "Sub-Adult Abundance"
+                     y_axe <- "N"
+                   }
+                   if(plot_type == "adult") {
+                     pdata_1$value <- pdata_1$V4
+                     mtitle <- "Adult Abundance"
+                     y_axe <- "N"
+                   }
+                   if(plot_type == "lambda") {
+                     pdata_1$value <- pdata_1$obj
+                     mtitle <- "Lambda Values (adults)"
+                     y_axe <- "lambda (adults)"
+                     my_y_min <- min(pdata_1$value)
+                   }
+                   
 
-                         tags$p("The next table shows the sensitivities matrix. What effect does an absolute change in a vital rate have on lambda? For example, if we change first-year survival by 0.001, how much will that affect the population growth rate?"),
-                         DT::dataTableOutput(ns("dt_sensitivities_matrix")),
-                         tags$br(),
+                   
+
+                   # Summarize by year
+                   pdata_2 <-
+                     pdata_1 %>% dplyr::group_by(sim, year) %>% summarise(mean = mean(value, na.rm = TRUE),
+                                                                     sd = sd(value, na.rm = TRUE))
+                   
+                   pdata_2$lwr <- pdata_2$mean - pdata_2$sd
+                   pdata_2$upr <- pdata_2$mean + pdata_2$sd
+
+                   p3 <- pdata_2
+                   p3$Simulation <- "Current"
+                   p3$Simulation <- ifelse(p3$sim == "one", "Current", "Previous")
+                   
+                   
+
+                   p <-
+                     ggplot(data = p3, aes(
+                       x = year,
+                       y = mean,
+                       group = Simulation,
+                       color = Simulation
+                     )) +
+                     scale_y_continuous(limits = c(my_y_min, max(p3$upr))) +
+                     geom_line() +
+                     ggtitle(mtitle) +
+                     xlab("Simulation Year") + ylab(y_axe)
+                   
+                   
+                   p <- p + geom_ribbon(data = p3, aes(ymin = lwr, ymax = upr), alpha = 0.1) + theme_bw()
+                   
+                   p
+
+                   
+                 })
+
+                 
+                 
+                 #-------------------------------------------------------
+                 # Open the demo projection modal
+                 #-------------------------------------------------------
+                 observeEvent(rv_show_sample_plot$open, {
+                   showModal(
+                     modalDialog(
+                       title = "Sample Time Series Projection",
+                       
+                       tagList(
                          
-                         tags$p("The next table shows the elasticities matrix. What effect does a proportional change in vital rate have on population growth. For example, if we change first-year survival by 1%, how much will that affect population growth?"),
-                         DT::dataTableOutput(ns("dt_elasticities_matrix")),
-                         tags$br(),
+                         radioButtons(ns("samp_plot_type"), "Plot type:",
+                                      c("Adults" = "adult",
+                                        "Sub-Adults" = "subadult",
+                                        "Juveniles" = "juv",
+                                        "YoY" = "yoy",
+                                        "All Life Stages" = "allstage",
+                                        "Lambda" = "lambda")),
                          
-                         tags$p("The next table shows the reproductive value and stable stage distribution for each life stage. The reproductive value shows the value of a given stage as a seed for population growth (the first age class has a reproductive value of 1.0 by definition). The stable stage distribution represents the proportion of the population in each stage under hypothetical non-stochastic density-independent growth conditions (e.g., what proportion of the total population are juvenile, adults etc.?)."),
-                         DT::dataTableOutput(ns("dt_other_matrix")),
-                         tags$br(),
                          
+                         plotlyOutput(ns(
+                         "samp_adults"
+                       ))),
+                       
+                       easyClose = TRUE,
+                       size = "l",
+                       footer = NULL
                      ),
-                     easyClose = TRUE,
-                     size = "l",
-                     footer = NULL
-                   ))
-                 })
+                   )
+                 }, ignoreInit = TRUE)
+                 
+                 
                  
                  
                })
