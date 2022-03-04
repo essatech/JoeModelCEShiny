@@ -167,3 +167,29 @@
              background-color: #CCFF66;
              z-index: 105;
 }
+
+
+/* Helper text */
+.pm-ht {
+  font-size: 13px;
+  font-style: italic;
+  color: #929292;
+}
+
+/* Bad inputs */
+.pm-bad-inputs {
+  color: #ca2f2f;
+  font-style: italic;
+  background-color: #feff45;
+  font-size: 25px;
+}
+
+/* Cell value */
+.pm-cell-values {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #3c8dbc;
+    padding-left: 15px;
+}
+

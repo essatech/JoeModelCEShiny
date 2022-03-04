@@ -11,9 +11,11 @@ rm(list = ls())
 library(devtools) 
 # remove.packages("JoeModelCE")
 # devtools::install(pkg = "../package/JoeModelCE/", upgrade = "always")
+# devtools::install_github("essatech/JoeModelCE")
 # library(JoeModelCE) 
-file.sources  <- list.files(path = "../JoeModelCE/R/", pattern = "*.R")
-sapply(paste0("../JoeModelCE/R/", file.sources), source, .GlobalEnv)
+# file.sources  <- list.files(path = "../JoeModelCE/R/", pattern = "*.R")
+# sapply(paste0("../JoeModelCE/R/", file.sources), source, .GlobalEnv)
+library(JoeModelCE) 
 
 
 # Load necessary libraries
@@ -82,7 +84,7 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
 
   
   # Extract the stressor response relationships
-  sr_wb_dat <- StressorResponseWorkbook(filename = file_name_stressor_response)
+  sr_wb_dat <- JoeModelCE::StressorResponseWorkbook(filename = file_name_stressor_response)
   names(sr_wb_dat)
   
   start_time <- Sys.time()
@@ -113,7 +115,7 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
   #file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_fixed_rn_sqam.xlsx")
   
   
-  sm_wb_dat <-  StressorMagnitudeWorkbook(
+  sm_wb_dat <-  JoeModelCE::StressorMagnitudeWorkbook(
                     filename = file_name_stressor_magnitude,
                     scenario_worksheet = 1) # natural_unc
   
@@ -150,6 +152,11 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
     dat = list(),
     run_counter = 1
   )
+  # Sand box stressor values
+  rv_sandbox_stressors <- reactiveValues(
+    dat = list()
+  )
+  
   
   
 #-------------------------------------------------

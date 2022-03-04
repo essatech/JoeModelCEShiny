@@ -40,9 +40,11 @@ module_matrix_model_elements_ui <- function(id) {
       tags$table(
         class = "",
         style = "width: 100%;",
-        tags$tr(tags$td("Adult K"),
-                tags$td(textOutput(ns("print_adult_k")))),
+        tags$tr(tags$td("Adult K", style = "vertical-align: middle;"),
+                tags$td(textOutput(ns("print_adult_k")), class = "pm-cell-values")),
       ),
+      
+      tags$br(),
       
       tags$b("Model Components", style = "text-align: center;"),
       
@@ -102,7 +104,7 @@ module_matrix_model_elements_server <- function(id) {
                    
                    # Setup objects for population model
                    pop_mod_setup <-
-                     pop_model_setup(life_cycles = dat)
+                     JoeModelCE::pop_model_setup(life_cycles = dat)
                    
                    if (pop_mod_setup$possible_error_state != "All Good") {
                      print("Bad error settings")
@@ -114,7 +116,7 @@ module_matrix_model_elements_server <- function(id) {
                      
                      # Build matrix elements for population model
                      pop_mod_mat <-
-                       pop_model_matrix_elements(pop_mod_setup = pop_mod_setup)
+                       JoeModelCE::pop_model_matrix_elements(pop_mod_setup = pop_mod_setup)
                      
                      # Preview density-independent transition projection_matrix
                      A <- pop_mod_mat$projection_matrix
@@ -172,19 +174,19 @@ module_matrix_model_elements_server <- function(id) {
 
                    if (rv_ea_errors$possible_error_state) {
                      # error state - return error message
-                     tl <- tags$tr(tags$td(rv_ea_errors$possible_error_msg), class = "error-state")
+                     tl <- tags$tr(tags$td(rv_ea_errors$possible_error_msg), class = "pm-bad-inputs")
                      return(tl)
                    } else {
                      tl <- tagList(
-                       tags$tr(tags$td("Lambda: "),
-                               tags$td(rv_eigen_analysis$dat$lambda),),
-                       tags$tr(tags$td("Damping Ratio: "),
-                               tags$td(rv_eigen_analysis$dat$damping_ratio),),
-                       tags$tr(tags$td("Generation Time: "),
-                               tags$td(rv_eigen_analysis$dat$gen_time),),
+                       tags$tr(tags$td("Lambda: ", style = "vertical-align: middle;"),
+                               tags$td(rv_eigen_analysis$dat$lambda, class = "pm-cell-values")),
+                       tags$tr(tags$td("Damping Ratio: ", style = "vertical-align: middle;"),
+                               tags$td(rv_eigen_analysis$dat$damping_ratio, class = "pm-cell-values")),
+                       tags$tr(tags$td("Generation Time: ", style = "vertical-align: middle;"),
+                               tags$td(rv_eigen_analysis$dat$gen_time, class = "pm-cell-values")),
                        tags$tr(
-                         tags$td("Net Reproductive Rate: "),
-                         tags$td(rv_eigen_analysis$dat$net_repo_rate),
+                         tags$td("Net Reproductive Rate: ", style = "vertical-align: middle;"),
+                         tags$td(rv_eigen_analysis$dat$net_repo_rate, class = "pm-cell-values"),
                        )
                      )
                      return(tl)

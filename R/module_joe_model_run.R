@@ -290,7 +290,7 @@ module_joe_model_run_server <- function(id) {
           print("Running the Joe Model...")
 
           # Try running the Joe model
-          jm <- JoeModel_Run(
+          jm <- JoeModelCE::JoeModel_Run(
               dose = sm_wb_dat_in,
               sr_wb_dat = sr_wb_dat_in,
               MC_sims = n_mc_sims

@@ -194,7 +194,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                      sr_wb_dat_copy$pretty_names <- isolate(rv_stressor_response$pretty_names)
                      sr_wb_dat_copy$sr_dat <- isolate(rv_stressor_response$sr_dat)
                      
-                     jm <- JoeModel_Run(
+                     jm <- JoeModelCE::JoeModel_Run(
                        dose = dr,
                        sr_wb_dat = sr_wb_dat_copy,
                        MC_sims = 1)

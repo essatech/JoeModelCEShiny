@@ -16,7 +16,7 @@ module_matrix_model_inputs_ui <- function(id) {
     class = "popmode_input",
     tags$h4("Survival Parameters"),
     
-    tags$p("Define the individual survivorship probabilities for each stage class evaluated on annual time steps in the simulation."),
+    tags$p("Define the individual survivorship probabilities for each stage class evaluated on annual time steps in the simulation.", class = "pm-ht"),
     
     fluidRow(
       column(
@@ -51,7 +51,7 @@ module_matrix_model_inputs_ui <- function(id) {
       ),
     ),
     
-    tags$p("Interannual stochasticity is introduced into the model. Mortality also correlates intra-annually among size classes and over time (correlation diminishes as distance between stages increases)."),
+    tags$p("Interannual stochasticity is introduced into the model. Mortality also correlates intra-annually among size classes and over time (correlation diminishes as distance between stages increases).", class = "pm-ht"),
     
     fluidRow(
       column(
@@ -70,7 +70,7 @@ module_matrix_model_inputs_ui <- function(id) {
     
     tags$h4("Growth Parameters"),
     
-    tags$p("Growth is represented as time (years) spent in each stage. This circumvents defining size attributes for each stage and allows for more flexibility to parameterize different species in the model."),
+    tags$p("Growth is represented as time (years) spent in each stage. This circumvents defining size attributes for each stage and allows for more flexibility to parameterize different species in the model.", class = "pm-ht"),
     
     fluidRow(
       column(
@@ -96,7 +96,7 @@ module_matrix_model_inputs_ui <- function(id) {
     
     tags$h4("Reproduction Parameters"),
     
-    tags$p("The primary reproduction parameters include the spawning events per female (within a year), eggs per female spawner and variance in eggs per female."),
+    tags$p("The primary reproduction parameters include the spawning events per female (within a year), eggs per female spawner and variance in eggs per female.", class = "pm-ht"),
     
     fluidRow(
       column(
@@ -114,7 +114,7 @@ module_matrix_model_inputs_ui <- function(id) {
       
     ),
     
-    tags$p("The correlation in egg fecundity through time determines the similarity in residual egg production across age classes through years. (TODO add description for spawning interval)."),
+    tags$p("The correlation in egg fecundity through time determines the similarity in residual egg production across age classes through years. (TODO add description for spawning interval).", class = "pm-ht"),
     
     fluidRow(
       column(
@@ -127,7 +127,7 @@ module_matrix_model_inputs_ui <- function(id) {
       )
     ),
     
-    tags$p("The probability (portion) that an individual is sexually mature in each stage class."),
+    tags$p("The probability (portion) that an individual is sexually mature in each stage class.", class = "pm-ht"),
     
     fluidRow(
       column(
@@ -153,7 +153,7 @@ module_matrix_model_inputs_ui <- function(id) {
     
     tags$h4("Density Dependence"),
     
-    tags$p("The adult carrying capacity will determine the mean number of adults during the simulation. The abudnacne of adults in the population will generally hover around this value with stochasticity after the population stabilizes. The abundance estimates for other life stages are essentially back-calculated in each year of the simulation such that the adult carrying capacity is achieved with a global lambda value equal to 1."),
+    tags$p("The adult carrying capacity will determine the mean number of adults during the simulation. The abudnacne of adults in the population will generally hover around this value with stochasticity after the population stabilizes. The abundance estimates for other life stages are essentially back-calculated in each year of the simulation such that the adult carrying capacity is achieved with a global lambda value equal to 1.", class = "pm-ht"),
     
     
     fluidRow(column(
@@ -165,7 +165,7 @@ module_matrix_model_inputs_ui <- function(id) {
     
     tags$h4("Compensation Ratios"),
     
-    tags$p("Compensation ratios for density dependent growth. Density dependence is introduced into the model as compensatory density dependence with a fixed adult carrying capacity and the assumption of population stability over a longterm horizon."),
+    tags$p("Compensation ratios for density dependent growth. Density dependence is introduced into the model as compensatory density dependence with a fixed adult carrying capacity and the assumption of population stability over a longterm horizon.", class = "pm-ht"),
     
     
     fluidRow(
