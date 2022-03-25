@@ -18,7 +18,7 @@ library(devtools)
 library(JoeModelCE) 
 
 
-# Load necessary libraries
+# Load necessary packages
 library(dplyr)
 library(readxl)
 library(shiny)
