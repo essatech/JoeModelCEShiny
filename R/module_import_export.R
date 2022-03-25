@@ -21,7 +21,7 @@ module_import_export_ui <- function(id) {
       fluidRow(
         column(
           width = 6,
-          tags$p("Click the ‘browse…’ button to upload files. Note that uploaded a new data source will overwrite all local changes and you will need to re-run your results. Stressor response files, stressor magnitude files and watershed polygons must all be validated externally, or you will experience errors. Please see notes below to ensure proper data format."),
+          tags$p("Click the ‘browse…’ button to upload files. Note that uploading a new data source will overwrite all local changes and you will need to re-run your results. Stressor response files, stressor magnitude files and watershed polygons must all be validated externally, or you will experience errors. Please see notes below to ensure proper data format."),
         )
       ),
       
