@@ -7,8 +7,9 @@
 
 rm(list = ls())
 
+
 # Load local package
-library(devtools) 
+# library(devtools) 
 # remove.packages("JoeModelCE")
 # devtools::install(pkg = "../package/JoeModelCE/", upgrade = "always")
 # devtools::install_github("essatech/JoeModelCE")
@@ -16,7 +17,6 @@ library(devtools)
 # file.sources  <- list.files(path = "../JoeModelCE/R/", pattern = "*.R")
 # sapply(paste0("../JoeModelCE/R/", file.sources), source, .GlobalEnv)
 library(JoeModelCE) 
-
 
 # Load necessary libraries
 library(dplyr)
@@ -27,26 +27,25 @@ library(shinyjs)
 library(shinycssloaders) # DROP
 library(lubridate) # DROP
 library(shinyFeedback)
-library(dbplyr)
-library(config) # DROP
+# library(dbplyr)
+# library(config) # DROP
 library(shinydashboard)
 library(shinydashboardPlus)
 library(shinybusy)
-library(waiter) # DROP
+library(waiter)
 library(shinyWidgets) # DROP
 library(htmlwidgets)
-library(highcharter) # KEEP .. maybe drop
-library(dygraphs) # use this instead of high chaets...
+#library(highcharter) # DROP
+library(dygraphs) 
 library(sf)
-library(rgdal) # DROP
+#library(rgdal) # DROP
 library(DT)
 library(readxl)
 library(leaflet)
 library(tidyr) # DROP
-library(tidyselect) # DROP
-# library(TruncatedDistributions) found on R-Forge and not CRAN: code to install and load is in "R/module_joe_model_csc_plots.R"
+#library(tidyselect) # DROP
 library(reshape2)
-library(rmapshaper) # DROP
+#library(rmapshaper) # DROP
 library(popbio)
 library(testthat)
 library(ggplot2)
@@ -57,18 +56,19 @@ library(plotly)
 
 
 #load libraries for the functions
-#library(pracma) #needed for fsolve
-
+# library(pracma) #needed for fsolve
 
 # Optionally enable react log - useful for debugging
-library(reactlog)
-reactlog::reactlog_enable()
+ library(reactlog)
+ reactlog::reactlog_enable()
+ # shiny::reactlogShow() # Run this once app closes
+
 
 # TODO: remove this for deploy - puase on error
 # options(shiny.error = browser)
 
 # Shiny Pre-loader Spinner
-options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner.size = 3)
+ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner.size = 3)
 
 
 # Useful leaflet demos - TODO delete
@@ -157,6 +157,16 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
     dat = list()
   )
   
+  rv_pop_data_huc_ts <- reactiveValues(
+    dat = list(),
+    run_counter = 1,
+    update_ts_plots = FALSE
+  )
+  
+  rv_show_pop_main_plot <- reactiveValues(
+    open = FALSE
+  )
+  
   
   
 #-------------------------------------------------
@@ -199,15 +209,14 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
     redraw = 0
   )
     
-  
   # Selected HUCs - Create an empty vector to hold all HUC click ids
   rv_clickedIds <- reactiveValues(ids = vector())
+  
   # Selected HUCs Cumulative System Capacity - store temporary CSC for selected HUCs
   rv_clickedIds_csc <- reactiveValues(csc = NA, var_csc = NA)
   
-  
   # Timer to prevent caching
-  # (nessessary in some modules for css issues with dygraphs)
+  # (necessary in some modules for css issues with dygraphs)
   rv_timer <- reactiveValues(time = Sys.time())
   
   # Show all csc plots (time consuming)
@@ -267,6 +276,7 @@ options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner
 rv_map_shape <- reactiveVal(FALSE) # Single value
 
 # Placeholders for the click locations of HUC IDs
+# TODO MOVE BACK
 rv_map_location <- reactiveValues(huc_id = NULL, huc_name = NULL, lat = NULL, lng = NULL) # List of values
 
 

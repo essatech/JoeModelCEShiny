@@ -53,13 +53,15 @@ module_matrix_model_server <- function(id) {
                function(input, output, session) {
                  ns <- session$ns
                  
-                 print("Matrix model main")
+                 print("Matrix model main...")
                  
                  # Call sub module for HUC results
                  module_matrix_model_inputs_server("mm_inputs")
+                 print("Load module_matrix_model_elements_server...")
                  module_matrix_model_elements_server("mm_elements")
+                 print("Load module_matrix_model_preview_server...")
                  module_matrix_model_preview_server("mm_preview")
-                 
+                 print("End load matrix inputs...")
                  
                  #-------------------------------------------------------
                  # DISABLE AND ENABLE

@@ -8,6 +8,7 @@
 #--------------------------------------------------------------------
 server <- function(input, output, session) {
   
+  
   # Call main module server functions
   module_main_map_server("main_map")
   module_stressor_variable_server("stressor_variable")

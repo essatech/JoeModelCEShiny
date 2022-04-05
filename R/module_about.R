@@ -33,11 +33,12 @@ module_about_ui <- function(id) {
       border-width: 5px;
       border-radius: 4px;
       border-color: #e0af00;"
-          width="655" height="355" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
+          width="655" height="355" src="https://www.youtube.com/embed/Cp3UdWlkaKU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
         ),
-
-
+      
+      
       shiny::br(),
+      
       
       fluidRow(
         column(width = 2),
@@ -50,7 +51,7 @@ module_about_ui <- function(id) {
 
         tags$p(
           "This interactive webtool is powered by the",
-          tags$a(href = "https://github.com/essatech/JoeModelCE", "JoeModelCE R package,"),
+          tags$a(href = "https:essatech.github.io/JoeModelCE", "JoeModelCE R package,"),
           "which is a collection of functions to support the application of the Alberta Environmental Parks Cumulative Effects Assessment Joe Model",
           tags$a(href = "https://waves-vagues.dfo-mpo.gc.ca/Library/40871344.pdf", "(AEP CEM; DFO 2019)"),
           ", coupled with a flexible population modelling framework."

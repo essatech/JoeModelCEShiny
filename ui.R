@@ -10,7 +10,7 @@ ui <- dashboardPage(
   skin = "blue-light",
   
   # Pre-loader spinner - nice touch for final version?
-  # preloader = list(html = tagList(spin_three_bounce(), "Loading Application..."), color = "#f59738"),
+  # preloader = list(html = tagList(spin_three_bounce(), "Loading Application..."), color = "#3c8dbc"),
   
   # --------------------- ----------------------------------------
   # HEADER - page title.

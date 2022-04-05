@@ -41,20 +41,15 @@ module_huc_results_ui <- function(id) {
         subtitle = "Run the Cumulative Effects Joe Model"
       ),
       
-      
       infoBox(
         title = NULL,
         color = 'blue',
-        value =
-          actionButton(
-            ns("run_ce_population_model"),
-            tags$b("Population Model"),
-            class = "chart-line",
-            width = "100%"
-          ),
+        value = module_joe_vs_population_ui(ns("module_joe_vs_population")),
         icon = icon("chart-line"),
         subtitle = "Run the population model for selected watersheds"
       ),
+      
+      
     ),
     
     
@@ -125,12 +120,12 @@ module_huc_results_server <- function(id) {
                  
                  print("Calling module_huc_results_server")
                  
-                 # Call the submodules
+                 # Call the sub-modules
                  module_huc_stressor_magnitude_server("stressor_magnitude")
                  module_joe_model_run_server("run_joe_model")
                  module_joe_model_csc_plots_server("joe_model_csc_plots_all")
                  module_joe_model_csc_plots_selected_server("open_joe_modal_csc_plots_selected")
-                 
+                 module_joe_vs_population_server("module_joe_vs_population")
                  
                  # Hide deselect HUC deselect button on initial load
                  # Also assume no watersheds are selected
@@ -140,7 +135,7 @@ module_huc_results_server <- function(id) {
                    )
                  shinyjs::runjs(code = q_code)
                  #shinyjs::disable("adjust_stressor_magnitude")
-                 shinyjs::disable("run_ce_population_model")
+                 #shinyjs::disable("run_ce_population_model")
                  shinyjs::disable("scp_by_stressors")
                  shinyjs::disable("scp_for_selected_sheds")
                  
@@ -160,7 +155,7 @@ module_huc_results_server <- function(id) {
                      shinyjs::runjs(code = q_code)
                      # Enable other buttons dependant on selected HUCs
                      #shinyjs::disable("adjust_stressor_magnitude")
-                     shinyjs::disable("run_ce_population_model")
+                     #shinyjs::disable("run_ce_population_model")
                      shinyjs::disable("scp_by_stressors")
                      shinyjs::disable("scp_for_selected_sheds")
                    } else {
@@ -173,7 +168,7 @@ module_huc_results_server <- function(id) {
                      shinyjs::runjs(code = q_code)
                      # Enable other buttons dependant on selected HUCs
                      #shinyjs::enable("adjust_stressor_magnitude")
-                     shinyjs::enable("run_ce_population_model")
+                     #shinyjs::enable("run_ce_population_model")
                      shinyjs::enable("scp_by_stressors")
                      shinyjs::enable("scp_for_selected_sheds")
                      if (nhuc == 1) {
@@ -193,7 +188,7 @@ module_huc_results_server <- function(id) {
                      )
                    shinyjs::runjs(code = q_code)
                    #shinyjs::disable("adjust_stressor_magnitude")
-                   shinyjs::disable("run_ce_population_model")
+                   #shinyjs::disable("run_ce_population_model")
                    shinyjs::disable("scp_by_stressors")
                    shinyjs::disable("scp_for_selected_sheds")
                    # Redraw layer and clear selection
@@ -214,36 +209,6 @@ module_huc_results_server <- function(id) {
                    }
                  })
                  
-   
-                 observeEvent(input$run_ce_population_model, {
-                   showModal(
-                     modalDialog(
-                       title = "Run the Population Model",
-                       tagList(
-                         tags$p(
-                           "Run the population model with cumulative effects for selected watersheds"
-                         ),
-                         
-                         fluidRow(column(
-                           width = 6,
-                           actionButton(
-                             "goButton3",
-                             "Run Population Model",
-                             class = "btn-danger",
-                             style = "color: white;"
-                           )
-                           
-                         ))
-                         
-                       ),
-                       easyClose = TRUE,
-                       size = 'l',
-                       footer = NULL
-                     )
-                   )
-                 })
-                 
-                 
-                 
+
                })
 }

@@ -75,7 +75,7 @@ module_matrix_model_preview_server <- function(id) {
                  
                  
                  # ---------------------------------------------------------
-                 # (optional)Define the stressor variables values in the 
+                 # (optional) Define the stressor variables values in the 
                  # sandbox population projection simulation
                  # ---------------------------------------------------------
                  output$stressor_variable_list_pm_sandbox <- renderUI({
@@ -147,6 +147,13 @@ module_matrix_model_preview_server <- function(id) {
                      # ---------------------------------
                      # See if any enviro stressors present
                      CE_df <- CE_df[CE_df$check_on, ]
+                     
+                     
+                     print("ok to here ... ")
+                     browser()
+                     
+                     
+                     
                      
                      if(nrow(CE_df) >= 1) {
                        
