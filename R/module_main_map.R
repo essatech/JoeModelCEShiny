@@ -137,8 +137,9 @@ module_main_map_server <- function(id) {
       # Reactive expression to reload, repaint or redraw polygons
       # ---------------------------------------------------------
       r_huc_polygons <- reactive({
-        print("r_huc_polygons() triggered ...")
         
+        print("r_huc_polygons() triggered ...")
+
         # If clear all selected - then trigger redraw.
         rv_redraw$redraw
 

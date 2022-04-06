@@ -118,8 +118,7 @@ module_joe_vs_population_server <- function(id) {
                              "Sub-Adults" = "subadult",
                              "Juveniles" = "juv",
                              "YoY" = "yoy",
-                             "Lambda" = "lambda",
-                             "All Life Stages" = "allstage"
+                             "Lambda" = "lambda"
                            ),
                            inline  = TRUE
                          ),
@@ -499,9 +498,16 @@ module_joe_vs_population_server <- function(id) {
                    p3$lwr <- p3$mean - p3$sd
                    p3$upr <- p3$mean + p3$sd
                    
+                   p3$lwr <- ifelse(is.na(p3$lwr), 0, p3$lwr)
+                   p3$lwr <- ifelse(p3$lwr < 0, 0, p3$lwr)
+                   p3$upr <- ifelse(is.na(p3$upr), (mean(p3$mean, na.rm = TRUE) + mean(p3$sd, na.rm = TRUE)), p3$upr)
+                   
+                   
                    p3$HUC <- p3$huc_id
                    p3$HUC <- as.character(p3$HUC)
                    p3$huc_id <- NULL
+                   
+                   
                    
                 
                    # Create the ggplot plotting object

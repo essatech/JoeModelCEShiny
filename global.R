@@ -21,6 +21,7 @@ library(JoeModelCE)
 # Load necessary libraries
 library(dplyr)
 library(readxl)
+library(writexl)
 library(shiny)
 library(DT)
 library(shinyjs)
@@ -276,7 +277,6 @@ library(plotly)
 rv_map_shape <- reactiveVal(FALSE) # Single value
 
 # Placeholders for the click locations of HUC IDs
-# TODO MOVE BACK
 rv_map_location <- reactiveValues(huc_id = NULL, huc_name = NULL, lat = NULL, lng = NULL) # List of values
 
 

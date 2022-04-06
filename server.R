@@ -13,6 +13,9 @@ server <- function(input, output, session) {
   module_main_map_server("main_map")
   module_stressor_variable_server("stressor_variable")
   module_matrix_model_server("matrix_model")
+  module_export_server("export")
+  module_import_server("import")
+  
   
   
   # Call the server function portion of the `scenario_table_module.R` module file

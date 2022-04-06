@@ -144,16 +144,14 @@ module_matrix_model_preview_server <- function(id) {
                      CE_df <- rv_sandbox_stressors$dat
                      
                      
-                     # ---------------------------------
-                     # See if any enviro stressors present
-                     CE_df <- CE_df[CE_df$check_on, ]
-                     
-                     
-                     print("ok to here ... ")
-                     browser()
-                     
-                     
-                     
+                     if(length(CE_df) == 0) {
+                       CE_df <- data.frame()
+                     } else {
+                       # ---------------------------------
+                       # See if any enviro stressors present
+                       CE_df <- CE_df[CE_df$check_on, ]
+                     }
+
                      
                      if(nrow(CE_df) >= 1) {
                        
@@ -308,11 +306,10 @@ module_matrix_model_preview_server <- function(id) {
                    isolate({
                      # In isolate no not trigger
                      crun <- rv_pop_sample_plot_data$run_counter
+                     # Correction: counter is updated
+                     crun <- crun - 1
                    })
-                   # Correction: counter is updated
-                   crun <- crun - 1
-
-                  
+                   
                    # Get data for current run (from above)
                    pdat <- rv_pop_sample_plot_data$dat[[crun]]
                    
@@ -384,15 +381,19 @@ module_matrix_model_preview_server <- function(id) {
                    
                    # Gather values for previous run
                    if(crun > 1) {
-                     # Data for revious runs are available - compile here.
+                     # Data for previous runs are available - compile here.
                      pdat_old <- rv_pop_sample_plot_data$dat[[crun - 1]]
                      pdata_1_old <- lapply(pdat_old, get_n_obj, name = t_var)
                      pdata_1_old <- do.call("rbind", pdata_1_old)
                      pdata_1_old$sim <- "two"
                      # Merge previous and current
                      pdata_1 <- rbind(pdata_1, pdata_1_old)
+                   } else {
+                     print("Run crun:")
+                     print(crun)
                    }
                    
+
                    # Min value on y-axis will be zero unless plotting lambdas which hover around 1
                    my_y_min <- 0
                    
@@ -433,6 +434,10 @@ module_matrix_model_preview_server <- function(id) {
                    
                    pdata_2$lwr <- pdata_2$mean - pdata_2$sd
                    pdata_2$upr <- pdata_2$mean + pdata_2$sd
+                   
+                   pdata_2$lwr <- ifelse(is.na(pdata_2$lwr), 0, pdata_2$lwr)
+                   pdata_2$lwr <- ifelse(pdata_2$lwr < 0, 0, pdata_2$lwr)
+                   pdata_2$upr <- ifelse(is.na(pdata_2$upr), (mean(pdata_2$mean, na.rm = TRUE) + mean(pdata_2$sd, na.rm = TRUE)), pdata_2$upr)
 
                    p3 <- pdata_2
                    p3$Simulation <- "Current"

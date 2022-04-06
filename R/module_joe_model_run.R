@@ -261,21 +261,21 @@ module_joe_model_run_server <- function(id) {
           # Stressor RESPONSE workbook data (reactive value)
           print("Gathering Joe Inputs...")
           sr_wb_dat_in <- list()
-          sr_wb_dat_in$main_sheet     <- rv_stressor_response$main_sheet
-          sr_wb_dat_in$stressor_names <- rv_stressor_response$stressor_names
-          sr_wb_dat_in$sr_dat <- rv_stressor_response$sr_dat
+          sr_wb_dat_in$main_sheet     <- isolate(rv_stressor_response$main_sheet)
+          sr_wb_dat_in$stressor_names <- isolate(rv_stressor_response$stressor_names)
+          sr_wb_dat_in$sr_dat <- isolate(rv_stressor_response$sr_dat)
 
           # Stressor MAGNITUDE workbook data (reactive value)
-          sm_wb_dat_in <- rv_stressor_magnitude$sm_dat
+          sm_wb_dat_in <- isolate(rv_stressor_magnitude$sm_dat)
           # Number of Monte Carlo sims
-          n_mc_sims <- input$number_of_simulations
+          n_mc_sims <- isolate(input$number_of_simulations)
 
           # For partial model filter out non-target variables from respective datasets
           print("Filter out for partial model...")
-          selected_variables <- input$check_box_group
+          selected_variables <- isolate(input$check_box_group)
           
           # Filter main sheet
-          sr_wb_dat_in$main_sheet <- sr_wb_dat_in$main_sheet[which(sr_wb_dat$main_sheet$Stressors %in% selected_variables), ]
+          sr_wb_dat_in$main_sheet <- sr_wb_dat_in$main_sheet[which(sr_wb_dat_in$main_sheet$Stressors %in% selected_variables), ]
           # Stressor names
           sr_wb_dat_in$stressor_names <- sr_wb_dat_in$stressor_names[which(sr_wb_dat_in$stressor_names %in% selected_variables)]
           # Dose response relationships
@@ -288,6 +288,7 @@ module_joe_model_run_server <- function(id) {
           sm_wb_dat_in <- sm_wb_dat_in[which(sm_wb_dat_in$Stressor %in% selected_variables), ]
           
           print("Running the Joe Model...")
+          
 
           # Try running the Joe model
           jm <- JoeModelCE::JoeModel_Run(

@@ -60,19 +60,21 @@ module_huc_results_ui <- function(id) {
         fluidRow(tags$h4("System Capacity Plots")),
         
         fluidRow(
-          infoBox(
-            title = NULL,
-            color = 'blue',
-            value =
-              actionButton(
-                ns("scp_by_stressors"),
-                tags$b("By Stressors"),
-                class = "chart-line",
-                width = "100%"
-              ),
-            icon = icon("sliders-h"),
-            subtitle = "Plot the system capacity across stressors for selected watersheds"
-          ),
+          
+          
+          #infoBox(
+          #  title = NULL,
+          #  color = 'blue',
+          #  value =
+          #    actionButton(
+          #      ns("scp_by_stressors"),
+          #      tags$b("By Stressors"),
+          #      class = "chart-line",
+          #      width = "100%"
+          #    ),
+          #  icon = icon("sliders-h"),
+          #  subtitle = "Plot the system capacity across stressors for selected watersheds"
+          #),
           
           
           infoBox(

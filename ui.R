@@ -58,8 +58,11 @@ ui <- dashboardPage(
       tabItem("tab_matrix_model",
               module_matrix_model_ui("matrix_model")
       ),
-      tabItem("tab_import_export",
-              module_import_export_ui("import_export")
+      tabItem("tab_import",
+              module_import_ui("import")
+      ),
+      tabItem("tab_export",
+              module_export_ui("export")
       )
     )
   ),
