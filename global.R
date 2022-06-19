@@ -7,7 +7,6 @@
 
 rm(list = ls())
 
-
 # Load local package
 # library(devtools) 
 # remove.packages("JoeModelCE")
@@ -25,8 +24,8 @@ library(writexl)
 library(shiny)
 library(DT)
 library(shinyjs)
-library(shinycssloaders) # DROP
-library(lubridate) # DROP
+#library(shinycssloaders) # DROP
+#library(lubridate) # DROP
 library(shinyFeedback)
 # library(dbplyr)
 # library(config) # DROP
@@ -60,8 +59,8 @@ library(plotly)
 # library(pracma) #needed for fsolve
 
 # Optionally enable react log - useful for debugging
- library(reactlog)
- reactlog::reactlog_enable()
+ # library(reactlog)
+ # reactlog::reactlog_enable()
  # shiny::reactlogShow() # Run this once app closes
 
 
@@ -70,8 +69,10 @@ library(plotly)
 
 # Shiny Pre-loader Spinner
  options(spinner.color = "#ffffff", spinner.color.background = "#0073b7", spinner.size = 3)
-
-
+ 
+# Upload file size limit to 32MB
+ options(shiny.maxRequestSize = 32*1024^2)
+ 
 # Useful leaflet demos - TODO delete
 # https://github.com/IBM-DSE/Shiny-Examples-with-Blog
 
@@ -153,6 +154,7 @@ library(plotly)
     dat = list(),
     run_counter = 1
   )
+  
   # Sand box stressor values
   rv_sandbox_stressors <- reactiveValues(
     dat = list()
@@ -160,8 +162,10 @@ library(plotly)
   
   rv_pop_data_huc_ts <- reactiveValues(
     dat = list(),
+    dat_baseline = list(),
     run_counter = 1,
-    update_ts_plots = FALSE
+    update_ts_plots = FALSE,
+    joe_model_comp = NULL
   )
   
   rv_show_pop_main_plot <- reactiveValues(

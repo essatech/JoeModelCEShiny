@@ -164,7 +164,6 @@ module_all_sr_curves_server <- function(id) {
                          )
                        )
                      
-                     # browser()
                      dygraph_list[[pp]] <- this_dygraph
                      
                    } # end of loop through plots

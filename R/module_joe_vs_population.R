@@ -49,13 +49,10 @@ module_joe_vs_population_server <- function(id) {
                  #------------------------------------------------------
                  # Labels of selected HUCs
                  #------------------------------------------------------
-                 output$renderText <- renderUI({
+                 output$list_selected_hucs <- renderText({
                    selected <- rv_clickedIds$ids
-                   name_list <- list()
-                   for (i in 1:length(selected)) {
-                     name_list[[i]] <- tags$div(selected[i])
-                   }
-                   res_n <- paste(name_list, collapse = "; ")
+                   res_n <- paste(selected, collapse = "; ")
+                   res_n
                  })
                  
                  
@@ -74,9 +71,7 @@ module_joe_vs_population_server <- function(id) {
                          ),
                          
                          # Selected list of HUCs
-                         tags$p(textOutput(ns(
-                           "list_selected_hucs"
-                         ))),
+                         textOutput(ns("list_selected_hucs")),
                          
                          fluidRow(
                            column(
@@ -107,7 +102,7 @@ module_joe_vs_population_server <- function(id) {
                          tags$h3("Time series projections"),
                          
                          tags$p(
-                           "Preview time series projections for each selected watershed"
+                           "Preview time-series projections for each selected watershed: Review the number of individuals by life stage or the time series of lambda values. Time series show mean values plus or minus one SD."
                          ),
                          
                          radioButtons(
@@ -123,29 +118,39 @@ module_joe_vs_population_server <- function(id) {
                            inline  = TRUE
                          ),
                          
+                         plotlyOutput(ns("samp_adults")),
                          
-                         plotlyOutput(ns("samp_adults"))
-                       ),
-                       
-                       
-                       
-                       tags$h3("Stressor Evaluation"),
-                       
-                       tags$p("Placeholder text describing each plot type ..."),
-                       
-                       
-                       radioButtons(
-                         ns("main_se_plot_type"),
-                         "Plot type:",
-                         c(
-                           "Overview" = "overview",
-                           "By Dose" = "by_dose",
-                           "Joe Model Comparison" = "joe_model_comparison"
+                         tags$h3("Stressor Evaluation"),
+                         
+                         tags$p("Evaluate stressors across does and life stage"),
+                         
+                         radioButtons(
+                           ns("samp_plot_type_2"),
+                           "Plot type:",
+                           c(
+                             "Overview" = "overview",
+                             "By Dose" = "dose",
+                             "Joe Model Comparison" = "joe"
+                           ),
+                           inline  = TRUE
                          ),
-                         inline  = TRUE
+                         
+                         
+                         tags$p("TODO add plot caption 1"),
+                         
+                         
+                         plotlyOutput(ns("violin_plots"),
+                                      height = "800px"),
+                         
+                         
+                         tags$p("TODO add plot caption 2"),
+                         
+                         plotlyOutput(ns("sr_plots"),
+                                      height = "600px"),
+                         
+                         tags$p("TODO add plot caption 3"),
+                         
                        ),
-                       
-                       tags$div(style = "wdith: 80%; height: 250px; background-color: #F0F8FF"),
                        
                        
                        easyClose = TRUE,
@@ -164,9 +169,6 @@ module_joe_vs_population_server <- function(id) {
                  # Run a time series projection for target watersheds ...
                  #-------------------------------------------------------
                  observeEvent(input$run_pop_model, {
-                   
-                   # browser()
-                   
                    # Show a loading spinner to the user
                    #show_modal_spinner(
                    # spin = "hollow-dots",
@@ -179,7 +181,14 @@ module_joe_vs_population_server <- function(id) {
                    isolate({
                      # Gather inputs
                      test_n_years <- input$test_n_years
+                     # Limit user to 500 years
+                     test_n_years <-
+                       ifelse(test_n_years > 500, 500, test_n_years)
                      test_n_replicates <- input$test_n_replicates
+                     # Limit user to 100 replicates
+                     test_n_replicates <-
+                       ifelse(test_n_replicates > 100, 100, test_n_replicates)
+                     
                      dat <- rv_life_stages$dat
                      
                      # Gather the environmental stressors for selected HUCs
@@ -188,11 +197,11 @@ module_joe_vs_population_server <- function(id) {
                      splits <- sapply(splits, head, 1)
                      splits <- sapply(splits, head, 1)
                      HUC_ids <- as.numeric(splits)
-
+                     
                      # Get the target HUCs
                      CE_df <- rv_stressor_magnitude$sm_dat
                      CE_df <-
-                       CE_df[which(CE_df$HUC_ID %in% HUC_ids),]
+                       CE_df[which(CE_df$HUC_ID %in% HUC_ids), ]
                      
                      # Thin down stressors to target...
                      sr <- list()
@@ -203,7 +212,7 @@ module_joe_vs_population_server <- function(id) {
                      sr$sr_dat <- rv_stressor_response$sr_dat
                      # Thin down...
                      sr$main_sheet <-
-                       sr$main_sheet[which(sr$main_sheet$Stressors %in% CE_df$Stressor), ]
+                       sr$main_sheet[which(sr$main_sheet$Stressors %in% CE_df$Stressor),]
                      sr$stressor_names <-
                        sr$stressor_names[sr$stressor_names %in% CE_df$Stressor]
                      sr$sr_dat <-
@@ -221,7 +230,6 @@ module_joe_vs_population_server <- function(id) {
                        )
                      
                      # Stressor Magnitude...
-                     # Make up dummy data for a sample watershed
                      smw_sample <-
                        data.frame(
                          HUC_ID = CE_df$HUC_ID,
@@ -256,7 +264,8 @@ module_joe_vs_population_server <- function(id) {
                                  "Parameters",
                                  "Stressor_cat")]
                      
-                     merge_cols <- merge_cols[!(duplicated(merge_cols)), ]
+                     merge_cols <-
+                       merge_cols[!(duplicated(merge_cols)),]
                      
                      m_all <-
                        merge(
@@ -293,8 +302,8 @@ module_joe_vs_population_server <- function(id) {
                    # Build matrix elements for population model
                    pop_mod_mat <-
                      JoeModelCE::pop_model_matrix_elements(pop_mod_setup = pop_mod_setup)
-                  
-              
+                   
+                   
                    # Set the K.adj (K adjustment prior to pop model run)
                    life_histories <- pop_mod_mat$life_histories
                    # Mathematical expression of the transition matrix
@@ -306,12 +315,14 @@ module_joe_vs_population_server <- function(id) {
                    
                    
                    all_outputs <- list()
+                   all_outputs_baseline <- list()
                    counter_huc <- 1
                    
                    # Big Loop through HUCs and reps within each HUC
                    for (hh in 1:length(HUC_ids)) {
                      this_huc <- HUC_ids[hh]
                      huc_outputs <- list()
+                     huc_outputs_baseline <- list()
                      counter_sim <- 1
                      
                      # Loop through simulations per HUC
@@ -321,12 +332,13 @@ module_joe_vs_population_server <- function(id) {
                          CE_df_rep <- CE_df
                        } else {
                          CE_df_rep <-
-                           CE_df[which(CE_df$simulation == ii & CE_df$HUC == this_huc),]
+                           CE_df[which(CE_df$simulation == ii &
+                                         CE_df$HUC == this_huc), ]
                          CE_df_rep <-
-                           CE_df_rep[!(duplicated(CE_df_rep[, c("Stressor", "life_stage", "HUC")])),]
+                           CE_df_rep[!(duplicated(CE_df_rep[, c("Stressor", "life_stage", "HUC")])), ]
                          # Do not include regular Joe parameters
                          CE_df_rep <-
-                           CE_df_rep[which(!(is.na(CE_df_rep$parameter))),]
+                           CE_df_rep[which(!(is.na(CE_df_rep$parameter))), ]
                        }
                        
                        
@@ -349,30 +361,73 @@ module_joe_vs_population_server <- function(id) {
                            CE_df = CE_df_rep
                          )
                        
-                       # Gather info
-                       # remove junk
+                       
+                       # Run baseline with no CE
+                       run_with_baseline <-
+                         JoeModelCE::Projection_DD(
+                           M.mx = life_stages_symbolic,
+                           # projection matrix expression
+                           D.mx = density_stage_symbolic,
+                           # density-dependence matrix
+                           H.mx = NULL,
+                           dat = life_histories,
+                           # life history data
+                           K = life_histories$Ka,
+                           # initial pop size as stage-structure vector
+                           Nyears = test_n_years,
+                           # years to run simulation
+                           p.cat = 0,
+                           # Probability of catastrophe
+                           CE_df = NULL
+                         )
+                       
+                       
+                       # Gather info - for CE run
                        run_with_ce$vars <- NULL
                        run_with_ce$Cat. <- NULL
+                       
                        run_with_ce$info <-
                          data.frame(huc_id = this_huc,
                                     sim = ii,
                                     type = "CE")
                        
                        huc_outputs[[counter_sim]] <- run_with_ce
+                       
+                       # Gather info - for CE run
+                       run_with_baseline$vars <- NULL
+                       run_with_baseline$Cat. <- NULL
+                       
+                       run_with_baseline$info <-
+                         data.frame(huc_id = this_huc,
+                                    sim = ii,
+                                    type = "baseline")
+                       
+                       huc_outputs_baseline[[counter_sim]] <-
+                         run_with_baseline
+                       
                        counter_sim <- counter_sim + 1
+                       
                      }
                      
                      # Add HUCs to master list
                      all_outputs[[counter_huc]] <- huc_outputs
+                     all_outputs_baseline[[counter_huc]] <-
+                       huc_outputs_baseline
+                     
                      counter_huc <- 1 + counter_huc
                      
                    } # end of big loop through HUCs and reps within HUCs
                    
-                  
+                   
                    
                    # Gather all data and send to reactive object
                    rv_pop_data_huc_ts$dat <-
                      all_outputs
+                   
+                   rv_pop_data_huc_ts$dat_baseline <-
+                     all_outputs_baseline
+                   
+                   rv_pop_data_huc_ts$joe_model_comp <- CE_df
                    
                    # Update the run counter
                    rc <- rv_pop_data_huc_ts$run_counter
@@ -386,7 +441,7 @@ module_joe_vs_population_server <- function(id) {
                  }) # end of a time series projections for target watersheds ...
                  
                  
-                
+                 
                  
                  ###############################################
                  # ---------------------------------------------
@@ -395,7 +450,6 @@ module_joe_vs_population_server <- function(id) {
                  ###############################################
                  
                  output$samp_adults <- renderPlotly({
-                   
                    print("Plotting adults...")
                    
                    # Gather plot type to show:
@@ -403,19 +457,17 @@ module_joe_vs_population_server <- function(id) {
                    # adult; subadult; juv; yoy; lambda; allstage
                    
                    # First time the modal is open plot screen should be blank
-                   if(rv_pop_data_huc_ts$run_counter == 1) {
+                   if (rv_pop_data_huc_ts$run_counter == 1) {
                      # No data to plot yet - grey empty plot
-                     p <- ggplot() 
+                     p <- ggplot()
                      return(p)
                    }
                    
                    
-                   # browser()
-                   
                    # Generate time series plots for target watersheds
                    length(rv_pop_data_huc_ts$dat)
                    
-
+                   
                    # Get data for current run (from above)
                    pdat <- rv_pop_data_huc_ts$dat
                    
@@ -449,10 +501,11 @@ module_joe_vs_population_server <- function(id) {
                    }
                    
                    # Mege to a single clean data frame
-                   pdata_1 <- lapply(pdat, for_all_hucs, t_var = t_var)
+                   pdata_1 <-
+                     lapply(pdat, for_all_hucs, t_var = t_var)
                    pdata_1 <- do.call("rbind", pdata_1)
                    
-            
+                   
                    # ---------------------------------------------
                    # Generate plot for all life stages here (& lambda)...
                    # ---------------------------------------------
@@ -493,23 +546,26 @@ module_joe_vs_population_server <- function(id) {
                    # Summarize data by yearly averages across simulations with SD values
                    p3 <-
                      pdata_1 %>% dplyr::group_by(huc_id, year) %>% summarise(mean = mean(value, na.rm = TRUE),
-                                                                          sd = sd(value, na.rm = TRUE))
+                                                                             sd = sd(value, na.rm = TRUE))
                    
                    p3$lwr <- p3$mean - p3$sd
                    p3$upr <- p3$mean + p3$sd
                    
                    p3$lwr <- ifelse(is.na(p3$lwr), 0, p3$lwr)
                    p3$lwr <- ifelse(p3$lwr < 0, 0, p3$lwr)
-                   p3$upr <- ifelse(is.na(p3$upr), (mean(p3$mean, na.rm = TRUE) + mean(p3$sd, na.rm = TRUE)), p3$upr)
+                   p3$upr <-
+                     ifelse(is.na(p3$upr), (mean(p3$mean, na.rm = TRUE) + mean(p3$sd, na.rm = TRUE)), p3$upr)
                    
                    
                    p3$HUC <- p3$huc_id
                    p3$HUC <- as.character(p3$HUC)
                    p3$huc_id <- NULL
                    
+                   # Clean up mean to avoid large decimans
+                   p3$mean <- round(p3$mean, 1)
                    
                    
-                
+                   
                    # Create the ggplot plotting object
                    p <-
                      ggplot(data = p3,
@@ -536,8 +592,152 @@ module_joe_vs_population_server <- function(id) {
                  
                  
                  
+                 ###############################################
+                 # ---------------------------------------------
+                 # Render plots for Joe Model vs Pop Model
+                 # ---------------------------------------------
+                 ###############################################
+                 
+                 # -------------------------------------------------------------
+                 # Violin plot showing density by life stage
+                 # relative to reference
+                 output$violin_plots <- renderPlotly({
+                   print("Plotting joe_vs_pop_plots...")
+                   
+                   # Gather plot type to show from radio button
+                   # overview; by dose or Joe Model comparison
+                   
+                   # First time the modal is open plot screen should be blank
+                   if (rv_pop_data_huc_ts$run_counter == 1) {
+                     # No data to plot yet - grey empty plot
+                     p <- ggplot()
+                     return(p)
+                   }
+                   
+                   # Generate time series plots for target watersheds
+                   # Data object is structured as follows
+                   # Reactive Value for data from model run: rv_pop_data_huc_ts
+                   # dat: scenario reference; dat_baseline: no stressors
+                   # Object structure: [[watershed]][[replicate]]$N
+                   
+                   stress <- rv_pop_data_huc_ts$dat
+                   bl <- rv_pop_data_huc_ts$dat_baseline
+                   
+                   # Gather data from large data objects
+                   gather_ts_data <- function(obj) {
+                     #Gather the shed index from the parent object
+                     # Gather from within replicates
+                     gather_x <- function(x) {
+                       info <- data.frame(x$info)
+                       df <- data.frame(x$N)
+                       df$rep <- info$sim
+                       df$year <- 1:nrow(df)
+                       df$huc_id <- info$huc_id
+                       df$type <- info$type
+                       return(df)
+                     }
+                     reps <- lapply(obj, gather_x)
+                     reps <- do.call("rbind", reps)
+                     return(reps)
+                   }
+                   
+                   # Extract object for watersheds and baseline scenario
+                   df_stress <- lapply(stress, gather_ts_data)
+                   df_stress <- do.call("rbind", df_stress)
+                   
+                   df_bl <- lapply(bl, gather_ts_data)
+                   df_bl <- do.call("rbind", df_bl)
+                   
+                   # Set the shed ID of baseline to zero
+                   df_bl$huc_id <- 0
+                   
+                   # Prep for violin plot:
+                   df_violin <- rbind(df_stress, df_bl)
+                   
+                   df_violin$huc_id <-
+                     as.character(df_violin$huc_id)
+                   df_violin$huc_id <-
+                     ifelse(df_violin$huc_id == "0",
+                            "Baseline",
+                            df_violin$huc_id)
+                   
+                   df_violin <-
+                     df_violin[, c("X1", "X2", "X3", "X4", "rep", "year", "huc_id", "type")]
+                   colnames(df_violin) <-
+                     c("YOY",
+                       "JUV",
+                       "SUBADULT",
+                       "ADULT",
+                       "rep",
+                       "year",
+                       "huc_id",
+                       "type")
+                   
+                   df_violin_l <-
+                     reshape2::melt(df_violin, id.vars = c("rep", "year", "huc_id", "type"))
+                   
+                   p <- df_violin_l %>%
+                     ggplot(aes(x = huc_id, y = value, fill = huc_id)) +
+                     geom_violin(width = 1.1,
+                                 alpha = 0.6) +
+                     geom_boxplot(width = 0.1,
+                                  color = "grey",
+                                  alpha = 0.2) +
+                     facet_grid(rows = vars(variable), scales = "free") +
+                     ggtitle("HUC vs Baseline") +
+                     xlab("HUC UNIT") + ylab("Relative Abundance (#)")
+                   
+                   
+                   return(p)
+                   
+                 })
                  
                  
+                 # -------------------------------------------------------------
+                 # Stressor response plots for selection
+                 output$sr_plots <- renderPlotly({
+                   # First time the modal is open plot screen should be blank
+                   if (rv_pop_data_huc_ts$run_counter == 1) {
+                     # No data to plot yet - grey empty plot
+                     p <- ggplot()
+                     return(p)
+                   }
+                   
+                   # Gather the Joe Model response object
+                   dr_plot <- rv_pop_data_huc_ts$joe_model_comp
+                   
+                   # Give single meaningful name
+                   dr_plot$uvar <-
+                     paste0(dr_plot$Stressor, ": ", dr_plot$life_stage)
+                   dr_plot$addext <-
+                     ifelse(is.na(dr_plot$parameter),
+                            "",
+                            paste0(" (", dr_plot$parameter, ")"))
+                   
+                   #dr_plot$uvar <-
+                   #   paste0(dr_plot$uvar, dr_plot$addext)
+                   dr_plot$HUC <- as.character(dr_plot$HUC)
+                   
+                   # Remove any good variables with zero effect
+                   too_good <- dr_plot %>% group_by(uvar) %>%
+                     summarise(mmin = min(sys.cap))
+                   
+                   no_impact_vars <- too_good$uvar[which(too_good$mmin >= 0.99)]
+                   
+                   # Only show remaining
+                   dr_plot_remain <-
+                     dr_plot[which(!(dr_plot$uvar %in% no_impact_vars)),]
+                   
+                   p <- dr_plot_remain %>%
+                     ggplot(aes(x = dose, y = sys.cap, color = HUC)) +
+                     geom_point(alpha = 0.6) +
+                     coord_cartesian(ylim = c(0, 1)) +
+                     facet_wrap(vars(uvar), scales = "free_x", ncol = 3) +
+                     ggtitle("HUC Stressors") +
+                     xlab("Stressor Magnitude [DOSE]") + ylab("System Capacity (0 - 1) [RESPONSE]")
+                   
+                   return(p)
+                 })
                  
                })
 }
