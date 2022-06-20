@@ -124,31 +124,19 @@ module_joe_vs_population_server <- function(id) {
                          
                          tags$p("Evaluate stressors across does and life stage"),
                          
-                         radioButtons(
-                           ns("samp_plot_type_2"),
-                           "Plot type:",
-                           c(
-                             "Overview" = "overview",
-                             "By Dose" = "dose",
-                             "Joe Model Comparison" = "joe"
-                           ),
-                           inline  = TRUE
-                         ),
-                         
-                         
-                         tags$p("TODO add plot caption 1"),
+                         tags$p("TODO add plot caption 1..."),
                          
                          
                          plotlyOutput(ns("violin_plots"),
                                       height = "800px"),
                          
                          
-                         tags$p("TODO add plot caption 2"),
+                         tags$p("TODO add plot caption 2..."),
                          
                          plotlyOutput(ns("sr_plots"),
                                       height = "600px"),
                          
-                         tags$p("TODO add plot caption 3"),
+                         tags$p("TODO add plot caption 3..."),
                          
                        ),
                        
