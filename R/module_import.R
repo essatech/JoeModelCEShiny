@@ -19,8 +19,10 @@ module_import_ui <- function(id) {
     fluidRow(column(
       width = 12,
       tags$p(
-        "Click the ‘browse…’ button to upload files. Note that uploaded a new data source will overwrite all local changes and you will need to re-run your results. Stressor response files, stressor magnitude files and watershed polygons must all be validated externally, or you will experience errors. Please see notes below to ensure proper data format."
+        "Click the ‘browse…’ button to upload files. Note that uploaded a new data source will overwrite all local changes and you will need to re-run your results. Stressor response files, stressor magnitude files and watershed polygons must all be validated externally, or you will experience errors. Please see notes below to ensure proper data format. See sample data at the link below to help match "
       ),
+      tags$a(href = "https://github.com/essatech/JoeModelCEShiny/tree/main/data/demo", "https://github.com/essatech/JoeModelCEShiny/tree/main/data/demo"),
+      tags$p(""),
     )),
     
     fluidRow(
