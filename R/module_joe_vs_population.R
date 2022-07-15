@@ -67,7 +67,7 @@ module_joe_vs_population_server <- function(id) {
                        title = "Run the Population Model",
                        tagList(
                          tags$p(
-                           "Run the population model with cumulative effects for selected watersheds."
+                           "Run the population model with cumulative effects for selected watersheds. Model run time will be dependent on the number of years simulated (N-years) and the number of batch replicates (N-replicates)."
                          ),
                          
                          # Selected list of HUCs
@@ -102,7 +102,7 @@ module_joe_vs_population_server <- function(id) {
                          tags$h3("Time series projections"),
                          
                          tags$p(
-                           "Preview time-series projections for each selected watershed: Review the number of individuals by life stage or the time series of lambda values. Time series show mean values plus or minus one SD."
+                           "Preview time-series projections for each selected watershed. After the population model run is complete (or re-run/updated) the time series plots below will be updated to show the number of individuals simulated for each year of the simulation. Separate lines show the number of individuals in each HUC. If the plot is too messy try selecting fewer HUCs and then re-running. The default plot type shows the number of adults across each HUC through time. Change the plot type to switch between times series of adults, sub-adults, juveniles, YoY (young of year – fry, Age-0), and the population Lambda Values (calculated as Nt+1/Nt). Each time series shows mean values across batch replicates (lines). The grey bands around each line represent plus & minus one SD from the batch replicate model runs."
                          ),
                          
                          radioButtons(
@@ -124,19 +124,18 @@ module_joe_vs_population_server <- function(id) {
                          
                          tags$p("Evaluate stressors across does and life stage"),
                          
-                         tags$p("TODO add plot caption 1..."),
-                         
+                         tags$p("The boxplots plots (below) show results from the population model broken down by life stage (rows) and selected HUCs (columns). Each boxplot shows the abundance of individuals (across years and batch replicates). Individual histograms are shown for selected HUCs. An additional hypothetical reference (baseline) condition is also included (on the far left). The reference ‘No Stressors’ simulation is included for convenience to help visualize cumulative effects in reference to a hypothetical baseline where the effect of all stressors is set to zero. Variability within the ‘No Stressors’ simulation is attributed entirely to demographic effects. These plots are helpful to evaluate potential impacts on a given life stage and then determine if these trends are consistent across HUCs."),
                          
                          plotlyOutput(ns("violin_plots"),
                                       height = "800px"),
                          
                          
-                         tags$p("TODO add plot caption 2..."),
+                         tags$p("The HUC-Stressors plots (below) show results plotted across each stressor. As the population model is run across years and batch replicates, individual stressor magnitude values are continuously resampled for each of the selected HUCs (based on the mean and SD values originally provided in the stressor magnitude workbook). These plots are included to help piece together key environmental drivers that may be responsible for trends observed in the previous population time series and boxplots shown above. Each point represents the number of adults for a specific year and batch in the simulation. If the batch replicates or n-years are increased in the simulation more points will appear. If the SD is set to zero for an individual stressor, then there will be no variability across the x-axis and all points will overlap. To avoid clutter stressor plots are only included as panels if the response is less than 100%. If a stressor is not shown in the plots, then the system capacity is 100% for the selected HUCs."),
+                         
                          
                          plotlyOutput(ns("sr_plots"),
                                       height = "600px"),
                          
-                         tags$p("TODO add plot caption 3..."),
                          
                        ),
                        
@@ -646,7 +645,7 @@ module_joe_vs_population_server <- function(id) {
                      as.character(df_violin$huc_id)
                    df_violin$huc_id <-
                      ifelse(df_violin$huc_id == "0",
-                            "Baseline",
+                            "No Stressors",
                             df_violin$huc_id)
                    
                    df_violin <-
@@ -672,8 +671,8 @@ module_joe_vs_population_server <- function(id) {
                                   color = "grey",
                                   alpha = 0.2) +
                      facet_grid(rows = vars(variable), scales = "free") +
-                     ggtitle("HUC vs Baseline") +
-                     xlab("HUC UNIT") + ylab("Relative Abundance (#)")
+                     ggtitle("HUC vs Reference") +
+                     xlab("HUC UNIT") + ylab("Abundance (#)")
                    
                    
                    return(p)

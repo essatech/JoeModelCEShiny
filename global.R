@@ -114,8 +114,6 @@ library(plotly)
   # UNC: stressor_magnitude_unc_ARTR
   #file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_unc_ARTR.xlsx")
   file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_demo.xlsx")
-  #file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_fixed_rn_sqam.xlsx")
-  
   
   sm_wb_dat <-  JoeModelCE::StressorMagnitudeWorkbook(
                     filename = file_name_stressor_magnitude,

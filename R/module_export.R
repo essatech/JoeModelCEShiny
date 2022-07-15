@@ -20,7 +20,7 @@ module_export_ui <- function(id) {
                                   width = 6,
                                   tags$div(
                                     tags$p(
-                                      "Choose from the following files to export. Note that in some scenarios it may be more convenient to download the stressor magnitude and response Excel workbooks and then edit inputs for scenarios offline in Excel or other software. Users can then reupload the revised dataset and continue running new scenarios."
+                                      "Choose from the following files to export. Note that in some scenarios it may be more convenient to download the stressor-magnitude and stressor-response Excel workbooks and then edit inputs for scenarios offline in Excel or other software. Users can then reupload the revised dataset and continue running new scenarios."
                                     )
                                   ),
                                   

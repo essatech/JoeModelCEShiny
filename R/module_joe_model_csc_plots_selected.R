@@ -73,17 +73,31 @@ module_joe_model_csc_plots_selected_server <- function(id) {
             shinydashboard::box(
               width = 12,
               fluidRow(
-                tags$p("Selected HUCs"),
-                uiOutput(ns("list_selected_hucs"))
+                column(width = 12,
+                       tags$p("This section provides an overview of the Joe Model results for the entire study area. The following summary table describes the system capacity (SC) across each simulation (batch replicate). The first column describes variability in the global mean (across each batch replicate) and the second column describes variability across individual HUCs. A histogram is included (below) to visualize system capacity across all HUCs and batch replicates."),
+                )
               ),
               fluidRow(
-                column(DT::dataTableOutput(ns("csc_tables")), width = 8),
-                column(plotOutput(ns("csc_hist")), width = 4)
+                column(width = 10,
+                       tags$p("Selected HUCs"),
+                       uiOutput(ns("list_selected_hucs"))
+                       )
+              ),
+              fluidRow(
+                column(DT::dataTableOutput(ns("csc_tables")), width = 10)
+              ),
+              fluidRow(
+                column(plotOutput(ns("csc_hist")), width = 10)
               )
             ),
             fluidRow(
               shinydashboard::box(
                 width = 12,
+                fluidRow(
+                  column(width = 12,
+                         tags$p("Histograms of cumulative system capacity can also be generated individually for each HUC, however the rendering process is slow. Click the button below to generate cumulative system capacity plots across all selected HUCs individually."),
+                  )
+                ),
                 actionButton(ns("csc_show_all_plots"), "display individual plots for selected HUCs (slow rendering)"),
                 plotOutput(ns("csc_plot_panel")),
               )

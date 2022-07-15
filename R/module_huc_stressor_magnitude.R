@@ -77,6 +77,21 @@ module_huc_stressor_magnitude_server <- function(id) {
                                                         ns("stressor_inputs")
                                                       ))),
                          
+                         fluidRow(
+                           column(
+                             width = 12,
+                             tags$ul(
+                               tags$li("Stressor: Name of the stressor. Note that this field must match the spelling used in the stressor response workbook"), 
+                               tags$li("Mean: Mean value of the stressor for specific the target HUC. Please refer to the original dose-response workbook to determine units for each stressor."), 
+                               tags$li("SD: Standard deviation for the specific stressor for the target HUC. The value of each stressor will be resampled for each HUC based on the mean value and the SD. This resampling is to account for uncertainty and interannual variation in nature"),
+                               tags$li("Distribution: Resampling distribution use for resampling the HUC stressor value for each simulation. Can be either 'lognormal' or 'normal'. This is field only relevant for certain variables"),
+                               tags$li("Low_Limit: Lower limits for the HUC-specific stressor from resampling. Regardless of the Mean/SD values used, the stressor value sampled for this HUC will never be lower than the specified lower limit."),
+                               tags$li("Up_Limit: Upper limits for the HUC-specific stressor. Regardless of the Mean/SD values used, the stressor value sampled for this HUC will never be high than the specified upper limit."),
+                               tags$li("SysCap: The resulting stressor-specific system capacity for the individual HUC (or selected HUCs) based on the mean value.")
+                             ),
+                           )
+                         ),
+                         
                          fluidRow(column(
                            width = 12,
                            actionButton(ns("close_sm_modal"), "Close stressor-magnitude module", style = "margin: 15px;")
@@ -117,7 +132,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                        tags$h4(name, style = "color: #3c8dbc;"),
                        tags$h4(paste0("HUC ID: ", id), style = "color: #3c8dbc;"),
                        tags$p(
-                         "Click on cells in the table below to update the stressor magnitude for the selected unit. Adjust the mean value for each stressor (Mean), the standard deviation (SD), the distribution type (options are: normal or lognormal), the lower limit and upper limit (for stochastic simulations)."
+                         "Use this table to modify the underlying stressor values for selected HUCs. Users may wish to modify values to represent some type of recovery action or habitat loss. Click on cells in the table below to update the stressor magnitude for the selected unit. Adjust the mean value for each stressor (Mean), the standard deviation (SD), the distribution type (options are: normal or lognormal), the lower limit and upper limit (for stochastic simulations). If only one HUC is selected then values will appear in the table; however, if multiple HUCs are selected then the table will appear blank. When multiple HUCs are selected all modified values will be shared across the selected HUCs. The mean system capacity is shown for selected HUCs to provide a preview of the Joe Model output."
                        ),
                        tags$div(
                          uiOutput(ns("csc_huc_indicator"))

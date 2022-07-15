@@ -53,12 +53,12 @@ module_about_ui <- function(id) {
           "This interactive webtool is powered by the",
           tags$a(href = "https:essatech.github.io/JoeModelCE", "JoeModelCE R package,"),
           "which is a collection of functions to support the application of the Alberta Environmental Parks Cumulative Effects Assessment Joe Model",
-          tags$a(href = "https://waves-vagues.dfo-mpo.gc.ca/Library/40871344.pdf", "(AEP CEM; DFO 2019)"),
-          ", coupled with a flexible population modelling framework."
+          tags$a(href = "https://waves-vagues.dfo-mpo.gc.ca/Library/40871344.pdf", "(AEP CEM; DFO 2019),"),
+          "coupled with a flexible population modelling framework."
         ),
         
         tags$p(
-          "This webtool is part of a larger initiative to develop a framework for modelling cumulative impacts to Species at Risk (SAR) to guide recovery planning and adaptive management based on stressor-response functions related to taxa-specific threats. This framework allows users to generate models across a range of complexity and data quality, treating stressor-response functions as modular entities."
+          "This webtool is part of a larger initiative to develop a framework for modelling cumulative impacts to Species at Risk (SAR) to guide recovery planning and adaptive management based on stressor-response functions related to taxa-specific threats. This framework allows users to generate models across a range of complexity and data quality, treating stressor-response functions as modular entities. The Joe Model Cumulative Effect Tool is especially well suited for modelling cumulative effect and summarizing landscape-scale stressors for non-target fish species."
         ),
       
       tags$h3("Contributors", class = "ce-header-font"),
@@ -69,15 +69,17 @@ module_about_ui <- function(id) {
       
       tags$div(
         tags$ul(style = "list-style-type:none",
+          
+          tags$li(
+                  tags$a(href = "http://www.aferu.ca/rosenfeld-lab", "Dr. Jordan Rosenfeld:"),
+                  "Project design and coordination; ECCS Aquatic Ecologist"
+          ),
+                
           tags$li(
             tags$a(href = "https://profils-profiles.science.gc.ca/en/profile/eva-enders", "Dr. Eva Enders:"),
             "Project Lead; DFO Research Scientist"
           ),
           
-          tags$li(
-            tags$a(href = "http://www.aferu.ca/rosenfeld-lab", "Dr. Jordan Rosenfeld:"),
-            "Project design and coordination; ECCS Aquatic Ecologist"
-          ),
           
           tags$li(
             tags$a(href = "https://github.com/andrewpaul68", "Dr. Andrew Paul:"),
