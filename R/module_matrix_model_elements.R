@@ -121,6 +121,8 @@ module_matrix_model_elements_server <- function(id) {
                    } else {
                      
                      print("Parameters ok...")
+                     
+                    
                      # Build matrix elements for population model
                      pop_mod_mat <-
                        JoeModelCE::pop_model_matrix_elements(pop_mod_setup = pop_mod_setup)

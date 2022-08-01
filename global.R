@@ -1,6 +1,6 @@
 #---------------------------------------------------------------------
 # Shiny Global Imports
-# This is the Shiny App global script.
+# This is the Shiny App global script
 # This file is sourced and run once when the app first loads
 # See tutorial here: https://shiny.rstudio.com/articles/scoping.html
 #--------------------------------------------------------------------

@@ -17,7 +17,6 @@ server <- function(input, output, session) {
   module_import_server("import")
   
   
-  
   # Call the server function portion of the `scenario_table_module.R` module file
   print("Called scenario_table - ok")
   
