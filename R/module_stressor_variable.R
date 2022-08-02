@@ -148,7 +148,7 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
          showModal(modalDialog(
            title = paste0("Stressor-Response Relationship: ", this_var_pretty),
            tagList(
-             tags$p("Use the table below to edit and adjust the stressor-response (dose-response) relationship for the selected stressor. Click on cells in the table to adjust values. The graph shows the dose:response relationship between the raw stressor values (x-axis) and the mean system capacity (y-axis). The red line shows the mean value, and the shading represents uncertainty in the relationship. The red shading represents one standard deviation, and the grey shading represents the upper and lower bounds of min and max values."),
+             tags$p("Use the table below to edit and adjust the stressor-response (dose-response) relationship for August Flow rate. Click on cells in the table to adjust values. The graph shows the dose:response relationship between the raw stressor values (x-axis) and the mean system capacity (y-axis). The red line shows the mean value, and the shading represents uncertainty in the relationship. The red shading represents one standard deviation, and the grey shading represents the upper and lower bounds of min and max values. Click and drag within the graph window to zoom in on particular trends; double-click the graph to zoom out to full view."),
              tags$b(textOutput(ns("text_preview"))),
               fluidRow(
                 shinydashboard::box(

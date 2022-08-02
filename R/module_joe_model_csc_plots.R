@@ -66,7 +66,7 @@ module_joe_model_csc_plots_server <- function(id) {
                 width = 12,
                 fluidRow(
                   column(width = 12,
-                         tags$p("This section provides an overview of the Joe Model results for the entire study area. The following summary table describes the system capacity (SC) across each simulation (batch replicate). The first column describes variability in the global mean (across each batch replicate) and the second column describes variability across individual HUCs. A histogram is included (below) to visualize system capacity across all HUCs and batch replicates."),
+                         tags$p("This section provides an overview of the Joe Model results for the entire study area. The following table contains summary statistics for the system capacity (SC) across each simulation (batch replicate). The first column describes variability in the global mean (how each batch replicate varies) and the second column describes variability across individual HUCs. A histogram is included (below) to visualize system capacity across all HUCs and batch replicates."),
                          )
                 ),
                 fluidRow(
@@ -83,7 +83,7 @@ module_joe_model_csc_plots_server <- function(id) {
                 width = 12,
                 fluidRow(
                   column(width = 12,
-                         tags$p("Histograms of cumulative system capacity can also be generated individually for each HUC, however the rendering process is slow. Click the button below to generate cumulative system capacity plots across all HUCs individually."),
+                         tags$p("Histograms of cumulative system capacity can also be generated individually for each HUC, however the rendering process is slow. Click the button below to generate cumulative system capacity plots across all selected HUCs individually. Colours in the graph represent percentile breaks."),
                   )
                 ),
                 actionButton(ns("csc_show_all_plots"), "display individual plots for all HUCs (slow rendering)"),
@@ -138,7 +138,7 @@ module_joe_model_csc_plots_server <- function(id) {
         my_dt <- DT::datatable(
           df_csc_res,
           editable =  FALSE,
-          caption = "Mean system capacity summary tables across all simulations for the entire system (Across Simulations) and across individual HUCs (Across HUCs)",  
+          caption = "MMean system capacity summary tables across all simulations for the entire system (Global Mean SCAcross Simulations) and across individual HUCs (Across HUCs)",  
           colnames = c('Global Mean SC (per simulation, %)' = 'sims', 'Mean SC Across HUCs (%)' = 'hucs'),
           filter = "none",
           selection = "single",

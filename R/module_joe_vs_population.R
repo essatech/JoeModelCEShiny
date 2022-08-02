@@ -67,7 +67,7 @@ module_joe_vs_population_server <- function(id) {
                        title = "Run the Population Model",
                        tagList(
                          tags$p(
-                           "Run the population model with cumulative effects for selected watersheds. Model run time will be dependent on the number of years simulated (N-years) and the number of batch replicates (N-replicates)."
+                           "Run the population model with cumulative effects for selected watersheds. The time it takes for the model to run depends dependent on the number of years simulated (N-years) and the number of batch replicates specified (N-replicates). Click ‘Run Population Model’ when these values are set. The population model will run for the following HUCs selected:"
                          ),
                          
                          # Selected list of HUCs
@@ -102,7 +102,7 @@ module_joe_vs_population_server <- function(id) {
                          tags$h3("Time series projections"),
                          
                          tags$p(
-                           "Preview time-series projections for each selected watershed. After the population model run is complete (or re-run/updated) the time series plots below will be updated to show the number of individuals simulated for each year of the simulation. Separate lines show the number of individuals in each HUC. If the plot is too messy try selecting fewer HUCs and then re-running. The default plot type shows the number of adults across each HUC through time. Change the plot type to switch between times series of adults, sub-adults, juveniles, YoY (young of year – fry, Age-0), and the population Lambda Values (calculated as Nt+1/Nt). Each time series shows mean values across batch replicates (lines). The grey bands around each line represent plus & minus one SD from the batch replicate model runs."
+                           "The following graph shows the model prediction for abundance (N) for the modelled species in each selected watershed over the number of simulated years (Simulation Year). If the plot is too messy try selecting fewer HUCs and then re-running, as each line in the graph represents the number of individuals in given HUC. The plot defaults to show the number of adults across each HUC through time but a time series for sub-adults, juveniles, and YoY (young of year - fry, Age-0) abundance, as well as the population Lambda Values (calculated as Nt+1/Nt), are also available. Each time series shows mean values across batch replicates (lines). The grey bands around each HUC line represent plus & minus one SD from the batch replicate model runs. Mouse over the features within this plot to explore approximate values. After inputs have been changed rerun the simulation to update the data."
                          ),
                          
                          radioButtons(
@@ -122,15 +122,15 @@ module_joe_vs_population_server <- function(id) {
                          
                          tags$h3("Stressor Evaluation"),
                          
-                         tags$p("Evaluate stressors across does and life stage"),
+                         tags$p("Evaluate stressors across dose and life stage"),
                          
-                         tags$p("The boxplots plots (below) show results from the population model broken down by life stage (rows) and selected HUCs (columns). Each boxplot shows the abundance of individuals (across years and batch replicates). Individual histograms are shown for selected HUCs. An additional hypothetical reference (baseline) condition is also included (on the far left). The reference ‘No Stressors’ simulation is included for convenience to help visualize cumulative effects in reference to a hypothetical baseline where the effect of all stressors is set to zero. Variability within the ‘No Stressors’ simulation is attributed entirely to demographic effects. These plots are helpful to evaluate potential impacts on a given life stage and then determine if these trends are consistent across HUCs."),
+                         tags$p("The plots below show results from the population model broken down by life stage (rows) and selected HUCs (columns). Each violin plot shows the abundance of individuals (across years and batch replicates).  The ‘No Stressors’ simulation is automatically included to help visualize cumulative effects in a hypothetical scenario wherein the effect of all stressors is set to zero. Variability within the ‘No Stressors’ simulation is purely caused by demographic effects. These plots are helpful to evaluate potential impacts on a given life stage and then determine if these trends are consistent across other the selected other selected HUCs. Mouse over the plots in this graph to explore approximate values."),
                          
                          plotlyOutput(ns("violin_plots"),
                                       height = "800px"),
                          
                          
-                         tags$p("The HUC-Stressors plots (below) show results plotted across each stressor. As the population model is run across years and batch replicates, individual stressor magnitude values are continuously resampled for each of the selected HUCs (based on the mean and SD values originally provided in the stressor magnitude workbook). These plots are included to help piece together key environmental drivers that may be responsible for trends observed in the previous population time series and boxplots shown above. Each point represents the number of adults for a specific year and batch in the simulation. If the batch replicates or n-years are increased in the simulation more points will appear. If the SD is set to zero for an individual stressor, then there will be no variability across the x-axis and all points will overlap. To avoid clutter stressor plots are only included as panels if the response is less than 100%. If a stressor is not shown in the plots, then the system capacity is 100% for the selected HUCs."),
+                         tags$p("The HUC-Stressors scatterplots (below) show the results of each stressor in which a given HUC has less than 100% system capacity.  As the population model is run across years and batch replicates, individual stressor magnitude values are continuously resampled for each of the selected HUCs (based on the mean and SD values originally provided in the stressor magnitude workbook). These plots are included here to help piece together key environmental drivers that may be responsible for any trends observed in the above HUC vs Reference and Abundance Time series projection plots. Each point represents the number of adults for a specific year and batch in the simulation. If the batch replicates or n-years are increased in the simulation more points will appear. If the SD is set to zero for an individual stressor, then there will be no variability across the x-axis and all points will overlap."),
                          
                          
                          plotlyOutput(ns("sr_plots"),

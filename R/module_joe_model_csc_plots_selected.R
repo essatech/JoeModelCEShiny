@@ -65,7 +65,7 @@ module_joe_model_csc_plots_selected_server <- function(id) {
       # Display the CSC plots for SELECTED watersheds
       observeEvent(input$open_joe_modal_csc_plots_selected, {
         
-        print("Joe model results for selected HUCs modal ...")
+        print("Joe model results for selected HUCs modal...")
         # Gather a list of all the stessors to build the checkbox list
         showModal(modalDialog(
           title = "Cumulative System Capacity Plots - Selected HUCs",
@@ -74,7 +74,7 @@ module_joe_model_csc_plots_selected_server <- function(id) {
               width = 12,
               fluidRow(
                 column(width = 12,
-                       tags$p("This section provides an overview of the Joe Model results for the entire study area. The following summary table describes the system capacity (SC) across each simulation (batch replicate). The first column describes variability in the global mean (across each batch replicate) and the second column describes variability across individual HUCs. A histogram is included (below) to visualize system capacity across all HUCs and batch replicates."),
+                       tags$p("This section provides the Joe Model results for the selected HUCs. The following table contains summary statistics for the system capacity (SC) across each simulation (batch replicate). The first column describes variability in the global mean (how each batch replicate varies) and the second column describes variability across the selected HUCs. A histogram is included (below) to visualize system capacity across selected HUCs and batch replicates."),
                 )
               ),
               fluidRow(
@@ -170,7 +170,7 @@ module_joe_model_csc_plots_selected_server <- function(id) {
         my_dt <- DT::datatable(
           df_csc_res,
           editable =  FALSE,
-          caption = "Mean system capacity summary tables across all simulations for selected HUCs (subset)",  
+          caption = "Mean system capacity summary across all simulations for selected HUCs (subset)",  
           colnames = c('Global Mean SC (per simulation, %)' = 'sims', 'Mean SC Across Selected HUCs (%)' = 'hucs'),
           filter = "none",
           selection = "single",

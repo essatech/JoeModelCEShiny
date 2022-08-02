@@ -54,11 +54,11 @@ module_about_ui <- function(id) {
           tags$a(href = "https:essatech.github.io/JoeModelCE", "JoeModelCE R package,"),
           "which is a collection of functions to support the application of the Alberta Environmental Parks Cumulative Effects Assessment Joe Model",
           tags$a(href = "https://waves-vagues.dfo-mpo.gc.ca/Library/40871344.pdf", "(AEP CEM; DFO 2019),"),
-          "coupled with a flexible population modelling framework."
+          "coupled with a flexible population modelling framework. The AEP Joe Model is designed to assess threats to aquatic species within Alberta and prioritize recovery, research, and regulation efforts to watersheds of concern."
         ),
         
         tags$p(
-          "This webtool is part of a larger initiative to develop a framework for modelling cumulative impacts to Species at Risk (SAR) to guide recovery planning and adaptive management based on stressor-response functions related to taxa-specific threats. This framework allows users to generate models across a range of complexity and data quality, treating stressor-response functions as modular entities. The Joe Model Cumulative Effect Tool is especially well suited for modelling cumulative effect and summarizing landscape-scale stressors for non-target fish species."
+          "This webtool is part of a larger initiative to develop a framework for modelling cumulative impacts to Species at Risk (SAR). It is designed to examine stressor-response functions related to taxa-specific threats and guide recovery planning and adaptive management. The framework allows users to generate models across a range of complexity and data quality, treating stressor-response functions as modular entities. The Joe Model Cumulative Effect Tool is especially well suited for modelling cumulative effect and summarizing landscape-scale stressors for non-target fish species."
         ),
       
       tags$h3("Contributors", class = "ce-header-font"),
