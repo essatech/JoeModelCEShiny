@@ -84,7 +84,7 @@ module_import_ui <- function(id) {
                  ns("up_sheds"),
                  label = "polygons as .gpkg file",
                  multiple = FALSE,
-                 accept = c(".gpkg")
+                 accept = c(".gpkg", ".shp")
                ),
                div(style = "color: #ffffff; background: #ff000059; border-radius: 5px; margin: 5px;",
                    textOutput(ns(

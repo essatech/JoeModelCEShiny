@@ -345,12 +345,13 @@ module_matrix_model_preview_server <- function(id) {
                    if(plot_type == "allstage") {
                      pdata_1$sim <- NULL # Not showing current previous
                      # Reshape and relabel
+
                      p2 <- reshape2::melt(pdata_1, id = "year")
                      p2$stage <- as.character(p2$variable)
-                     p2$stage <- ifelse(p2$stage == "V1", "YOY", p2$stage)
-                     p2$stage <- ifelse(p2$stage == "V2", "Juveniles", p2$stage)
-                     p2$stage <- ifelse(p2$stage == "V3", "Sub-Adults", p2$stage)
-                     p2$stage <- ifelse(p2$stage == "V4", "Adults", p2$stage)
+                     p2$stage <- ifelse(p2$stage == "V1", "Stage 1", p2$stage)
+                     p2$stage <- ifelse(p2$stage == "V2", "Stage 2", p2$stage)
+                     p2$stage <- ifelse(p2$stage == "V3", "Stage 3", p2$stage)
+                     p2$stage <- ifelse(p2$stage == "V4", "Stage 4", p2$stage)
                      # Summarize averages by life stage
                      p3 <- p2 %>% dplyr::group_by(year, stage) %>% summarise(
                        mean = mean(value, na.rm = TRUE),
@@ -476,10 +477,10 @@ module_matrix_model_preview_server <- function(id) {
                        tagList(
                          
                          radioButtons(ns("samp_plot_type"), "Plot type:",
-                                      c("Adults" = "adult",
-                                        "Sub-Adults" = "subadult",
-                                        "Juveniles" = "juv",
-                                        "YoY" = "yoy",
+                                      c("Stage 4" = "adult",
+                                        "Stage 3" = "subadult",
+                                        "Stage 2" = "juv",
+                                        "Stage 1" = "yoy",
                                         "Lambda" = "lambda",
                                         "All Life Stages" = "allstage"),
                                       inline  = TRUE),

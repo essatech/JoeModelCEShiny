@@ -7,14 +7,10 @@
 
 rm(list = ls())
 
-# Load local package
-# library(devtools) 
-# remove.packages("JoeModelCE")
-# devtools::install(pkg = "../package/JoeModelCE/", upgrade = "always")
-# devtools::install_github("essatech/JoeModelCE")
-# library(JoeModelCE) 
-# file.sources  <- list.files(path = "../JoeModelCE/R/", pattern = "*.R")
-# sapply(paste0("../JoeModelCE/R/", file.sources), source, .GlobalEnv)
+# Download the Joe Model
+# See download instructions here: https://github.com/essatech/JoeModelCE/
+# library(remotes)
+# remotes::install_github("essatech/JoeModelCE")
 library(JoeModelCE) 
 
 # Load necessary libraries
@@ -52,8 +48,6 @@ library(ggplot2)
 library(shinyvalidate)
 library(ggthemes)
 library(plotly)
-
-
 
 #load libraries for the functions
 # library(pracma) #needed for fsolve
@@ -139,6 +133,12 @@ library(plotly)
   rv_eigen_analysis <- reactiveValues(
     dat = list()
   )
+  
+  rv_demo_matricies <- reactiveValues(
+    set = 1,
+    dat = list()
+  )
+  
   rv_ea_errors <- reactiveValues(
     possible_error_state = FALSE,
     possible_error_msg = ""

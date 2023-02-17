@@ -21,32 +21,32 @@ module_matrix_model_inputs_ui <- function(id) {
     fluidRow(
       column(
         width = 4,
-        numericInput(ns("SE"), label = "Egg Survival", value = life_stages$Value[which(life_stages$Name == "SE")]),
+        numericInput(ns("SE"), label = "SE (Egg Survival)", value = life_stages$Value[which(life_stages$Name == "SE")]),
       ),
       column(
         width = 4,
-        numericInput(ns("S0"), label = "YOY Survival", value = life_stages$Value[which(life_stages$Name == "S0")]),
+        numericInput(ns("S0"), label = "S0 (YOY Survival)", value = life_stages$Value[which(life_stages$Name == "S0")]),
       ),
       column(
         width = 4,
-        numericInput(ns("surv_1"), label = "Hatchling Survival", value = life_stages$Value[which(life_stages$Name == "surv_1")]),
+        numericInput(ns("surv_1"), label = "surv_1 (Stage 1 Survival)", value = life_stages$Value[which(life_stages$Name == "surv_1")]),
       ),
     ),
     
     fluidRow(
       column(
         width = 4,
-        numericInput(ns("surv_2"), label = "Juvenile Survival", value = life_stages$Value[which(life_stages$Name == "surv_2")]),
+        numericInput(ns("surv_2"), label = "surv_2 (Stage 2 Survival)", value = life_stages$Value[which(life_stages$Name == "surv_2")]),
         
       ),
       column(
         width = 4,
-        numericInput(ns("surv_3"), label = "Sub-Adult Survival", value = life_stages$Value[which(life_stages$Name == "surv_3")]),
+        numericInput(ns("surv_3"), label = "surv_3 (Stage 3 Survival)", value = life_stages$Value[which(life_stages$Name == "surv_3")]),
         
       ),
       column(
         width = 4,
-        numericInput(ns("surv_4"), label = "Adult Survival", value = life_stages$Value[which(life_stages$Name == "surv_4")]),
+        numericInput(ns("surv_4"), label = "surv_4 (Stage 4 Survival)", value = life_stages$Value[which(life_stages$Name == "surv_4")]),
         
       ),
     ),
@@ -56,11 +56,11 @@ module_matrix_model_inputs_ui <- function(id) {
     fluidRow(
       column(
         width = 6,
-        numericInput(ns("M.cv"), label = "Coefficient of variation in stage-specific mortality", value = life_stages$Value[which(life_stages$Name == "M.cv")]),
+        numericInput(ns("M.cv"), label = "M.cv (Coefficient of variation in stage-specific mortality)", value = life_stages$Value[which(life_stages$Name == "M.cv")]),
       ),
       column(
         width = 6,
-        numericInput(ns("M.rho"), label = "Correlation in mortality through time", value = life_stages$Value[which(life_stages$Name == "M.rho")]),
+        numericInput(ns("M.rho"), label = "M.rho (Correlation in mortality through time)", value = life_stages$Value[which(life_stages$Name == "M.rho")]),
         
       )
       
@@ -75,19 +75,19 @@ module_matrix_model_inputs_ui <- function(id) {
     fluidRow(
       column(
         width = 3,
-        numericInput(ns("year_1"), label = "Years as Hatchling", value = life_stages$Value[which(life_stages$Name == "year_1")]),
+        numericInput(ns("year_1"), label = "year_1 (Years as Stage 1)", value = life_stages$Value[which(life_stages$Name == "year_1")]),
       ),
       column(
         width = 3,
-        numericInput(ns("year_2"), label = "Years as Juvenile", value = life_stages$Value[which(life_stages$Name == "year_2")]),
+        numericInput(ns("year_2"), label = "year_2 (Years as Stage 2)", value = life_stages$Value[which(life_stages$Name == "year_2")]),
       ),
       column(
         width = 3,
-        numericInput(ns("year_3"), label = "Years as Subadult", value = life_stages$Value[which(life_stages$Name == "year_3")]),
+        numericInput(ns("year_3"), label = "year_3 (Years as Stage 3)", value = life_stages$Value[which(life_stages$Name == "year_3")]),
       ),
       column(
         width = 3,
-        numericInput(ns("year_4"), label = "Years as Adult", value = life_stages$Value[which(life_stages$Name == "year_4")]),
+        numericInput(ns("year_4"), label = "year_4 (Years as Stage 4)", value = life_stages$Value[which(life_stages$Name == "year_4")]),
       ),
     ),
     
@@ -101,15 +101,15 @@ module_matrix_model_inputs_ui <- function(id) {
     fluidRow(
       column(
         width = 4,
-        numericInput(ns("events"), label = "Spawn Events per Female", value = life_stages$Value[which(life_stages$Name == "events")]),
+        numericInput(ns("events"), label = "events (Spawn Events per Female)", value = life_stages$Value[which(life_stages$Name == "events")]),
       ),
       column(
         width = 4,
-        numericInput(ns("eps"), label = "Eggs per Female Spawner", value = life_stages$Value[which(life_stages$Name == "eps")]),
+        numericInput(ns("eps"), label = "eps (Eggs per Female Spawner)", value = life_stages$Value[which(life_stages$Name == "eps")]),
       ),
       column(
         width = 4,
-        numericInput(ns("eps_sd"), label = "Variance in Eggs per Female", value = life_stages$Value[which(life_stages$Name == "eps_sd")]),
+        numericInput(ns("eps_sd"), label = "eps_sd (Variance in Eggs per Female)", value = life_stages$Value[which(life_stages$Name == "eps_sd")]),
       ),
       
     ),
@@ -119,11 +119,11 @@ module_matrix_model_inputs_ui <- function(id) {
     fluidRow(
       column(
         width = 6,
-        numericInput(ns("egg_rho"), label = "Correlation in egg fecundity through time (Egg Rho)", value = life_stages$Value[which(life_stages$Name == "egg_rho")]),
+        numericInput(ns("egg_rho"), label = "egg_rho (Correlation in egg fecundity through time)", value = life_stages$Value[which(life_stages$Name == "egg_rho")]),
       ),
       column(
         width = 6,
-        numericInput(ns("int"), label = "Spawning Interval (int)", value = life_stages$Value[which(life_stages$Name == "int")])
+        numericInput(ns("int"), label = "int (Spawning Interval - years)", value = life_stages$Value[which(life_stages$Name == "int")])
       )
     ),
     
@@ -132,19 +132,19 @@ module_matrix_model_inputs_ui <- function(id) {
     fluidRow(
       column(
         width = 3,
-        numericInput(ns("mat_1"), label = "Maturity as Hatchling", value = life_stages$Value[which(life_stages$Name == "mat_1")]),
+        numericInput(ns("mat_1"), label = "mat_1 (Maturity as Stage 1)", value = life_stages$Value[which(life_stages$Name == "mat_1")]),
       ),
       column(
         width = 3,
-        numericInput(ns("mat_2"), label = "Maturity as Juvenile", value = life_stages$Value[which(life_stages$Name == "mat_2")]),
+        numericInput(ns("mat_2"), label = "mat_2 (Maturity as Stage 2)", value = life_stages$Value[which(life_stages$Name == "mat_2")]),
       ),
       column(
         width = 3,
-        numericInput(ns("mat_3"), label = "Maturity as Subadult", value = life_stages$Value[which(life_stages$Name == "mat_3")]),
+        numericInput(ns("mat_3"), label = "mat_3 (Maturity as Stage 3)", value = life_stages$Value[which(life_stages$Name == "mat_3")]),
       ),
       column(
         width = 3,
-        numericInput(ns("mat_4"), label = "Maturity as Adult", value = life_stages$Value[which(life_stages$Name == "mat_4")]),
+        numericInput(ns("mat_4"), label = "mat_4 (Maturity as Stage 4)", value = life_stages$Value[which(life_stages$Name == "mat_4")]),
       )
     ),
     
@@ -158,7 +158,7 @@ module_matrix_model_inputs_ui <- function(id) {
     
     fluidRow(column(
       width = 12,
-      numericInput(ns("k"), label = "Adult Carrying Capacity (K)", value = life_stages$Value[which(life_stages$Name == "k")]),
+      numericInput(ns("k"), label = "(K) Stage 4 - Adult Carrying Capacity", value = life_stages$Value[which(life_stages$Name == "k")]),
       
     )),
     
@@ -171,15 +171,15 @@ module_matrix_model_inputs_ui <- function(id) {
     fluidRow(
       column(
         width = 4,
-        numericInput(ns("cr_E"), label = "Egg Survival CR", value = life_stages$Value[which(life_stages$Name == "cr_E")]),
+        numericInput(ns("cr_E"), label = "cr_E (Egg Survival CR)", value = life_stages$Value[which(life_stages$Name == "cr_E")]),
       ),
       column(
         width = 4,
-        numericInput(ns("cr_0"), label = "YOY Survival CR", value = life_stages$Value[which(life_stages$Name == "cr_0")]),
+        numericInput(ns("cr_0"), label = "cr_0 (Stage 0 Survival CR)", value = life_stages$Value[which(life_stages$Name == "cr_0")]),
       ),
       column(
         width = 4,
-        numericInput(ns("cr_1"), label = "Hatchling Survival CR", value = life_stages$Value[which(life_stages$Name == "cr_1")]),
+        numericInput(ns("cr_1"), label = "cr_1 (Stage 1 Survival CR)", value = life_stages$Value[which(life_stages$Name == "cr_1")]),
       ),
       
     ),
@@ -189,15 +189,15 @@ module_matrix_model_inputs_ui <- function(id) {
     fluidRow(
       column(
         width = 4,
-        numericInput(ns("cr_2"), label = "Juvenile Survival CR", value = life_stages$Value[which(life_stages$Name == "cr_2")]),
+        numericInput(ns("cr_2"), label = "cr_2 (Stage 2 Survival CR)", value = life_stages$Value[which(life_stages$Name == "cr_2")]),
       ),
       column(
         width = 4,
-        numericInput(ns("cr_3"), label = "Subadult Survival CR", value = life_stages$Value[which(life_stages$Name == "cr_3")]),
+        numericInput(ns("cr_3"), label = "cr_3 (Stage 3 Survival CR)", value = life_stages$Value[which(life_stages$Name == "cr_3")]),
       ),
       column(
         width = 4,
-        numericInput(ns("cr_4"), label = "Adult Survival CR", value = life_stages$Value[which(life_stages$Name == "cr_4")]),
+        numericInput(ns("cr_4"), label = "cr_4 (Stage 4 Survival CR)", value = life_stages$Value[which(life_stages$Name == "cr_4")]),
       ),
       
     ),
@@ -210,7 +210,7 @@ module_matrix_model_inputs_ui <- function(id) {
     
     fluidRow(column(
       width = 6,
-      numericInput(ns("SR"), label = "Sex ratio (portion female at birth)", value = life_stages$Value[which(life_stages$Name == "SR")]),
+      numericInput(ns("SR"), label = " SR - Sex ratio (portion female at birth)", value = life_stages$Value[which(life_stages$Name == "SR")]),
     ))
     
   )
