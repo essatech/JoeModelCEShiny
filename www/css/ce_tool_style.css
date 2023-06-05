@@ -20,7 +20,7 @@
 .main-title {
   font-family: "Space Grotesk Bold", -apple-system, BlinkMacSystemFont, Roboto, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-weight: bolder;
-  font-size: 60px;
+  font-size: 40px;
   padding-bottom: 40px;
   color: #ea2200;
   -webkit-text-stroke: 2px #3e3e3e;
@@ -191,5 +191,12 @@
     font-weight: bold;
     color: #3c8dbc;
     padding-left: 15px;
+}
+
+/* No text overflow and other issues */
+.clean-button {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 

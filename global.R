@@ -11,6 +11,7 @@ rm(list = ls())
 # See download instructions here: https://github.com/essatech/JoeModelCE/
 # library(remotes)
 # remotes::install_github("essatech/JoeModelCE")
+# library(shiny); runApp()
 library(JoeModelCE) 
 
 # Load necessary libraries
@@ -77,8 +78,8 @@ library(plotly)
   # Load Stressor Response Files 
   file_name_stressor_response <- paste0("./data/stressor_response_demo.xlsx")
   #file_name_stressor_response <- paste0("./data/stressor-response_fixed_sqam.xlsx")
+  #file_name_stressor_response <- paste0("./data/testing/matrix_test/stressor_response_matrix.xlsx")
 
-  
   # Extract the stressor response relationships
   sr_wb_dat <- JoeModelCE::StressorResponseWorkbook(filename = file_name_stressor_response)
   names(sr_wb_dat)
@@ -95,7 +96,9 @@ library(plotly)
     active_values_raw      = NULL,
     active_values_response = NULL,
     active_refresh         = start_time,
-    hover_values           = FALSE
+    hover_values           = FALSE,
+    interaction_names = names(sr_wb_dat$MInt),
+    interaction_values = sr_wb_dat$MInt
   )
 
   
@@ -108,7 +111,8 @@ library(plotly)
   # UNC: stressor_magnitude_unc_ARTR
   #file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_unc_ARTR.xlsx")
   file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_demo.xlsx")
-  
+  #file_name_stressor_magnitude <- paste0("./data/testing/matrix_test/stressor_magnitude_matrix.xlsx")
+
   sm_wb_dat <-  JoeModelCE::StressorMagnitudeWorkbook(
                     filename = file_name_stressor_magnitude,
                     scenario_worksheet = 1) # natural_unc
@@ -178,7 +182,8 @@ library(plotly)
   # Load in the default watersheds geojson layer - Athabasca
   hmdl <- sf::st_read("./data/watersheds.gpkg")
   #hmdl <- sf::st_read("./data/sqam.gpkg")
-  
+  #hmdl <- sf::st_read("./data/testing/matrix_test/poly.shp")
+
   hmdl$HUC_ID <- as.numeric(hmdl$HUC_ID)
   hmdl$uid <- paste0(hmdl$HUC_ID, "|", hmdl$NAME)
 

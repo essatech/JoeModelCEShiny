@@ -12,7 +12,7 @@ module_joe_model_run_ui <- function(id) {
   # Single action button to call modal
   actionButton(ns("open_joe_modal_form"),
                   tags$b("Joe Model"),
-                  class="chart-line",
+                  class="chart-line clean-button",
                   width = "100%")
 
 }
@@ -119,6 +119,14 @@ module_joe_model_run_server <- function(id) {
         # Filter to exlcude any variables associated with early life stages
         stressors <- stressors[which(stressors %in% s_acceptable)]
 
+        # Add on interaction matrix (if any exist)
+        mmat <- isolate(rv_stressor_response$interaction_names)
+        if(!is.null(mmat)) {
+          stressors <- c(stressors, mmat)
+          # library(shiny); runApp()
+        }
+
+
         if(is.null(stressors)) {
             updateCheckboxGroupInput(session,
             "check_box_group",
@@ -126,6 +134,7 @@ module_joe_model_run_server <- function(id) {
             selected = c(),
             inline = TRUE)
         } else {
+            
             print("Checkboxes will be ..")
             print(stressors)
 
@@ -246,7 +255,7 @@ module_joe_model_run_server <- function(id) {
       #-------------------------------------------------------
       # Run the Joe model and store the results
       observeEvent(input$go_button_run_joe, {
-        
+
           # Get the estimated run time 
           e_run_time <- pretty_print_seconds(rv_joe_model_run_time$run_time_seconds)
 
@@ -286,8 +295,19 @@ module_joe_model_run_server <- function(id) {
           
           # Filter the stressor magnitude too
           sm_wb_dat_in <- sm_wb_dat_in[which(sm_wb_dat_in$Stressor %in% selected_variables), ]
-          
-          print("Running the Joe Model...")
+
+          # Check to see if any matrix interaction surfaces are selected
+          if(any(grepl("MInt_", selected_variables))) {
+            mc_int <- isolate(rv_stressor_response$interaction_values)
+            names(mc_int)
+            mc_int <- mc_int[names(mc_int) %in% selected_variables]
+            # if a matrix surface is incldued then add it here..
+            if(length(names(mc_int)) > 0) {
+              sr_wb_dat_in$MInt <- mc_int
+              print("Included matrix interaction surfaces:")
+              print(names(mc_int))
+            }
+          } # library(shiny); runApp()
           
 
           # Try running the Joe model

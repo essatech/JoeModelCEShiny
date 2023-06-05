@@ -24,6 +24,7 @@ sidebar_tab_ui <- function(id) {
       menuItem("About", tabName = "tab_about", icon = icon("info")),
       menuItem("Map Overview", tabName = "tab_main_map", icon = icon("map")),
       menuItem("Population Model", tabName = "tab_matrix_model", icon = icon("sliders-h")),
+      menuItem("Stressor Sandbox", tabName = "tab_stressor_sandbox", icon = icon("asterisk")),
       menuItem("Upload Data", tabName = "tab_import", icon = icon("upload")),
       menuItem("Download Data", tabName = "tab_export", icon = icon("download"))
       

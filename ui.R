@@ -6,6 +6,7 @@
 # with shiny modules
 # See tutorial here: https://shiny.rstudio.com/articles/modules.html
 #--------------------------------------------------------------------
+# library(shiny); runApp()
 ui <- dashboardPage(
   skin = "blue-light",
   
@@ -15,7 +16,7 @@ ui <- dashboardPage(
   # --------------------- ----------------------------------------
   # HEADER - page title.
   header = dashboardHeader(
-    title = "Joe Model - Cumulative Effect Tool",
+    title = "CEMPRA - Cumulative Effects Model for Prioritizing Recovery Actions",
     titleWidth = "100%"
   ),
   
@@ -57,6 +58,11 @@ ui <- dashboardPage(
       ),
       tabItem("tab_matrix_model",
               module_matrix_model_ui("matrix_model")
+      ),
+      tabItem("tab_stressor_sandbox",
+        tags$p("tab_stressor_sandbox")
+              #module_matrix_model_ui("matrix_model")
+              # library(shiny); runApp()
       ),
       tabItem("tab_import",
               module_import_ui("import")

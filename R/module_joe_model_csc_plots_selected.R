@@ -12,7 +12,7 @@ module_joe_model_csc_plots_selected_ui <- function(id) {
   # Single action button to call modal
   actionButton(ns("open_joe_modal_csc_plots_selected"),
                tags$b("Selected watersheds"),
-               class="chart-line",
+               class="chart-line clean-button",
                width = "100%")
   
 }

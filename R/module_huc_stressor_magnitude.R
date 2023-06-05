@@ -15,7 +15,7 @@ module_huc_stressor_magnitude_ui <- function(id) {
   actionButton(
     ns("adjust_stressor_magnitude"),
     tags$b("Adjust Magnitude"),
-    class = "chart-line",
+    class = "chart-line clean-button",
     width = "100%"
   )
   
@@ -207,12 +207,21 @@ module_huc_stressor_magnitude_server <- function(id) {
                      sr_wb_dat_copy$main_sheet <- isolate(rv_stressor_response$main_sheet)
                      sr_wb_dat_copy$stressor_names <- isolate(rv_stressor_response$stressor_names)
                      sr_wb_dat_copy$pretty_names <- isolate(rv_stressor_response$pretty_names)
-                     sr_wb_dat_copy$sr_dat <- isolate(rv_stressor_response$sr_dat)
+
+                     if(!(is.null(rv_stressor_response$interaction_values))) {
+                      print("Running with int...")
+                      sr_wb_dat_copy$MInt <- rv_stressor_response$interaction_values
+                      names(sr_wb_dat_copy$MInt)
+                     }
+
+                     # Do not isolate this - we want function to update
+                     sr_wb_dat_copy$sr_dat <- rv_stressor_response$sr_dat
                      
                      jm <- JoeModelCE::JoeModel_Run(
                        dose = dr,
                        sr_wb_dat = sr_wb_dat_copy,
-                       MC_sims = 1)
+                       MC_sims = 1,
+                       adult_sys_cap = FALSE)
                      
                      # Temporary CSC for this HUC with these params...
                      rv_clickedIds_csc$csc <- mean(jm$ce.df$CE, na.rm = TRUE)
@@ -353,7 +362,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                  # When there is an edit to a cell
                  # update the stessor magnitude reactive values
                  observeEvent(input$stressor_inputs_cell_edit, {
-                   
+
                    # Get new value of edited cell
                    info = input$stressor_inputs_cell_edit
                    
@@ -405,6 +414,11 @@ module_huc_stressor_magnitude_server <- function(id) {
 
                        # Update stressor magnitude value for HUC or selected HUCs
                        # Update the reactive values
+                       if(class(rv_stressor_magnitude$sm_dat$HUC_ID) == "numeric") {
+                        selected_ids <- as.numeric(as.character(selected_ids))
+                       }
+
+
                        rv_stressor_magnitude$sm_dat[which(
                          rv_stressor_magnitude$sm_dat$HUC_ID %in% selected_ids &
                            rv_stressor_magnitude$sm_dat$Stressor == snames[i]
@@ -421,6 +435,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                  # Update the mean system capacity for the selection
                  #-------------------------------------------------------------
                  output$csc_huc_indicator <- renderUI({
+                   
                    msc <- rv_clickedIds_csc$csc
                    
                    alert_col <- "#a8a8a8"

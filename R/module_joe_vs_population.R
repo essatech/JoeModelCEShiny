@@ -10,7 +10,7 @@ module_joe_vs_population_ui <- function(id) {
   actionButton(
     ns("module_joe_vs_population"),
     tags$b("Population model"),
-    class = "chart-line",
+    class = "chart-line clean-button",
     width = "100%"
   )
   
@@ -230,7 +230,23 @@ module_joe_vs_population_server <- function(id) {
                          Up_Limit = CE_df$Up_Limit
                        )
                      
-                     # browser()
+
+                     # Add interaction matrix to joe model run
+                     m_int <- isolate(rv_stressor_response$interaction_values)
+                     if(!(is.null(m_int))) {
+                       # Make sure matrix is not exclusivly for Joe
+                       cfm <- function(tmp) {
+                         if(tmp$Model != "Joe Model") {
+                           return(tmp)
+                         }
+                       }
+                       m_int <- lapply(m_int, cfm)
+                       if(length(m_int) > 0) {
+                         sr$MInt <- rv_stressor_response$interaction_values
+                       }
+                     }
+                     
+                     # Run the Joe Model to get system capacity
                      jm <- JoeModelCE::JoeModel_Run(
                        dose = smw_sample,
                        sr_wb_dat = sr,

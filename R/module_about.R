@@ -24,8 +24,9 @@ module_about_ui <- function(id) {
       style = "justify-content: center;
     text-align: center;",
       
-      tags$h1("Joe Model Cumulative Effect Tool", class = "main-title"),
+      tags$h2("Cumulative Effects Model for Prioritizing Recovery Actions", class = "main-title"),
 
+# library(shiny); runApp()
 
         shiny::HTML(
           '<iframe 
