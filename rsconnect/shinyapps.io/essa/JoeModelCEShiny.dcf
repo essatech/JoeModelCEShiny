@@ -5,10 +5,9 @@ account: essa
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5625541
-bundleId: 6076677
+bundleId: 7307806
 url: https://essa.shinyapps.io/JoeModelCEShiny/
-when: 1657155009.91354
-lastSyncTime: 1657155009.91355
+when: 1685989754.70228
+lastSyncTime: 1685989754.70228
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: .RData

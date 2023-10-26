@@ -82,9 +82,13 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
       observe({
         req(input$hiddenload)
         # print("Selected Variable")
-
+        
+        # MJB added here June 6 2023
+        
+        
         # Set the stressor response object as a reactive value
         if (!(is.na(stressor_index))) {
+          
           active <- rv_stressor_response$active_layer
           current <- rv_stressor_response$stressor_names[stressor_index]
 
@@ -94,8 +98,12 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
             # Assume interaction matrix
             current <- rv_stressor_response$interaction_names[stressor_index - length(rv_stressor_response$pretty_names)]
           }
-
-
+          
+         
+         if(is.null(current)) {
+           current <- NA # MJB added - fix exception for null
+         }
+          
           if (!(is.na(current)) & !(is.na(active))) {
             if (active == current) {
               # print("Adding class")

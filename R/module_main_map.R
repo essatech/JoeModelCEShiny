@@ -48,7 +48,7 @@ module_main_map_ui <- function(id) {
               class = "stack-box csc-box map-variable hide-this",
               id = ns("var_id"),
               shinydashboard::box(
-                width = 12,
+                width = 12, # MJBA this hide this upon rendering
                 background = "light-blue",
                 tags$p("System Capacity", style = "float: left;"),
                 # tags$p("[0%]", style = "float: right;"),
@@ -338,6 +338,7 @@ module_main_map_server <- function(id) {
       # Define the stressor variables to plot div button side bar
       # ---------------------------------------------------------
       output$stressor_variable_list <- renderUI({
+        
         print("Re-populating stressor variables...")
         snames <- rv_stressor_response$stressor_names
         pnames <- rv_stressor_response$pretty_names
@@ -351,6 +352,7 @@ module_main_map_server <- function(id) {
           this_stressor <- snames[s]
           print(this_stressor)
           svar_list[[s]] <- module_stressor_variable_ui(ns(this_stressor))
+          
           module_stressor_variable_server(this_stressor, stressor_index = s)
           var_id <- var_id + 1 # Use this index for the matrix interactions (if any)
         }

@@ -105,7 +105,7 @@ module_joe_model_run_server <- function(id) {
       #-------------------------------------------------------
       observe({
         
-        print("Building the check box group...")
+
         req(rv_stressor_response$stressor_names)
         req(input$open_joe_modal_form)
         

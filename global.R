@@ -9,9 +9,8 @@ rm(list = ls())
 
 # Download the Joe Model
 # See download instructions here: https://github.com/essatech/JoeModelCE/
-# library(remotes)
-# remotes::install_github("essatech/JoeModelCE")
-# library(shiny); runApp()
+# library(devtools)
+# devtools::install_github("essatech/JoeModelCE")
 library(JoeModelCE) 
 
 # Load necessary libraries
