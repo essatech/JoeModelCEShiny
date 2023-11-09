@@ -113,19 +113,19 @@ module_export_server <- function(id) {
                    content = function(file) {
                      # Gather sheets
                      main <-
-                       isolate(rv_stressor_response$main_sheet)
+                       isolate(session$userData$rv_stressor_response$main_sheet)
                      sheet_list <- list()
                      sheet_list$Main <- main
                      
                      # Loop through other variables
                      sr_names <-
-                       isolate(names(rv_stressor_response$sr_dat))
+                       isolate(names(session$userData$rv_stressor_response$sr_dat))
                      
                      counter <- 2 # because main is first sheet
                      for (i in 1:length(sr_names)) {
                        this_name <- sr_names[i]
                        this_dat <-
-                         isolate(rv_stressor_response$sr_dat[this_name])
+                         isolate(session$userData$rv_stressor_response$sr_dat[this_name])
                        fix_dat <- this_dat[[1]]
                        colnames(fix_dat) <-
                          c(this_name,
@@ -151,7 +151,7 @@ module_export_server <- function(id) {
                    },
                    content = function(file) {
                      # Gather worksheets
-                     mydata <- isolate(rv_stressor_magnitude$sm_dat)
+                     mydata <- isolate(session$userData$rv_stressor_magnitude$sm_dat)
                      write_xlsx(mydata, path = file)
                      
                    }

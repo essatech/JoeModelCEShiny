@@ -56,7 +56,7 @@ module_all_sr_curves_server <- function(id) {
                    
                    # Get main sheet and split stressors for adult and non adult
                    # Only show joe model stressors here
-                   ms <- rv_stressor_response$main_sheet
+                   ms <- session$userData$rv_stressor_response$main_sheet
                    
                    ms_joe_names <- unique(ms$Stressors)
 
@@ -68,7 +68,7 @@ module_all_sr_curves_server <- function(id) {
                      
                      # Plot for each stressor
                      pdat <-
-                       rv_stressor_response$sr_dat[[this_var]]
+                       session$userData$rv_stressor_response$sr_dat[[this_var]]
                      
                      plot_title <- this_var
                      plot_title <- gsub("_", " ", plot_title)

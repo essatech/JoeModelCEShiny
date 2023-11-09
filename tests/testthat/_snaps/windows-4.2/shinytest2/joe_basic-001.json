@@ -1,0 +1,436 @@
+{
+  "input": {
+    "import-up_sheds": {
+      "name": [
+        "joe_test_geo.gpkg"
+      ],
+      "size": [
+        106496
+      ],
+      "type": [
+        ""
+      ],
+      "datapath": [
+        "0.gpkg"
+      ]
+    },
+    "import-up_sm_wb_dat": {
+      "name": [
+        "stressor_magnitude_joe.xlsx"
+      ],
+      "size": [
+        12993
+      ],
+      "type": [
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      ],
+      "datapath": [
+        "0.xlsx"
+      ]
+    },
+    "import-up_sr_wb_dat": {
+      "name": [
+        "stressor_response_joe.xlsx"
+      ],
+      "size": [
+        30609
+      ],
+      "type": [
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      ],
+      "datapath": [
+        "0.xlsx"
+      ]
+    },
+    "import-up_vital": null,
+    "main_map-A-hiddenload": 0,
+    "main_map-A-response_plot": 0,
+    "main_map-B-hiddenload": 0,
+    "main_map-B-response_plot": 0,
+    "main_map-C-hiddenload": 0,
+    "main_map-C-response_plot": 0,
+    "main_map-D-hiddenload": 0,
+    "main_map-D-response_plot": 0,
+    "main_map-E-hiddenload": 0,
+    "main_map-E-response_plot": 0,
+    "main_map-F-hiddenload": 0,
+    "main_map-F-response_plot": 0,
+    "main_map-all_sr_curves-open_all_sr_modal": 0,
+    "main_map-hiddenload": 0,
+    "main_map-hover_values": false,
+    "main_map-huc_results-deselect_watersheds": 0,
+    "main_map-huc_results-joe_model_csc_plots_all-open_joe_modal_csc_plots_all": 0,
+    "main_map-huc_results-module_joe_vs_population-module_joe_vs_population": 0,
+    "main_map-huc_results-open_joe_modal_csc_plots_selected-open_joe_modal_csc_plots_selected": 0,
+    "main_map-huc_results-run_joe_model-open_joe_modal_form": 0,
+    "main_map-huc_results-stressor_magnitude-adjust_stressor_magnitude": 0,
+    "main_map-mainmap_bounds": {
+      "north": 49.2953521087032,
+      "east": -123.000183105469,
+      "south": 49.1720525096923,
+      "west": -123.23055267334
+    },
+    "main_map-mainmap_center": {
+      "lng": -123.115216247427,
+      "lat": 49.2338082080858
+    },
+    "main_map-mainmap_zoom": 12,
+    "matrix_model-mm_elements-compensation_ratios": 0,
+    "matrix_model-mm_elements-eigen_analysis": 0,
+    "matrix_model-mm_elements-model_component": 0,
+    "matrix_model-mm_inputs-M.cv": 0.1,
+    "matrix_model-mm_inputs-M.rho": 0.1,
+    "matrix_model-mm_inputs-S0": 0.3,
+    "matrix_model-mm_inputs-SE": 0.1,
+    "matrix_model-mm_inputs-SR": 0.5,
+    "matrix_model-mm_inputs-cr_0": 3,
+    "matrix_model-mm_inputs-cr_1": 2.5,
+    "matrix_model-mm_inputs-cr_2": 2,
+    "matrix_model-mm_inputs-cr_3": 1.1,
+    "matrix_model-mm_inputs-cr_4": 1,
+    "matrix_model-mm_inputs-cr_E": 1,
+    "matrix_model-mm_inputs-egg_rho": 0.1,
+    "matrix_model-mm_inputs-eps": 3000,
+    "matrix_model-mm_inputs-eps_sd": 1000,
+    "matrix_model-mm_inputs-events": 1,
+    "matrix_model-mm_inputs-int": 1,
+    "matrix_model-mm_inputs-k": 100,
+    "matrix_model-mm_inputs-mat_1": 0,
+    "matrix_model-mm_inputs-mat_2": 0,
+    "matrix_model-mm_inputs-mat_3": 0,
+    "matrix_model-mm_inputs-mat_4": 1,
+    "matrix_model-mm_inputs-surv_1": 0.3,
+    "matrix_model-mm_inputs-surv_2": 0.3,
+    "matrix_model-mm_inputs-surv_3": 0.9,
+    "matrix_model-mm_inputs-surv_4": 0.9,
+    "matrix_model-mm_inputs-year_1": 1,
+    "matrix_model-mm_inputs-year_2": 2,
+    "matrix_model-mm_inputs-year_3": 2,
+    "matrix_model-mm_inputs-year_4": 5,
+    "matrix_model-mm_preview-demo_projection": 0,
+    "matrix_model-mm_preview-test_n_replicates": 10,
+    "matrix_model-mm_preview-test_n_years": 50,
+    "sidebarCollapsed": false,
+    "sidebarItemExpanded": null,
+    "tabs": "tab_main_map"
+  },
+  "output": {
+    "import-upload_error_msg_sr": "",
+    "main_map-A-variable_label": {
+      "html": "<p style=\"float: left;\">A  <\/p>",
+      "deps": [
+
+      ]
+    },
+    "main_map-A-variable_val_raw": {
+      "html": "<p style=\"float: left; display:inline;\"> <\/p>",
+      "deps": [
+
+      ]
+    },
+    "main_map-B-variable_label": {
+      "html": "<p style=\"float: left;\">B  <\/p>",
+      "deps": [
+
+      ]
+    },
+    "main_map-B-variable_val_raw": {
+      "html": "<p style=\"float: left; display:inline;\"> <\/p>",
+      "deps": [
+
+      ]
+    },
+    "main_map-C-variable_label": {
+      "html": "<p style=\"float: left;\">C  <\/p>",
+      "deps": [
+
+      ]
+    },
+    "main_map-C-variable_val_raw": {
+      "html": "<p style=\"float: left; display:inline;\"> <\/p>",
+      "deps": [
+
+      ]
+    },
+    "main_map-D-variable_label": {
+      "html": "<p style=\"float: left;\">D  <\/p>",
+      "deps": [
+
+      ]
+    },
+    "main_map-D-variable_val_raw": {
+      "html": "<p style=\"float: left; display:inline;\"> <\/p>",
+      "deps": [
+
+      ]
+    },
+    "main_map-E-variable_label": {
+      "html": "<p style=\"float: left;\">E  <\/p>",
+      "deps": [
+
+      ]
+    },
+    "main_map-E-variable_val_raw": {
+      "html": "<p style=\"float: left; display:inline;\"> <\/p>",
+      "deps": [
+
+      ]
+    },
+    "main_map-F-variable_label": {
+      "html": "<p style=\"float: left;\">F  <\/p>",
+      "deps": [
+
+      ]
+    },
+    "main_map-F-variable_val_raw": {
+      "html": "<p style=\"float: left; display:inline;\"> <\/p>",
+      "deps": [
+
+      ]
+    },
+    "main_map-huc_results-n_watersheds_selected": "0 HUCs selected - click on a unit on the map to select",
+    "main_map-mainmap": {
+      "x": {
+        "options": {
+          "crs": {
+            "crsClass": "L.CRS.EPSG3857",
+            "code": null,
+            "proj4def": null,
+            "projectedBounds": null,
+            "options": {
+
+            }
+          }
+        },
+        "calls": [
+          {
+            "method": "addProviderTiles",
+            "args": [
+              "Esri.WorldTopoMap",
+              null,
+              null,
+              {
+                "errorTileUrl": "",
+                "noWrap": true,
+                "opacity": 0.9,
+                "detectRetina": false
+              }
+            ]
+          },
+          {
+            "method": "addPolygons",
+            "args": [
+              [
+                [
+                  [
+                    {
+                      "lng": [
+                        -123.159403502679,
+                        -123.117755744855,
+                        -123.121311041255,
+                        -123.161943000107,
+                        -123.159403502679
+                      ],
+                      "lat": [
+                        49.2662987328563,
+                        49.2669615821555,
+                        49.2361296689853,
+                        49.237456169086,
+                        49.2662987328563
+                      ]
+                    }
+                  ]
+                ],
+                [
+                  [
+                    {
+                      "lng": [
+                        -123.105058257714,
+                        -123.105566157199,
+                        -123.067473695775,
+                        -123.07153689166,
+                        -123.105058257714
+                      ],
+                      "lat": [
+                        49.2387826335617,
+                        49.2659673048674,
+                        49.2669615821555,
+                        49.2394458524402,
+                        49.2387826335617
+                      ]
+                    }
+                  ]
+                ],
+                [
+                  [
+                    {
+                      "lng": [
+                        -123.16397459805,
+                        -123.123787051247,
+                        -123.124017193202,
+                        -123.12537423714,
+                        -123.166514095478,
+                        -123.16397459805
+                      ],
+                      "lat": [
+                        49.2285016020471,
+                        49.2291649589749,
+                        49.229266016475,
+                        49.2006325679885,
+                        49.2046148205731,
+                        49.2285016020471
+                      ]
+                    }
+                  ]
+                ],
+                [
+                  [
+                    {
+                      "lng": [
+                        -123.100995061828,
+                        -123.1020108608,
+                        -123.065949997318,
+                        -123.063918399376,
+                        -123.100995061828
+                      ],
+                      "lat": [
+                        49.2032874386763,
+                        49.2271748614713,
+                        49.228501602047,
+                        49.2039511340786,
+                        49.2032874386763
+                      ]
+                    }
+                  ]
+                ]
+              ],
+              [
+                "1|ID1",
+                "2|ID2",
+                "3|ID3",
+                "4|ID4"
+              ],
+              null,
+              {
+                "interactive": true,
+                "className": "",
+                "stroke": true,
+                "color": "#444444",
+                "weight": 1.2,
+                "opacity": 0.5,
+                "fill": true,
+                "fillColor": "#d9d9d9",
+                "fillOpacity": 0.5,
+                "smoothFactor": 0.5,
+                "noClip": false
+              },
+              null,
+              null,
+              null,
+              {
+                "interactive": false,
+                "permanent": false,
+                "direction": "auto",
+                "opacity": 1,
+                "offset": [
+                  0,
+                  0
+                ],
+                "textsize": "10px",
+                "textOnly": false,
+                "className": "",
+                "sticky": true
+              },
+              {
+                "color": "white",
+                "weight": 2,
+                "bringToFront": true
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "lat": [
+            49.2006325679885,
+            49.2669615821555
+          ],
+          "lng": [
+            -123.166514095478,
+            -123.063918399376
+          ]
+        }
+      },
+      "evals": [
+
+      ],
+      "jsHooks": [
+
+      ],
+      "deps": [
+        {
+          "name": "leaflet-providers",
+          "version": "1.9.0",
+          "src": {
+            "href": "leaflet-providers-1.9.0"
+          },
+          "meta": null,
+          "script": "leaflet-providers_1.9.0.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": false
+        },
+        {
+          "name": "leaflet-providers-plugin",
+          "version": "2.1.1",
+          "src": {
+            "href": "leaflet-providers-plugin-2.1.1"
+          },
+          "meta": null,
+          "script": "leaflet-providers-plugin.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        }
+      ]
+    },
+    "main_map-stressor_variable_list": {
+      "html": "<div class=\"stack-box map-variable\" id=\"main_map-A-var_id\">\n  <div class=\"col-sm-12\">\n    <div class=\"box box-solid bg-light-blue\">\n      <div class=\"box-body stack-box-border\">\n        <div id=\"main_map-A-variable_label\" class=\"shiny-html-output\"><\/div>\n        <div id=\"main_map-A-variable_val_raw\" class=\"shiny-html-output\"><\/div>\n        <div style=\"float: right; display: inline-block;\">\n          <button class=\"btn btn-default action-button response-button\" id=\"main_map-A-response_plot\" type=\"button\">\n            <i class=\"fas fa-chart-line\" role=\"presentation\" aria-label=\"chart-line icon\"><\/i>\n          <\/button>\n        <\/div>\n        <p style=\"float: right;\"><\/p>\n        <div style=\"display:none;\">\n          <div class=\"form-group shiny-input-container\">\n            <label class=\"control-label\" id=\"main_map-A-hiddenload-label\" for=\"main_map-A-hiddenload\">hidden<\/label>\n            <input id=\"main_map-A-hiddenload\" type=\"number\" class=\"form-control\" value=\"0\"/>\n          <\/div>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n<\/div>\n<div class=\"stack-box map-variable\" id=\"main_map-B-var_id\">\n  <div class=\"col-sm-12\">\n    <div class=\"box box-solid bg-light-blue\">\n      <div class=\"box-body stack-box-border\">\n        <div id=\"main_map-B-variable_label\" class=\"shiny-html-output\"><\/div>\n        <div id=\"main_map-B-variable_val_raw\" class=\"shiny-html-output\"><\/div>\n        <div style=\"float: right; display: inline-block;\">\n          <button class=\"btn btn-default action-button response-button\" id=\"main_map-B-response_plot\" type=\"button\">\n            <i class=\"fas fa-chart-line\" role=\"presentation\" aria-label=\"chart-line icon\"><\/i>\n          <\/button>\n        <\/div>\n        <p style=\"float: right;\"><\/p>\n        <div style=\"display:none;\">\n          <div class=\"form-group shiny-input-container\">\n            <label class=\"control-label\" id=\"main_map-B-hiddenload-label\" for=\"main_map-B-hiddenload\">hidden<\/label>\n            <input id=\"main_map-B-hiddenload\" type=\"number\" class=\"form-control\" value=\"0\"/>\n          <\/div>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n<\/div>\n<div class=\"stack-box map-variable\" id=\"main_map-C-var_id\">\n  <div class=\"col-sm-12\">\n    <div class=\"box box-solid bg-light-blue\">\n      <div class=\"box-body stack-box-border\">\n        <div id=\"main_map-C-variable_label\" class=\"shiny-html-output\"><\/div>\n        <div id=\"main_map-C-variable_val_raw\" class=\"shiny-html-output\"><\/div>\n        <div style=\"float: right; display: inline-block;\">\n          <button class=\"btn btn-default action-button response-button\" id=\"main_map-C-response_plot\" type=\"button\">\n            <i class=\"fas fa-chart-line\" role=\"presentation\" aria-label=\"chart-line icon\"><\/i>\n          <\/button>\n        <\/div>\n        <p style=\"float: right;\"><\/p>\n        <div style=\"display:none;\">\n          <div class=\"form-group shiny-input-container\">\n            <label class=\"control-label\" id=\"main_map-C-hiddenload-label\" for=\"main_map-C-hiddenload\">hidden<\/label>\n            <input id=\"main_map-C-hiddenload\" type=\"number\" class=\"form-control\" value=\"0\"/>\n          <\/div>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n<\/div>\n<div class=\"stack-box map-variable\" id=\"main_map-D-var_id\">\n  <div class=\"col-sm-12\">\n    <div class=\"box box-solid bg-light-blue\">\n      <div class=\"box-body stack-box-border\">\n        <div id=\"main_map-D-variable_label\" class=\"shiny-html-output\"><\/div>\n        <div id=\"main_map-D-variable_val_raw\" class=\"shiny-html-output\"><\/div>\n        <div style=\"float: right; display: inline-block;\">\n          <button class=\"btn btn-default action-button response-button\" id=\"main_map-D-response_plot\" type=\"button\">\n            <i class=\"fas fa-chart-line\" role=\"presentation\" aria-label=\"chart-line icon\"><\/i>\n          <\/button>\n        <\/div>\n        <p style=\"float: right;\"><\/p>\n        <div style=\"display:none;\">\n          <div class=\"form-group shiny-input-container\">\n            <label class=\"control-label\" id=\"main_map-D-hiddenload-label\" for=\"main_map-D-hiddenload\">hidden<\/label>\n            <input id=\"main_map-D-hiddenload\" type=\"number\" class=\"form-control\" value=\"0\"/>\n          <\/div>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n<\/div>\n<div class=\"stack-box map-variable\" id=\"main_map-E-var_id\">\n  <div class=\"col-sm-12\">\n    <div class=\"box box-solid bg-light-blue\">\n      <div class=\"box-body stack-box-border\">\n        <div id=\"main_map-E-variable_label\" class=\"shiny-html-output\"><\/div>\n        <div id=\"main_map-E-variable_val_raw\" class=\"shiny-html-output\"><\/div>\n        <div style=\"float: right; display: inline-block;\">\n          <button class=\"btn btn-default action-button response-button\" id=\"main_map-E-response_plot\" type=\"button\">\n            <i class=\"fas fa-chart-line\" role=\"presentation\" aria-label=\"chart-line icon\"><\/i>\n          <\/button>\n        <\/div>\n        <p style=\"float: right;\"><\/p>\n        <div style=\"display:none;\">\n          <div class=\"form-group shiny-input-container\">\n            <label class=\"control-label\" id=\"main_map-E-hiddenload-label\" for=\"main_map-E-hiddenload\">hidden<\/label>\n            <input id=\"main_map-E-hiddenload\" type=\"number\" class=\"form-control\" value=\"0\"/>\n          <\/div>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n<\/div>\n<div class=\"stack-box map-variable\" id=\"main_map-F-var_id\">\n  <div class=\"col-sm-12\">\n    <div class=\"box box-solid bg-light-blue\">\n      <div class=\"box-body stack-box-border\">\n        <div id=\"main_map-F-variable_label\" class=\"shiny-html-output\"><\/div>\n        <div id=\"main_map-F-variable_val_raw\" class=\"shiny-html-output\"><\/div>\n        <div style=\"float: right; display: inline-block;\">\n          <button class=\"btn btn-default action-button response-button\" id=\"main_map-F-response_plot\" type=\"button\">\n            <i class=\"fas fa-chart-line\" role=\"presentation\" aria-label=\"chart-line icon\"><\/i>\n          <\/button>\n        <\/div>\n        <p style=\"float: right;\"><\/p>\n        <div style=\"display:none;\">\n          <div class=\"form-group shiny-input-container\">\n            <label class=\"control-label\" id=\"main_map-F-hiddenload-label\" for=\"main_map-F-hiddenload\">hidden<\/label>\n            <input id=\"main_map-F-hiddenload\" type=\"number\" class=\"form-control\" value=\"0\"/>\n          <\/div>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n<\/div>",
+      "deps": [
+        {
+          "name": "font-awesome",
+          "version": "6.4.2",
+          "src": {
+            "href": "font-awesome-6.4.2"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": [
+            "css/all.min.css",
+            "css/v4-shims.min.css"
+          ],
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        }
+      ]
+    },
+    "main_map-txt_basin_name": {
+      "html": "<p style=\"float: left; color:#3b9ab2;\">Basin Name<\/p>",
+      "deps": [
+
+      ]
+    },
+    "main_map-txt_huc_code": {
+      "html": "<p style=\"float: right; color:#3b9ab2;\">HUC ID<\/p>",
+      "deps": [
+
+      ]
+    }
+  },
+  "export": {
+
+  }
+}

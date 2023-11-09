@@ -177,7 +177,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                  output$stressor_inputs <- renderDT({
                    
                    print("Stressor magnitude DT...")
-                   
+
                    # HUCs currently selected
                    selected_raw <- rv_clickedIds$ids
                    
@@ -193,10 +193,11 @@ module_huc_stressor_magnitude_server <- function(id) {
                    # Populate the temporary placeholder CSC value
                    # --------------------------------------------
                    if(length(selected_ids) > 0) {
+                     
                      print("Populate placeholder csc value - A...")
                      
                      # Get the stressor magnitude
-                     dr <- rv_stressor_magnitude$sm_dat
+                     dr <- session$userData$rv_stressor_magnitude$sm_dat
                      dr <- dr[which(dr$HUC_ID %in% selected_ids), ]
                      # Set SD to 0 for mean value
                      dr$SD <- 0
@@ -204,18 +205,18 @@ module_huc_stressor_magnitude_server <- function(id) {
                      # Make a copy of the sr_wb_dat data to 
                      # run the Joe model just once
                      sr_wb_dat_copy <- list()
-                     sr_wb_dat_copy$main_sheet <- isolate(rv_stressor_response$main_sheet)
-                     sr_wb_dat_copy$stressor_names <- isolate(rv_stressor_response$stressor_names)
-                     sr_wb_dat_copy$pretty_names <- isolate(rv_stressor_response$pretty_names)
+                     sr_wb_dat_copy$main_sheet <- isolate(session$userData$rv_stressor_response$main_sheet)
+                     sr_wb_dat_copy$stressor_names <- isolate(session$userData$rv_stressor_response$stressor_names)
+                     sr_wb_dat_copy$pretty_names <- isolate(session$userData$rv_stressor_response$pretty_names)
 
-                     if(!(is.null(rv_stressor_response$interaction_values))) {
+                     if(!(is.null(session$userData$rv_stressor_response$interaction_values))) {
                       print("Running with int...")
-                      sr_wb_dat_copy$MInt <- rv_stressor_response$interaction_values
+                      sr_wb_dat_copy$MInt <- session$userData$rv_stressor_response$interaction_values
                       names(sr_wb_dat_copy$MInt)
                      }
 
                      # Do not isolate this - we want function to update
-                     sr_wb_dat_copy$sr_dat <- rv_stressor_response$sr_dat
+                     sr_wb_dat_copy$sr_dat <- session$userData$rv_stressor_response$sr_dat
                      
                      jm <- JoeModelCE::JoeModel_Run(
                        dose = dr,
@@ -252,7 +253,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                    # Get values if single HUC or set as NA if multi
                    if (length(selected_ids) == 1) {
                      # Use render DT with proxy to avoid reload on edit...
-                     raw_data <- rv_stressor_magnitude$sm_dat
+                     raw_data <- session$userData$rv_stressor_magnitude$sm_dat
                      table_vals <- raw_data %>% filter(HUC_ID == selected_ids)
                      table_vals <- table_vals[order(table_vals$Stressor),]
                      
@@ -300,7 +301,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                    # but keep values empty since only select will be edited
                    if (length(selected_ids) > 1) {
                      
-                     raw_data <- isolate(rv_stressor_magnitude$sm_dat)
+                     raw_data <- isolate(session$userData$rv_stressor_magnitude$sm_dat)
                      table_vals <- raw_data %>% filter(HUC_ID %in% selected_ids)
                      table_vals <- table_vals[order(table_vals$Stressor), ]
                      snames <- sort(unique(table_vals$Stressor))
@@ -376,7 +377,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                    
                    
                    # Index list of stressor names (which value was clicked)
-                   raw_data <- isolate(rv_stressor_magnitude$sm_dat)
+                   raw_data <- isolate(session$userData$rv_stressor_magnitude$sm_dat)
                    table_vals <- raw_data %>% filter(HUC_ID %in% selected_ids)
                    table_vals <- table_vals[order(table_vals$Stressor), ]
                    snames <- sort(unique(table_vals$Stressor))
@@ -414,14 +415,14 @@ module_huc_stressor_magnitude_server <- function(id) {
 
                        # Update stressor magnitude value for HUC or selected HUCs
                        # Update the reactive values
-                       if(class(rv_stressor_magnitude$sm_dat$HUC_ID) == "numeric") {
+                       if(class(session$userData$rv_stressor_magnitude$sm_dat$HUC_ID) == "numeric") {
                         selected_ids <- as.numeric(as.character(selected_ids))
                        }
 
 
-                       rv_stressor_magnitude$sm_dat[which(
-                         rv_stressor_magnitude$sm_dat$HUC_ID %in% selected_ids &
-                           rv_stressor_magnitude$sm_dat$Stressor == snames[i]
+                       session$userData$rv_stressor_magnitude$sm_dat[which(
+                         session$userData$rv_stressor_magnitude$sm_dat$HUC_ID %in% selected_ids &
+                           session$userData$rv_stressor_magnitude$sm_dat$Stressor == snames[i]
                        ), var[j + 1]] <- info$value
                        
                        # Update the DT data table so the user knows what they have just done

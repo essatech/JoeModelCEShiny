@@ -36,11 +36,15 @@ ui <- dashboardPage(
       tags$link(rel = "stylesheet", type = "text/css", href = "./css/ce_tool_style.css"),
       tags$script(src = "./js/leaf-hover.js"),
       tags$script(src = "./js/app_utility.js")
+      #tags$script(src = "./js/updateAllInputs.js")
+      
     ),
     
     # Import custom js files - note these are used with DT
     shinyFeedback::useShinyFeedback(),
     shinyjs::useShinyjs(),
+    # Initialize JS script which updates the inputs after new scenario is loaded
+    extendShinyjs(script = "./js/updateAllInputs.js", functions = c("updateAllInputs")),
     
     # Individual pages - right side tab content
     tabItems(

@@ -8,6 +8,10 @@
 #--------------------------------------------------------------------
 server <- function(input, output, session) {
   
+  # Setup reactive objects for the current session
+  # These are used to store data that is used across modules
+  module_setup_reactives(session)
+  
   
   # Call main module server functions
   module_main_map_server("main_map")

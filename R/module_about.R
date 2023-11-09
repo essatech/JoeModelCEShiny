@@ -25,8 +25,8 @@ module_about_ui <- function(id) {
     text-align: center;",
       
       tags$h2("Cumulative Effects Model for Prioritizing Recovery Actions", class = "main-title"),
-
-# library(shiny); runApp()
+      
+      # library(shiny); runApp()
 
         shiny::HTML(
           '<iframe 
@@ -37,9 +37,7 @@ module_about_ui <- function(id) {
           width="655" height="355" src="https://www.youtube.com/embed/Cp3UdWlkaKU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
         ),
       
-      
       shiny::br(),
-      
       
       fluidRow(
         column(width = 2),

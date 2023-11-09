@@ -106,13 +106,13 @@ module_joe_model_run_server <- function(id) {
       observe({
         
 
-        req(rv_stressor_response$stressor_names)
+        req(session$userData$rv_stressor_response$stressor_names)
         req(input$open_joe_modal_form)
         
-        stressors <- isolate(rv_stressor_response$stressor_names)
+        stressors <- isolate(session$userData$rv_stressor_response$stressor_names)
         
         # Exclude variables that are not associated with adults
-        s_options <- isolate(rv_stressor_response$main_sheet)
+        s_options <- isolate(session$userData$rv_stressor_response$main_sheet)
         s_options <- s_options[which(s_options$Life_stages == "adult"), ]
         s_acceptable <- unique(s_options$Stressors)
         
@@ -120,7 +120,7 @@ module_joe_model_run_server <- function(id) {
         stressors <- stressors[which(stressors %in% s_acceptable)]
 
         # Add on interaction matrix (if any exist)
-        mmat <- isolate(rv_stressor_response$interaction_names)
+        mmat <- isolate(session$userData$rv_stressor_response$interaction_names)
         if(!is.null(mmat)) {
           stressors <- c(stressors, mmat)
           # library(shiny); runApp()
@@ -155,12 +155,12 @@ module_joe_model_run_server <- function(id) {
         print("select deletect joe model variables ...")
         req(input$selectall)
         req(input$open_joe_modal_form)
-        req(rv_stressor_response$stressor_names)
+        req(session$userData$rv_stressor_response$stressor_names)
         
-        stressors <- rv_stressor_response$stressor_names
+        stressors <- session$userData$rv_stressor_response$stressor_names
       
         # Exclude variables that are not associated with adults
-        s_options <- rv_stressor_response$main_sheet
+        s_options <- session$userData$rv_stressor_response$main_sheet
         s_options <- s_options[which(s_options$Life_stages == "adult"), ]
         s_acceptable <- unique(s_options$Stressors)
         
@@ -221,7 +221,7 @@ module_joe_model_run_server <- function(id) {
         
           print("joe model time estimate...")
         
-          dat <- rv_stressor_magnitude$sm_dat
+          dat <- session$userData$rv_stressor_magnitude$sm_dat
 
           n_hucs <- length(unique(dat$HUC_ID))
           n_stressor <- length(unique(input$check_box_group))
@@ -270,12 +270,12 @@ module_joe_model_run_server <- function(id) {
           # Stressor RESPONSE workbook data (reactive value)
           print("Gathering Joe Inputs...")
           sr_wb_dat_in <- list()
-          sr_wb_dat_in$main_sheet     <- isolate(rv_stressor_response$main_sheet)
-          sr_wb_dat_in$stressor_names <- isolate(rv_stressor_response$stressor_names)
-          sr_wb_dat_in$sr_dat <- isolate(rv_stressor_response$sr_dat)
+          sr_wb_dat_in$main_sheet     <- isolate(session$userData$rv_stressor_response$main_sheet)
+          sr_wb_dat_in$stressor_names <- isolate(session$userData$rv_stressor_response$stressor_names)
+          sr_wb_dat_in$sr_dat <- isolate(session$userData$rv_stressor_response$sr_dat)
 
           # Stressor MAGNITUDE workbook data (reactive value)
-          sm_wb_dat_in <- isolate(rv_stressor_magnitude$sm_dat)
+          sm_wb_dat_in <- isolate(session$userData$rv_stressor_magnitude$sm_dat)
           # Number of Monte Carlo sims
           n_mc_sims <- isolate(input$number_of_simulations)
 
@@ -298,7 +298,7 @@ module_joe_model_run_server <- function(id) {
 
           # Check to see if any matrix interaction surfaces are selected
           if(any(grepl("MInt_", selected_variables))) {
-            mc_int <- isolate(rv_stressor_response$interaction_values)
+            mc_int <- isolate(session$userData$rv_stressor_response$interaction_values)
             names(mc_int)
             mc_int <- mc_int[names(mc_int) %in% selected_variables]
             # if a matrix surface is incldued then add it here..
@@ -330,8 +330,8 @@ module_joe_model_run_server <- function(id) {
           rv_joe_model_sim_names$scenario_names[[simulation_index]] <- sim_name
           
           # Update the active layer on the map to show 
-          rv_stressor_response$active_layer <- "system_capacity"
-          print(rv_stressor_response$active_layer)
+          session$userData$rv_stressor_response$active_layer <- "system_capacity"
+          print(session$userData$rv_stressor_response$active_layer)
           
           
           # Display the system capacity varible selector on the map page

@@ -45,10 +45,10 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
       # Set the label
       output$variable_label <- renderUI({
         # print("Variable Label")
-        label <- rv_stressor_response$pretty_names[stressor_index]
+        label <- session$userData$rv_stressor_response$pretty_names[stressor_index]
         # Adjust if matrix interaction term
-        if (stressor_index > length(rv_stressor_response$pretty_names)) {
-          label <- rv_stressor_response$interaction_names[stressor_index - length(rv_stressor_response$pretty_names)]
+        if (stressor_index > length(session$userData$rv_stressor_response$pretty_names)) {
+          label <- session$userData$rv_stressor_response$interaction_names[stressor_index - length(session$userData$rv_stressor_response$pretty_names)]
         }
         label <- paste0(label, "  ")
         tags$p(label, style = "float: left;")
@@ -56,18 +56,18 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
 
       # Change mouse-over raw value
       output$variable_val_raw <- renderUI({
-        sname <- rv_stressor_response$stressor_names[stressor_index]
+        sname <- session$userData$rv_stressor_response$stressor_names[stressor_index]
 
         # Adjust if matrix interaction term
-        if (stressor_index > length(rv_stressor_response$stressor_names)) {
-          sname <- rv_stressor_response$interaction_names[stressor_index - length(rv_stressor_response$pretty_names)]
+        if (stressor_index > length(session$userData$rv_stressor_response$stressor_names)) {
+          sname <- session$userData$rv_stressor_response$interaction_names[stressor_index - length(session$userData$rv_stressor_response$pretty_names)]
         }
 
-        if (is.null(rv_stressor_response$active_values_raw)) {
+        if (is.null(session$userData$rv_stressor_response$active_values_raw)) {
           tags$p(" ", style = "float: left; display:inline;")
         } else {
-          raw_vals <- rv_stressor_response$active_values_raw$Mean
-          names <- rv_stressor_response$active_values_raw$Stressor
+          raw_vals <- session$userData$rv_stressor_response$active_values_raw$Mean
+          names <- session$userData$rv_stressor_response$active_values_raw$Stressor
           target_val <- raw_vals[which(names == sname)]
           target_val <- ifelse(is.na(target_val), " ", paste0(" ", target_val))
           tags$p(target_val, style = "float: left; display:inline; padding-left: 8px; font-size: 90%;")
@@ -89,14 +89,14 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
         # Set the stressor response object as a reactive value
         if (!(is.na(stressor_index))) {
           
-          active <- rv_stressor_response$active_layer
-          current <- rv_stressor_response$stressor_names[stressor_index]
+          active <- session$userData$rv_stressor_response$active_layer
+          current <- session$userData$rv_stressor_response$stressor_names[stressor_index]
 
 
           # Fix name if selecting an interaction matrix
           if (is.na(current)) {
             # Assume interaction matrix
-            current <- rv_stressor_response$interaction_names[stressor_index - length(rv_stressor_response$pretty_names)]
+            current <- session$userData$rv_stressor_response$interaction_names[stressor_index - length(session$userData$rv_stressor_response$pretty_names)]
           }
           
          
@@ -124,18 +124,18 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
         # ensure UI is loaded - do not run if not set
         req(input$hiddenload)
         # User clicks on ID
-        current <- rv_stressor_response$stressor_names[stressor_index]
+        current <- session$userData$rv_stressor_response$stressor_names[stressor_index]
 
         # If interaction matrix
         if (is.na(current)) {
           # Assume interaction matrix
-          current <- rv_stressor_response$interaction_names[stressor_index - length(rv_stressor_response$pretty_names)]
+          current <- session$userData$rv_stressor_response$interaction_names[stressor_index - length(session$userData$rv_stressor_response$pretty_names)]
         }
 
         # Update reactive value of target variable selected
         updateActiveVar <- function(current) {
           print(paste0("User click.. update to layer... ", current))
-          rv_stressor_response$active_layer <- current
+          session$userData$rv_stressor_response$active_layer <- current
         }
         # Use mouse click
         my_id <- paste0("main_map-", current, "-var_id")
@@ -159,14 +159,14 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
         # Dont load until button clicked
         req(input$hiddenload)
 
-        this_var <- rv_stressor_response$pretty_names[stressor_index]
+        this_var <- session$userData$rv_stressor_response$pretty_names[stressor_index]
         # print(paste0("Stressor response modal is open for ... ", this_var))
 
         # -------------------------------------------------------
         # If interaction matrix - show but not editable
         if (is.na(this_var)) {
           # Assume interaction matrix
-          this_var <- rv_stressor_response$interaction_names[stressor_index - length(rv_stressor_response$pretty_names)]
+          this_var <- session$userData$rv_stressor_response$interaction_names[stressor_index - length(session$userData$rv_stressor_response$pretty_names)]
 
           showModal(modalDialog(
             title = paste0("Stressor-Response Relationship: ", this_var),
@@ -216,12 +216,12 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
           # -------------------------------------------------------
           # Normal variable - not a matrix interaction surface
           # Currently selected variable name
-          # note can not use this_var <- rv_stressor_response$active_layer
+          # note can not use this_var <- session$userData$rv_stressor_response$active_layer
 
           this_var_pretty <- gsub("_", " ", this_var)
 
           # Main sheet attributes
-          this_main <- rv_stressor_response$main_sheet
+          this_main <- session$userData$rv_stressor_response$main_sheet
 
           showModal(modalDialog(
             title = paste0("Stressor-Response Relationship: ", this_var_pretty),
@@ -270,12 +270,12 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
       output$stressor_response_dt <- renderDT({
 
         # Do not run on app load
-        req(rv_stressor_response$active_layer)
+        req(session$userData$rv_stressor_response$active_layer)
 
         # Get all SR data
-        sr_data <- rv_stressor_response$sr_dat
+        sr_data <- session$userData$rv_stressor_response$sr_dat
         # Filter for target layer
-        this_var <- rv_stressor_response$active_layer # e.g., temperature
+        this_var <- session$userData$rv_stressor_response$active_layer # e.g., temperature
         table_vals <- sr_data[[this_var]] # e.g., temperature
 
         # Build the JS DT Data Table Object
@@ -312,9 +312,9 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
       #-------------------------------------------------------
       # Display mean min and max
       output$text_preview <- renderText({
-        this_var <- isolate(rv_stressor_response$active_layer) # e.g., temperature
+        this_var <- isolate(session$userData$rv_stressor_response$active_layer) # e.g., temperature
         # Stressor magnitude data
-        sm_df <- rv_stressor_magnitude$sm_dat
+        sm_df <- session$userData$rv_stressor_magnitude$sm_dat
         # Subset to targer variable
         sm_sub <- sm_df[which(sm_df$Stressor == this_var), ]
         my_mean <- round(mean(sm_sub$Mean, na.rm = TRUE), 2)
@@ -338,7 +338,7 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
         info <- input$stressor_response_dt_cell_edit
 
         # Index list of stressor names
-        this_var <- isolate(rv_stressor_response$active_layer) # e.g., temperature
+        this_var <- isolate(session$userData$rv_stressor_response$active_layer) # e.g., temperature
 
         # print(paste0("Edit value for ... ", this_var))
 
@@ -369,7 +369,7 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
 
 
         # Update stressor response value
-        rv_stressor_response$sr_dat[[this_var]][i, j] <- k
+        session$userData$rv_stressor_response$sr_dat[[this_var]][i, j] <- k
         # Update the DT data table so the user knows what they have just done
 
         # Also invalidate the cumulative system capacity score in the stressor magnitude table
@@ -387,11 +387,11 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
       output$dose_response_plot <- renderDygraph({
 
         # Filter for target layer
-        this_var <- rv_stressor_response$active_layer # e.g., temperature
+        this_var <- session$userData$rv_stressor_response$active_layer # e.g., temperature
 
         # print(paste0(this_var, " this_var in renderDygraph()"))
         # Get all SR data
-        table_vals <- rv_stressor_response$sr_dat[[this_var]]
+        table_vals <- session$userData$rv_stressor_response$sr_dat[[this_var]]
         table_vals$lwr_sd <- table_vals$mean_system_capacity - table_vals$sd
         table_vals$upr_sd <- table_vals$mean_system_capacity + table_vals$sd
         table_vals <- table_vals[order(table_vals$mean_system_capacity), ]
@@ -428,8 +428,8 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
       #------------------------------------------------------------------------
       output$interaction_matrix_main <- DT::renderDataTable({
           print("Rendering matrix intraction table...")
-          this_var <- rv_stressor_response$interaction_names[stressor_index - length(rv_stressor_response$stressor_names)]
-          mat_data <- rv_stressor_response$interaction_values[[this_var]]
+          this_var <- session$userData$rv_stressor_response$interaction_names[stressor_index - length(session$userData$rv_stressor_response$stressor_names)]
+          mat_data <- session$userData$rv_stressor_response$interaction_values[[this_var]]
           mtable <- mat_data$mat_msc[, 2:ncol(mat_data$mat_msc)]
           rnms <- unlist(mat_data$mat_msc[, 1])
           rnms <- as.numeric(rnms)
@@ -443,8 +443,8 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
 
       output$interaction_matrix_sd <- DT::renderDataTable({
           print("Rendering matrix intraction table...")
-          this_var <- rv_stressor_response$interaction_names[stressor_index - length(rv_stressor_response$stressor_names)]
-          mat_data <- rv_stressor_response$interaction_values[[this_var]]
+          this_var <- session$userData$rv_stressor_response$interaction_names[stressor_index - length(session$userData$rv_stressor_response$stressor_names)]
+          mat_data <- session$userData$rv_stressor_response$interaction_values[[this_var]]
           mtable <- mat_data$mat_sd[, 2:ncol(mat_data$mat_sd)]
           rnms <- unlist(mat_data$mat_sd[, 1])
           rnms <- as.numeric(rnms)
@@ -458,8 +458,8 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
 
       output$interaction_matrix_ll <- DT::renderDataTable({
           print("Rendering matrix intraction table...")
-          this_var <- rv_stressor_response$interaction_names[stressor_index - length(rv_stressor_response$stressor_names)]
-          mat_data <- rv_stressor_response$interaction_values[[this_var]]
+          this_var <- session$userData$rv_stressor_response$interaction_names[stressor_index - length(session$userData$rv_stressor_response$stressor_names)]
+          mat_data <- session$userData$rv_stressor_response$interaction_values[[this_var]]
           mtable <- mat_data$mat_ll[, 2:ncol(mat_data$mat_ll)]
           rnms <- unlist(mat_data$mat_ll[, 1])
           rnms <- as.numeric(rnms)
@@ -473,8 +473,8 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
 
       output$interaction_matrix_ul <- DT::renderDataTable({
           print("Rendering matrix intraction table...")
-          this_var <- rv_stressor_response$interaction_names[stressor_index - length(rv_stressor_response$stressor_names)]
-          mat_data <- rv_stressor_response$interaction_values[[this_var]]
+          this_var <- session$userData$rv_stressor_response$interaction_names[stressor_index - length(session$userData$rv_stressor_response$stressor_names)]
+          mat_data <- session$userData$rv_stressor_response$interaction_values[[this_var]]
           mtable <- mat_data$mat_ul[, 2:ncol(mat_data$mat_ul)]
           rnms <- unlist(mat_data$mat_ul[, 1])
           rnms <- as.numeric(rnms)
@@ -488,8 +488,8 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
 
       # Interaction matrix text
       output$text_interaction_matrix <- renderText({
-          this_var <- rv_stressor_response$interaction_names[stressor_index - length(rv_stressor_response$stressor_names)]
-          mat_data <- rv_stressor_response$interaction_values[[this_var]]
+          this_var <- session$userData$rv_stressor_response$interaction_names[stressor_index - length(session$userData$rv_stressor_response$stressor_names)]
+          mat_data <- session$userData$rv_stressor_response$interaction_values[[this_var]]
           mcol <- mat_data$Columns
           mrow <- mat_data$Rows
           paste0("Interpolation matrix columns are stressor ", mcol, " and rows are stressor ", mrow, ".")

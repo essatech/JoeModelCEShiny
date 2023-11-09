@@ -186,17 +186,17 @@ module_joe_vs_population_server <- function(id) {
                      HUC_ids <- as.numeric(splits)
                      
                      # Get the target HUCs
-                     CE_df <- rv_stressor_magnitude$sm_dat
+                     CE_df <- session$userData$rv_stressor_magnitude$sm_dat
                      CE_df <-
                        CE_df[which(CE_df$HUC_ID %in% HUC_ids), ]
                      
                      # Thin down stressors to target...
                      sr <- list()
                      sr$main_sheet <-
-                       rv_stressor_response$main_sheet
+                       session$userData$rv_stressor_response$main_sheet
                      sr$stressor_names <-
-                       rv_stressor_response$stressor_names
-                     sr$sr_dat <- rv_stressor_response$sr_dat
+                       session$userData$rv_stressor_response$stressor_names
+                     sr$sr_dat <- session$userData$rv_stressor_response$sr_dat
                      # Thin down...
                      sr$main_sheet <-
                        sr$main_sheet[which(sr$main_sheet$Stressors %in% CE_df$Stressor),]
@@ -232,7 +232,7 @@ module_joe_vs_population_server <- function(id) {
                      
 
                      # Add interaction matrix to joe model run
-                     m_int <- isolate(rv_stressor_response$interaction_values)
+                     m_int <- isolate(session$userData$rv_stressor_response$interaction_values)
                      if(!(is.null(m_int))) {
                        # Make sure matrix is not exclusivly for Joe
                        cfm <- function(tmp) {
@@ -242,7 +242,7 @@ module_joe_vs_population_server <- function(id) {
                        }
                        m_int <- lapply(m_int, cfm)
                        if(length(m_int) > 0) {
-                         sr$MInt <- rv_stressor_response$interaction_values
+                         sr$MInt <- session$userData$rv_stressor_response$interaction_values
                        }
                      }
                      

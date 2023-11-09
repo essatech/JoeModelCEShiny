@@ -177,31 +177,31 @@ module_import_server <- function(id) {
             sr_wb_dat <-
               JoeModelCE::StressorResponseWorkbook(filename = input$up_sr_wb_dat$datapath)
 
-            # Update the rv_stressor_response reactive object
+            # Update the session$userData$rv_stressor_response reactive object
             start_time <- Sys.time()
 
             # Designate the stressor response object as a reactive value
-            rv_stressor_response$main_sheet <-
+            session$userData$rv_stressor_response$main_sheet <-
               sr_wb_dat$main_sheet
-            rv_stressor_response$stressor_names <-
+            session$userData$rv_stressor_response$stressor_names <-
               sr_wb_dat$stressor_names
-            rv_stressor_response$pretty_names <-
+            session$userData$rv_stressor_response$pretty_names <-
               sr_wb_dat$pretty_names
-            rv_stressor_response$sr_dat <-
+            session$userData$rv_stressor_response$sr_dat <-
               sr_wb_dat$sr_dat
-            rv_stressor_response$active_layer <-
+            session$userData$rv_stressor_response$active_layer <-
               sr_wb_dat$stressor_names[1]
-            rv_stressor_response$active_values_raw <-
+            session$userData$rv_stressor_response$active_values_raw <-
               NULL
-            rv_stressor_response$active_values_response <-
+            session$userData$rv_stressor_response$active_values_response <-
               NULL
-            rv_stressor_response$active_refresh <-
+            session$userData$rv_stressor_response$active_refresh <-
               start_time
-            rv_stressor_response$hover_values <-
+            session$userData$rv_stressor_response$hover_values <-
               FALSE
-            rv_stressor_response$interaction_names <-
+            session$userData$rv_stressor_response$interaction_names <-
               names(sr_wb_dat$MInt)
-            rv_stressor_response$interaction_values <-
+            session$userData$rv_stressor_response$interaction_values <-
               sr_wb_dat$MInt
 
 
@@ -235,6 +235,10 @@ module_import_server <- function(id) {
             # rv_show_sample_plot$open <- FALSE
             rv_pop_sample_plot_data$dat <- list()
             rv_pop_sample_plot_data$run_counter <- 1
+            
+            # Hide system capacity button
+            addClass(id = "main_map-var_id", class = "hide-this", asis = TRUE)
+            
 
             upload_ok <- TRUE
 
@@ -283,18 +287,18 @@ module_import_server <- function(id) {
             # First reset the stressor response workbook
             start_time <- Sys.time()
 
-            rv_stressor_response$active_layer <-
-              rv_stressor_response$stressor_names[1]
-            rv_stressor_response$active_values_raw <-
+            session$userData$rv_stressor_response$active_layer <-
+              session$userData$rv_stressor_response$stressor_names[1]
+            session$userData$rv_stressor_response$active_values_raw <-
               NULL
-            rv_stressor_response$active_values_response <-
+            session$userData$rv_stressor_response$active_values_response <-
               NULL
-            rv_stressor_response$active_refresh <-
+            session$userData$rv_stressor_response$active_refresh <-
               start_time
-            rv_stressor_response$hover_values <- FALSE
+            session$userData$rv_stressor_response$hover_values <- FALSE
 
             # Update the stressor magnitude data
-            rv_stressor_magnitude$sm_dat <- sm_wb_dat
+            session$userData$rv_stressor_magnitude$sm_dat <- sm_wb_dat
 
             # Trigger redraw to clear selection
             rv_redraw$redraw <- 0
@@ -328,6 +332,9 @@ module_import_server <- function(id) {
             # rv_show_sample_plot$open <- FALSE
             rv_pop_sample_plot_data$dat <- list()
             rv_pop_sample_plot_data$run_counter <- 1
+            
+            # Hide system capacity button
+            addClass(id = "main_map-var_id", class = "hide-this", asis = TRUE)
 
             upload_ok <- TRUE
 
@@ -380,7 +387,21 @@ module_import_server <- function(id) {
               # Load in the default watersheds geojson layer
               hmdl <- sf::st_read(input$up_sheds$datapath[1])
             }
+            
             print("File loading....")
+            
+            # Fix col names - if needed
+            cnames <- colnames(hmdl)
+            if(!("HUC_ID" %in% cnames)) {
+              print("HUC_ID not in col names...")
+              use_id <- which(grepl("id", tolower(cnames)))[1]
+              hmdl$HUC_ID <- hmdl[[use_id]]
+            }
+            if(!("NAME" %in% cnames)) {
+              print("NAME not in col names...")
+              use_name <- which(grepl("name", tolower(cnames)))[1]
+              hmdl$NAME <- hmdl[[use_name]]
+            }
 
             hmdl$HUC_ID <- as.numeric(hmdl$HUC_ID)
             hmdl$uid <-
@@ -410,20 +431,20 @@ module_import_server <- function(id) {
             # First reset the stressor response workbook
             start_time <- Sys.time()
 
-            rv_stressor_response$active_layer <-
-              isolate(rv_stressor_response$stressor_names[1])
-            rv_stressor_response$active_values_raw <-
+            session$userData$rv_stressor_response$active_layer <-
+              isolate(session$userData$rv_stressor_response$stressor_names[1])
+            session$userData$rv_stressor_response$active_values_raw <-
               NULL
-            rv_stressor_response$active_values_response <-
+            session$userData$rv_stressor_response$active_values_response <-
               NULL
-            rv_stressor_response$active_refresh <-
+            session$userData$rv_stressor_response$active_refresh <-
               start_time
-            rv_stressor_response$hover_values <- FALSE
+            session$userData$rv_stressor_response$hover_values <- FALSE
 
 
             # Update the stressor magnitude data
-            rv_stressor_magnitude$sm_dat <-
-              isolate(rv_stressor_magnitude$sm_dat)
+            session$userData$rv_stressor_magnitude$sm_dat <-
+              isolate(session$userData$rv_stressor_magnitude$sm_dat)
 
             # Trigger redraw to clear selection
             rv_redraw$redraw <- 0
@@ -457,6 +478,9 @@ module_import_server <- function(id) {
             # rv_show_sample_plot$open <- FALSE
             rv_pop_sample_plot_data$dat <- list()
             rv_pop_sample_plot_data$run_counter <- 1
+            
+            # Hide system capacity button
+            addClass(id = "main_map-var_id", class = "hide-this", asis = TRUE)
 
             upload_ok <- TRUE
 
@@ -501,6 +525,10 @@ module_import_server <- function(id) {
             # Load in the default watersheds geojson layer
             life_stages <-
               read.csv(input$up_vital$datapath)
+            
+            print("running JavaScript... updateAllInputs")
+            # Update all numeric inputs through javascript
+            js$updateAllInputs(rjson::toJSON(life_stages))
 
             rv_life_stages$dat <- life_stages
 

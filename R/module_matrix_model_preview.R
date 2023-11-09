@@ -81,7 +81,7 @@ module_matrix_model_preview_server <- function(id) {
                  output$stressor_variable_list_pm_sandbox <- renderUI({
                    
                    print("stressor_variable_list_pm_sandbox...")
-                   ms_stress <- rv_stressor_response$main_sheet
+                   ms_stress <- session$userData$rv_stressor_response$main_sheet
                    # Only consider stressors applicable to Population model
                    ms_stress <- ms_stress[which(ms_stress$Model %in% c("Population Model", "All")), ]
                    
@@ -157,9 +157,9 @@ module_matrix_model_preview_server <- function(id) {
                        
                        # Thin down stressors to target...
                        sr <- list()
-                       sr$main_sheet <- rv_stressor_response$main_sheet
-                       sr$stressor_names <- rv_stressor_response$stressor_names
-                       sr$sr_dat <- rv_stressor_response$sr_dat
+                       sr$main_sheet <- session$userData$rv_stressor_response$main_sheet
+                       sr$stressor_names <- session$userData$rv_stressor_response$stressor_names
+                       sr$sr_dat <- session$userData$rv_stressor_response$sr_dat
                        # Thin down...
                        sr$main_sheet <- sr$main_sheet[which(sr$main_sheet$Stressors %in% CE_df$Stressors), ]
                        sr$stressor_names <- sr$stressor_names[sr$stressor_names %in% CE_df$Stressors]

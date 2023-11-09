@@ -5,7 +5,7 @@
 # See tutorial here: https://shiny.rstudio.com/articles/scoping.html
 #--------------------------------------------------------------------
 
-rm(list = ls())
+rm(list=ls()) # Remove all object from memory
 
 # Download the Joe Model
 # See download instructions here: https://github.com/essatech/JoeModelCE/
@@ -20,43 +20,26 @@ library(writexl)
 library(shiny)
 library(DT)
 library(shinyjs)
-#library(shinycssloaders) # DROP
-#library(lubridate) # DROP
 library(shinyFeedback)
-# library(dbplyr)
-# library(config) # DROP
 library(shinydashboard)
 library(shinydashboardPlus)
 library(shinybusy)
 library(waiter)
-library(shinyWidgets) # DROP
+library(shinyWidgets)
 library(htmlwidgets)
-#library(highcharter) # DROP
 library(dygraphs) 
 library(sf)
-#library(rgdal) # DROP
 library(DT)
 library(readxl)
 library(leaflet)
-library(tidyr) # DROP
-#library(tidyselect) # DROP
+library(tidyr)
 library(reshape2)
-#library(rmapshaper) # DROP
 library(popbio)
 library(testthat)
 library(ggplot2)
 library(shinyvalidate)
 library(ggthemes)
 library(plotly)
-
-#load libraries for the functions
-# library(pracma) #needed for fsolve
-
-# Optionally enable react log - useful for debugging
- # library(reactlog)
- # reactlog::reactlog_enable()
- # shiny::reactlogShow() # Run this once app closes
-
 
 # TODO: remove this for deploy - puase on error
 # options(shiny.error = browser)
@@ -70,57 +53,31 @@ library(plotly)
 # Useful leaflet demos - TODO delete
 # https://github.com/IBM-DSE/Shiny-Examples-with-Blog
 
-
 #-------------------------------------------------
 # Load in default stressor response relationships
 #-------------------------------------------------
-  # Load Stressor Response Files 
+  # Load stressor-response Files 
   file_name_stressor_response <- paste0("./data/stressor_response_demo.xlsx")
-  #file_name_stressor_response <- paste0("./data/stressor-response_fixed_sqam.xlsx")
-  #file_name_stressor_response <- paste0("./data/testing/matrix_test/stressor_response_matrix.xlsx")
 
-  # Extract the stressor response relationships
+  # Extract the stressor-response relationships
   sr_wb_dat <- JoeModelCE::StressorResponseWorkbook(filename = file_name_stressor_response)
   names(sr_wb_dat)
   
   start_time <- Sys.time()
   
-  # Designate the stressor response object as a reactive value
-  rv_stressor_response <- reactiveValues(
-    main_sheet             = sr_wb_dat$main_sheet,
-    stressor_names         = sr_wb_dat$stressor_names,
-    pretty_names           = sr_wb_dat$pretty_names,
-    sr_dat                 = sr_wb_dat$sr_dat,
-    active_layer           = sr_wb_dat$stressor_names[1],
-    active_values_raw      = NULL,
-    active_values_response = NULL,
-    active_refresh         = start_time,
-    hover_values           = FALSE,
-    interaction_names = names(sr_wb_dat$MInt),
-    interaction_values = sr_wb_dat$MInt
-  )
 
-  
 
 #-------------------------------------------------
 # Load in default Stressor magnitude
 #-------------------------------------------------
   # Extract the stressor magnitude values associated with each HUC
-  # Fixed: stressor_magnitude_fixed_rn_ARTR
-  # UNC: stressor_magnitude_unc_ARTR
-  #file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_unc_ARTR.xlsx")
   file_name_stressor_magnitude <- paste0("./data/stressor_magnitude_demo.xlsx")
-  #file_name_stressor_magnitude <- paste0("./data/testing/matrix_test/stressor_magnitude_matrix.xlsx")
 
+  # Stressor magnitude file
   sm_wb_dat <-  JoeModelCE::StressorMagnitudeWorkbook(
                     filename = file_name_stressor_magnitude,
                     scenario_worksheet = 1) # natural_unc
-  
-  # Designate stressor magnitude as reactive values
-  rv_stressor_magnitude <- reactiveValues(
-    sm_dat = sm_wb_dat
-  )
-  
+
   
 #------------------------------------------------------
 # Load in the life stages file for the population model
@@ -128,61 +85,17 @@ library(plotly)
   # When app launches defaults will be loaded from this file
   life_stages <- read.csv("./data/life cycles.csv")
   
-  # Set as a reactive object
-  rv_life_stages <- reactiveValues(
-    dat = life_stages
-  )
-  
-  rv_eigen_analysis <- reactiveValues(
-    dat = list()
-  )
-  
-  rv_demo_matricies <- reactiveValues(
-    set = 1,
-    dat = list()
-  )
-  
-  rv_ea_errors <- reactiveValues(
-    possible_error_state = FALSE,
-    possible_error_msg = ""
-  )
-  
-  rv_show_sample_plot <- reactiveValues(
-    open = FALSE
-  )
-  
-  rv_pop_sample_plot_data <- reactiveValues(
-    dat = list(),
-    run_counter = 1
-  )
-  
-  # Sand box stressor values
-  rv_sandbox_stressors <- reactiveValues(
-    dat = list()
-  )
-  
-  rv_pop_data_huc_ts <- reactiveValues(
-    dat = list(),
-    dat_baseline = list(),
-    run_counter = 1,
-    update_ts_plots = FALSE,
-    joe_model_comp = NULL
-  )
-  
-  rv_show_pop_main_plot <- reactiveValues(
-    open = FALSE
-  )
+ 
   
   
   
 #-------------------------------------------------
 # Map geometry and map object reactive values
 #-------------------------------------------------
+  
   # Load in the default watersheds geojson layer - Athabasca
   hmdl <- sf::st_read("./data/watersheds.gpkg")
-  #hmdl <- sf::st_read("./data/sqam.gpkg")
-  #hmdl <- sf::st_read("./data/testing/matrix_test/poly.shp")
-
+  
   hmdl$HUC_ID <- as.numeric(hmdl$HUC_ID)
   hmdl$uid <- paste0(hmdl$HUC_ID, "|", hmdl$NAME)
 
@@ -287,12 +200,25 @@ rv_map_location <- reactiveValues(huc_id = NULL, huc_name = NULL, lat = NULL, ln
 
 
 
-
 #------------------------------------------
 # Deployment reminder checklist
 #------------------------------------------
 # turn off reactlog::reactlog_enable()
 # turn on preloader in ui.R (preloader)
 # load package functions into app
+# Optionally enable react log - useful for debugging
+# library(reactlog)
+# reactlog::reactlog_enable()
+# shiny::reactlogShow() # Run this once app closes
+
+#------------------------------------------
+# Deployment reminder checklist
+#------------------------------------------
+# library(shinytest2)
+# shinytest2::record_test()
+# shinytest2::test_app()
+
+# Run shiny app in browser
+# shiny::runApp(launch.browser = TRUE)
 
 

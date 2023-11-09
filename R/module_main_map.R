@@ -93,7 +93,7 @@ module_main_map_server <- function(id) {
 
       # Toggle mouse-over huc values on and off
       observeEvent(input$hover_values, {
-        rv_stressor_response$hover_values <- input$hover_values
+        session$userData$rv_stressor_response$hover_values <- input$hover_values
       })
 
 
@@ -141,7 +141,7 @@ module_main_map_server <- function(id) {
         rv_redraw$redraw
 
         # Name of the variable to display
-        var_name <- rv_stressor_response$active_layer
+        var_name <- session$userData$rv_stressor_response$active_layer
 
         # HUC spatial geometry
         huc_geom <- rv_HUC_geom$huc_geom
@@ -150,7 +150,7 @@ module_main_map_server <- function(id) {
         if (var_name != "system_capacity") {
 
           # Data for HUCs (Stressor Magnitude)
-          sm_df <- rv_stressor_magnitude$sm_dat
+          sm_df <- session$userData$rv_stressor_magnitude$sm_dat
           sm_df <- sm_df[sm_df$Stressor == var_name, ]
 
           # Merge stressor magnitude values to sf object
@@ -158,13 +158,13 @@ module_main_map_server <- function(id) {
           huc_geom$values <- sm_df$Mean[match(huc_geom$HUC_ID, sm_df$HUC_ID)]
 
           # Look at relationship from response curve
-          resp_curv <- rv_stressor_response$sr_dat[[var_name]]
+          resp_curv <- session$userData$rv_stressor_response$sr_dat[[var_name]]
 
           if (is.null(resp_curv)) {
             
             # Special case for interaction matrix
-            sm_df <- rv_stressor_magnitude$sm_dat
-            MInt_all <- rv_stressor_response$interaction_values
+            sm_df <- session$userData$rv_stressor_magnitude$sm_dat
+            MInt_all <- session$userData$rv_stressor_response$interaction_values
             MInt <- MInt_all[[var_name]]
             sm_df$dose <- sm_df$Mean
             sm_df$HUC <- sm_df$HUC_ID
@@ -246,7 +246,7 @@ module_main_map_server <- function(id) {
           addLegend("bottomright",
             colors = leg_col,
             labels = leg_lab,
-            title = rv_stressor_response$active_layer,
+            title = session$userData$rv_stressor_response$active_layer,
             opacity = 0.9
           )
 
@@ -340,8 +340,8 @@ module_main_map_server <- function(id) {
       output$stressor_variable_list <- renderUI({
         
         print("Re-populating stressor variables...")
-        snames <- rv_stressor_response$stressor_names
-        pnames <- rv_stressor_response$pretty_names
+        snames <- session$userData$rv_stressor_response$stressor_names
+        pnames <- session$userData$rv_stressor_response$pretty_names
         svar_list <- list()
 
         # Check if there are any matrix interaction variables
@@ -358,7 +358,7 @@ module_main_map_server <- function(id) {
         }
 
         # Call sub modules to create matrix button
-        mnames <- rv_stressor_response$interaction_names
+        mnames <- session$userData$rv_stressor_response$interaction_names
         if (!(is.null(mnames))) {
           for (m in 1:length(mnames)) {
             this_interaction <- mnames[m]
@@ -402,7 +402,7 @@ module_main_map_server <- function(id) {
       # note the event concatenation 'object name' + '_click'; 'object name' + '_shape_mouseover'
       observeEvent(input$mainmap_shape_mouseout, {
         rv_map_shape(FALSE)
-        rv_stressor_response$active_values_raw <- NULL
+        session$userData$rv_stressor_response$active_values_raw <- NULL
       })
 
       observeEvent(input$mainmap_shape_mouseover, {
@@ -424,7 +424,7 @@ module_main_map_server <- function(id) {
           if (input$hover_values) {
             # Get target values for each variable
             # to prevent lag only run every half second
-            target_vals <- rv_stressor_magnitude$sm_dat %>%
+            target_vals <- session$userData$rv_stressor_magnitude$sm_dat %>%
               dplyr::filter(HUC_ID == huc_id) %>%
               dplyr::select("Stressor", "Mean")
 
@@ -432,13 +432,13 @@ module_main_map_server <- function(id) {
 
             # Set active values
             if (nrow(target_vals) > 0) {
-              rv_stressor_response$active_values_raw <- target_vals
+              session$userData$rv_stressor_response$active_values_raw <- target_vals
             } else {
               # otherwise null
-              rv_stressor_response$active_values_raw <- NULL
+              session$userData$rv_stressor_response$active_values_raw <- NULL
             }
           } else {
-            rv_stressor_response$active_values_raw <- NULL
+            session$userData$rv_stressor_response$active_values_raw <- NULL
           }
         }
       })
@@ -460,7 +460,7 @@ module_main_map_server <- function(id) {
         # User clicks on ID
         # Update reactive value for system capacity
         updateActiveVar <- function() {
-          rv_stressor_response$active_layer <- "system_capacity"
+          session$userData$rv_stressor_response$active_layer <- "system_capacity"
         }
         # Use mouse click
         my_id <- paste0("main_map-var_id")
@@ -474,7 +474,7 @@ module_main_map_server <- function(id) {
       # Update selected class on layer panel
       observe({
         req(input$hiddenload)
-        req(rv_stressor_response$active_layer)
+        req(session$userData$rv_stressor_response$active_layer)
         print("Setting style...")
         # print(active)
         # Strip class away from any other selected
