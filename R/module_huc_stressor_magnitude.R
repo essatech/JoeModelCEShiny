@@ -48,7 +48,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                  #-------------------------------------------------------
                  # disable sm adjust button unless at least one HUC is selected
                  observe({
-                   click_hucs <- rv_clickedIds$ids
+                   click_hucs <- session$userData$rv_clickedIds$ids
                    if (length(click_hucs) > 0) {
                      shinyjs::enable("adjust_stressor_magnitude")
                    } else {
@@ -121,7 +121,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                  # If multiple watersheds selected then show number selected and provide instruction to user
                  output$text_preview <- renderUI({
                    
-                   selected_raw <- rv_clickedIds$ids
+                   selected_raw <- session$userData$rv_clickedIds$ids
                    tl <- NULL
                    
                    # Single-HUC Selection
@@ -179,7 +179,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                    print("Stressor magnitude DT...")
 
                    # HUCs currently selected
-                   selected_raw <- rv_clickedIds$ids
+                   selected_raw <- session$userData$rv_clickedIds$ids
                    
                    # Fix format
                    getID <- function(x) {
@@ -225,9 +225,9 @@ module_huc_stressor_magnitude_server <- function(id) {
                        adult_sys_cap = FALSE)
                      
                      # Temporary CSC for this HUC with these params...
-                     rv_clickedIds_csc$csc <- mean(jm$ce.df$CE, na.rm = TRUE)
+                     session$userData$rv_clickedIds_csc$csc <- mean(jm$ce.df$CE, na.rm = TRUE)
                      
-                     print(round(rv_clickedIds_csc$csc, 3))
+                     print(round(session$userData$rv_clickedIds_csc$csc, 3))
                      # Look at MSC for other variables...
                      var_csc <- data.frame(
                        snames = jm$sc.dose.df$Stressor,
@@ -236,12 +236,12 @@ module_huc_stressor_magnitude_server <- function(id) {
                      # Group by stressor if multiple
                      var_csc <- var_csc %>% group_by(snames) %>% summarise(sys_cap = mean(sys_cap, na.rm = TRUE))
                      # Update reactive placeholder value
-                     rv_clickedIds_csc$var_csc <- var_csc
+                     session$userData$rv_clickedIds_csc$var_csc <- var_csc
 
                    } else {
                      # Set to NA
-                     rv_clickedIds_csc$csc <- NA
-                     rv_clickedIds_csc$var_csc <- NA
+                     session$userData$rv_clickedIds_csc$csc <- NA
+                     session$userData$rv_clickedIds_csc$var_csc <- NA
                      print("Reset HUC csc...")
                    }
                    
@@ -258,7 +258,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                      table_vals <- table_vals[order(table_vals$Stressor),]
                      
                      # Merge on temporary System Capacity Estimate
-                     tsysm_capv <- rv_clickedIds_csc$var_csc 
+                     tsysm_capv <- session$userData$rv_clickedIds_csc$var_csc 
                      table_vals <- base::merge(table_vals, tsysm_capv,
                                          by.x = "Stressor", by.y = "snames",
                                          all.x = TRUE, all.y = FALSE)
@@ -317,7 +317,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                          Up_Limit = NA
                        )
                      # Merge on system capacity estimates per stressor
-                     tsysm_capv <- rv_clickedIds_csc$var_csc 
+                     tsysm_capv <- session$userData$rv_clickedIds_csc$var_csc 
                      table_vals <- base::merge(table_vals, tsysm_capv,
                                                by.x = "Stressor", by.y = "snames",
                                                all.x = TRUE, all.y = FALSE)
@@ -368,7 +368,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                    info = input$stressor_inputs_cell_edit
                    
                    # HUCs currently selected
-                   selected_raw <- rv_clickedIds$ids
+                   selected_raw <- session$userData$rv_clickedIds$ids
                    # Fix format
                    getID <- function(x) {
                      strsplit(x, "\\|")[[1]][1]
@@ -437,7 +437,7 @@ module_huc_stressor_magnitude_server <- function(id) {
                  #-------------------------------------------------------------
                  output$csc_huc_indicator <- renderUI({
                    
-                   msc <- rv_clickedIds_csc$csc
+                   msc <- session$userData$rv_clickedIds_csc$csc
                    
                    alert_col <- "#a8a8a8"
                    alert_col <- ifelse(msc < 0.2, "#d7191c50", alert_col)

@@ -42,9 +42,9 @@ module_joe_model_csc_plots_selected_server <- function(id) {
       # this modal is disabled if the Joe Model results are empty
       # this modal is also disabled if there is no selection
       observe({
-        sims <- rv_joe_model_results$sims
+        sims <- session$userData$rv_joe_model_results$sims
         if(length(sims) > 0) {
-          selected <- rv_clickedIds$ids
+          selected <- session$userData$rv_clickedIds$ids
           if(length(selected) == 0) {
             shinyjs::disable("open_joe_modal_csc_plots_selected")
           } else {
@@ -116,7 +116,7 @@ module_joe_model_csc_plots_selected_server <- function(id) {
       # Labels of selected HUCs
       #------------------------------------------------------
       output$list_selected_hucs <- renderUI({
-        selected <- rv_clickedIds$ids
+        selected <- session$userData$rv_clickedIds$ids
         name_list <- list()
         for(i in 1:length(selected)) {
           name_list[[i]] <- tags$div(selected[i])
@@ -129,16 +129,16 @@ module_joe_model_csc_plots_selected_server <- function(id) {
       #-------------------------------------------------------
       output$csc_tables <- renderDataTable({
         
-        selected <- rv_clickedIds$ids
+        selected <- session$userData$rv_clickedIds$ids
         selected_ids <- strsplit(selected, "\\|")
         selected_ids <- sapply(selected_ids, `[`, 1)
         selected_ids <- as.numeric(as.character(selected_ids))
         
         # Build summary table of Joe Model results
         # Get the most recent result set
-        simulation_index <- length(rv_joe_model_results$sims)
+        simulation_index <- length(session$userData$rv_joe_model_results$sims)
         # Get the Joe model results object 
-        jmr <- rv_joe_model_results$sims[[simulation_index]]
+        jmr <- session$userData$rv_joe_model_results$sims[[simulation_index]]
         
         # Subset for selection
         jmr$ce.df <- jmr$ce.df[which(jmr$ce.df$HUC %in% selected_ids), ]
@@ -196,16 +196,16 @@ module_joe_model_csc_plots_selected_server <- function(id) {
       #-------------------------------------------------------
       output$csc_hist <- renderPlot({
         
-        selected <- rv_clickedIds$ids
+        selected <- session$userData$rv_clickedIds$ids
         selected_ids <- strsplit(selected, "\\|")
         selected_ids <- sapply(selected_ids, `[`, 1)
         selected_ids <- as.numeric(as.character(selected_ids))
         
         # Build summary table of Joe Model results
         # Get the most recent result set
-        simulation_index <- length(rv_joe_model_results$sims)
+        simulation_index <- length(session$userData$rv_joe_model_results$sims)
         # Get the Joe model results object 
-        jmr <- rv_joe_model_results$sims[[simulation_index]]
+        jmr <- session$userData$rv_joe_model_results$sims[[simulation_index]]
         
         # Subset for selection
         jmr$ce.df <- jmr$ce.df[which(jmr$ce.df$HUC %in% selected_ids), ]
@@ -230,16 +230,16 @@ module_joe_model_csc_plots_selected_server <- function(id) {
       # Set trigger to load all plots..
       pp <- eventReactive(input$csc_show_all_plots, {
         
-        selected <- rv_clickedIds$ids
+        selected <- session$userData$rv_clickedIds$ids
         selected_ids <- strsplit(selected, "\\|")
         selected_ids <- sapply(selected_ids, `[`, 1)
         selected_ids <- as.numeric(as.character(selected_ids))
         
         # Build summary table of Joe Model results
         # Get the most recent result set
-        simulation_index <- length(rv_joe_model_results$sims)
+        simulation_index <- length(session$userData$rv_joe_model_results$sims)
         # Get the Joe model results object 
-        jmr <- rv_joe_model_results$sims[[simulation_index]]
+        jmr <- session$userData$rv_joe_model_results$sims[[simulation_index]]
         
         # Subset for selection
         jmr$ce.df <- jmr$ce.df[which(jmr$ce.df$HUC %in% selected_ids), ]
@@ -371,7 +371,7 @@ module_joe_model_csc_plots_selected_server <- function(id) {
       heightSize <- reactive({
         print("Adjust csc plot height size...")
         # Number of selected HUC
-        selected <- rv_clickedIds$ids
+        selected <- session$userData$rv_clickedIds$ids
         selected_ids <- strsplit(selected, "\\|")
         selected_ids <- sapply(selected_ids, `[`, 1)
         selected_ids <- as.numeric(as.character(selected_ids))

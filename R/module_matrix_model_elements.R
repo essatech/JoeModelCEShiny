@@ -89,7 +89,7 @@ module_matrix_model_elements_server <- function(id) {
                  # Copy adult k to panel
                  output$print_adult_k <- renderText({
                    print("print_adult_k...")
-                   dat <- rv_life_stages$dat
+                   dat <- session$userData$rv_life_stages$dat
                    val <- dat$Value[which(dat$Name == "k")]
                    return(val)
                  })
@@ -285,17 +285,17 @@ module_matrix_model_elements_server <- function(id) {
                    
                    # Reset assume we are clear of errors ...
                    isolate({
-                     rv_ea_errors$possible_error_state <- FALSE
-                     rv_ea_errors$possible_error_msg <- ""
+                     session$userData$rv_ea_errors$possible_error_state <- FALSE
+                     session$userData$rv_ea_errors$possible_error_msg <- ""
                    })
                    
                    print("pop mod setup started...")
                    
                    # Make sure we actually have the data
-                   req(rv_life_stages$dat)
+                   req(session$userData$rv_life_stages$dat)
                    
                    # Gather population model inputs
-                   dat <- rv_life_stages$dat
+                   dat <- session$userData$rv_life_stages$dat
                    
                    # Setup objects for population model
                    pop_mod_setup <-
@@ -303,8 +303,8 @@ module_matrix_model_elements_server <- function(id) {
                    
                    if (pop_mod_setup$possible_error_state != "All Good") {
                      print("Bad error settings")
-                     rv_ea_errors$possible_error_state <- TRUE
-                     rv_ea_errors$possible_error_msg <-
+                     session$userData$rv_ea_errors$possible_error_state <- TRUE
+                     session$userData$rv_ea_errors$possible_error_msg <-
                        pop_mod_setup$possible_error_state
                      
                    } else {
@@ -353,17 +353,17 @@ module_matrix_model_elements_server <- function(id) {
                      
                      
                      # Add objects to list
-                     rv_eigen_analysis$dat$lambda <- lambda
-                     rv_eigen_analysis$dat$damping_ratio <-
+                     session$userData$rv_eigen_analysis$dat$lambda <- lambda
+                     session$userData$rv_eigen_analysis$dat$damping_ratio <-
                        damping_ratio
-                     rv_eigen_analysis$dat$gen_time <- gen_time
-                     rv_eigen_analysis$dat$net_repo_rate <-
+                     session$userData$rv_eigen_analysis$dat$gen_time <- gen_time
+                     session$userData$rv_eigen_analysis$dat$net_repo_rate <-
                        net_repo_rate
-                     rv_eigen_analysis$dat$ea <- ea
-                     rv_eigen_analysis$dat$pop_mod_mat <-
+                     session$userData$rv_eigen_analysis$dat$ea <- ea
+                     session$userData$rv_eigen_analysis$dat$pop_mod_mat <-
                        pop_mod_mat
-                     rv_eigen_analysis$dat$lss_m <- lss_m
-                     rv_eigen_analysis$dat$ds_m <- ds_m
+                     session$userData$rv_eigen_analysis$dat$lss_m <- lss_m
+                     session$userData$rv_eigen_analysis$dat$ds_m <- ds_m
                      
                      
                      
@@ -380,28 +380,28 @@ module_matrix_model_elements_server <- function(id) {
                  output$dens_independent_comp <- renderUI({
                    print("Building DI comp...")
                    
-                   if (rv_ea_errors$possible_error_state) {
+                   if (session$userData$rv_ea_errors$possible_error_state) {
                      # error state - return error message
                      tl <-
-                       tags$tr(tags$td(rv_ea_errors$possible_error_msg), class = "pm-bad-inputs")
+                       tags$tr(tags$td(session$userData$rv_ea_errors$possible_error_msg), class = "pm-bad-inputs")
                      return(tl)
                    } else {
                      tl <- tagList(
                        tags$tr(
                          tags$td("Lambda: ", style = "vertical-align: middle;"),
-                         tags$td(rv_eigen_analysis$dat$lambda, class = "pm-cell-values")
+                         tags$td(session$userData$rv_eigen_analysis$dat$lambda, class = "pm-cell-values")
                        ),
                        tags$tr(
                          tags$td("Damping Ratio: ", style = "vertical-align: middle;"),
-                         tags$td(rv_eigen_analysis$dat$damping_ratio, class = "pm-cell-values")
+                         tags$td(session$userData$rv_eigen_analysis$dat$damping_ratio, class = "pm-cell-values")
                        ),
                        tags$tr(
                          tags$td("Generation Time: ", style = "vertical-align: middle;"),
-                         tags$td(rv_eigen_analysis$dat$gen_time, class = "pm-cell-values")
+                         tags$td(session$userData$rv_eigen_analysis$dat$gen_time, class = "pm-cell-values")
                        ),
                        tags$tr(
                          tags$td("Net Reproductive Rate: ", style = "vertical-align: middle;"),
-                         tags$td(rv_eigen_analysis$dat$net_repo_rate, class = "pm-cell-values"),
+                         tags$td(session$userData$rv_eigen_analysis$dat$net_repo_rate, class = "pm-cell-values"),
                        )
                      )
                      return(tl)
@@ -417,7 +417,7 @@ module_matrix_model_elements_server <- function(id) {
                    print("Building DT1...")
                    
                    # Get the transition matrix
-                   A <- (rv_eigen_analysis$dat$lss_m)
+                   A <- (session$userData$rv_eigen_analysis$dat$lss_m)
                    # Add names to column
                    mnames <-
                      c("Stage 1", "Stage 2", "Stage 3", "Stage 4")
@@ -450,7 +450,7 @@ module_matrix_model_elements_server <- function(id) {
                    print("Building DT2...")
                    
                    # Get the transition matrix
-                   A <- (rv_eigen_analysis$dat$ds_m)
+                   A <- (session$userData$rv_eigen_analysis$dat$ds_m)
                    # Add names to column
                    mnames <-
                      c("Stage 1", "Stage 2", "Stage 3", "Stage 4")
@@ -485,7 +485,7 @@ module_matrix_model_elements_server <- function(id) {
                    
                    # Get the transition matrix
                    A <-
-                     round(rv_eigen_analysis$dat$pop_mod_mat$projection_matrix,
+                     round(session$userData$rv_eigen_analysis$dat$pop_mod_mat$projection_matrix,
                            3)
                    # Add names to column
                    mnames <-
@@ -518,7 +518,7 @@ module_matrix_model_elements_server <- function(id) {
                    print("Building DT4...")
                    
                    A2 <-
-                     round(rv_eigen_analysis$dat$ea$sensitivities, 3)
+                     round(session$userData$rv_eigen_analysis$dat$ea$sensitivities, 3)
                    mnames <-
                      c("Stage 1", "Stage 2", "Stage 3", "Stage 4")
                    colnames(A2) <- mnames
@@ -548,7 +548,7 @@ module_matrix_model_elements_server <- function(id) {
                    print("Building DT5...")
                    
                    A3 <-
-                     round(rv_eigen_analysis$dat$ea$elasticities, 3)
+                     round(session$userData$rv_eigen_analysis$dat$ea$elasticities, 3)
                    mnames <-
                      c("Stage 1", "Stage 2", "Stage 3", "Stage 4")
                    colnames(A3) <- mnames
@@ -578,9 +578,9 @@ module_matrix_model_elements_server <- function(id) {
                    print("Building DT6...")
                    
                    repro <-
-                     round(rv_eigen_analysis$dat$ea$repro.value, 2)
+                     round(session$userData$rv_eigen_analysis$dat$ea$repro.value, 2)
                    ss <-
-                     round(rv_eigen_analysis$dat$ea$stable.stage, 2)
+                     round(session$userData$rv_eigen_analysis$dat$ea$stable.stage, 2)
                    repro <- data.frame(t(repro))
                    ss <- data.frame(t(ss))
                    repro_ss <- rbind(repro, ss)
@@ -614,11 +614,11 @@ module_matrix_model_elements_server <- function(id) {
                  output$dt_stablestage_k <- renderDataTable({
                    print("Building dt_stablestage_k...")
                    
-                   ss <- rv_eigen_analysis$dat$ea$stable.stage
+                   ss <- session$userData$rv_eigen_analysis$dat$ea$stable.stage
                    nstage <-
-                     rv_eigen_analysis$dat$pop_mod_mat$life_histories$Nstage
+                     session$userData$rv_eigen_analysis$dat$pop_mod_mat$life_histories$Nstage
                    Ka <-
-                     rv_eigen_analysis$dat$pop_mod_mat$life_histories$Ka
+                     session$userData$rv_eigen_analysis$dat$pop_mod_mat$life_histories$Ka
                    
                    ss <- as.numeric(ss)
                    # evaluate whether we are quantifying the initial carrying capacities correctly
@@ -661,7 +661,7 @@ module_matrix_model_elements_server <- function(id) {
                  
                  output$lambda_txt <-
                    renderText({
-                     paste0("Lambda: ", rv_eigen_analysis$dat$lambda)
+                     paste0("Lambda: ", session$userData$rv_eigen_analysis$dat$lambda)
                    })
                  
                  

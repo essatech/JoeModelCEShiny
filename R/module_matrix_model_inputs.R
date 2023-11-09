@@ -312,7 +312,7 @@ module_matrix_model_inputs_server <- function(id) {
                  
                  # Listen for any changes to matrix model input parameters
                  #  and on change update the reactive values object
-                 # rv_life_stages$dat
+                 # session$userData$rv_life_stages$dat
                  observe({
                    # Do not run if any input is null (update while typing...)
                    req(input$k >= 0)
@@ -344,68 +344,68 @@ module_matrix_model_inputs_server <- function(id) {
                    req(input$egg_rho >= 0)
                    req(input$M.cv >= 0)
                    req(input$M.rho >= 0)
-                   req(rv_life_stages$dat)
+                   req(session$userData$rv_life_stages$dat)
                    
                    print("updating pop. model inputs...")
                    
                    isolate({
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "k")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "k")] <-
                        input$k
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "events")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "events")] <-
                        input$events
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "eps")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "eps")] <-
                        input$eps
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "int")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "int")] <-
                        input$int
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "SE")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "SE")] <-
                        input$SE
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "S0")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "S0")] <-
                        input$S0
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "SR")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "SR")] <-
                        input$SR
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "surv_1")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "surv_1")] <-
                        input$surv_1
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "surv_2")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "surv_2")] <-
                        input$surv_2
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "surv_3")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "surv_3")] <-
                        input$surv_3
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "surv_4")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "surv_4")] <-
                        input$surv_4
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "year_1")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "year_1")] <-
                        input$year_1
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "year_2")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "year_2")] <-
                        input$year_2
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "year_3")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "year_3")] <-
                        input$year_3
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "year_4")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "year_4")] <-
                        input$year_4
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "cr_E")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "cr_E")] <-
                        input$cr_E
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "cr_0")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "cr_0")] <-
                        input$cr_0
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "cr_1")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "cr_1")] <-
                        input$cr_1
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "cr_2")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "cr_2")] <-
                        input$cr_2
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "cr_3")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "cr_3")] <-
                        input$cr_3
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "cr_4")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "cr_4")] <-
                        input$cr_4
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "mat_1")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "mat_1")] <-
                        input$mat_1
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "mat_2")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "mat_2")] <-
                        input$mat_2
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "mat_3")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "mat_3")] <-
                        input$mat_3
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "mat_4")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "mat_4")] <-
                        input$mat_4
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "eps_sd")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "eps_sd")] <-
                        input$eps_sd
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "egg_rho")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "egg_rho")] <-
                        input$egg_rho
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "M.cv")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "M.cv")] <-
                        input$M.cv
-                     rv_life_stages$dat$Value[which(rv_life_stages$dat$Name == "M.rho")] <-
+                     session$userData$rv_life_stages$dat$Value[which(session$userData$rv_life_stages$dat$Name == "M.rho")] <-
                        input$M.rho
                    })
                    

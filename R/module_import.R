@@ -206,35 +206,35 @@ module_import_server <- function(id) {
 
 
             # Trigger redraw to clear selection
-            rv_redraw$redraw <- 0
+            session$userData$rv_redraw$redraw <- 0
             # Selected HUCs - Create an empty vector to hold all HUC click ids
-            rv_clickedIds$ids <- vector()
+            session$userData$rv_clickedIds$ids <- vector()
             # Selected HUCs Cumulative System Capacity - store temporary CSC for selected HUCs
-            rv_clickedIds_csc$csc <- NA
-            rv_clickedIds_csc$var_csc <- NA
+            session$userData$rv_clickedIds_csc$csc <- NA
+            session$userData$rv_clickedIds_csc$var_csc <- NA
 
             # Joe model results holder - assume multiple runs
-            rv_joe_model_results$sims <- list()
+            session$userData$rv_joe_model_results$sims <- list()
 
             # Joe model scenario name holder - assume multiple runs
-            rv_joe_model_sim_names$scenario_names <-
+            session$userData$rv_joe_model_sim_names$scenario_names <-
               list()
 
             # Place holder for Joe Model estimated run times
-            rv_joe_model_run_time$run_time_seconds <-
+            session$userData$rv_joe_model_run_time$run_time_seconds <-
               list()
 
             # Clear out any population model runs
-            rv_pop_data_huc_ts$dat <- list()
-            rv_pop_data_huc_ts$run_counter <- 1
-            rv_pop_data_huc_ts$update_ts_plots <- FALSE
-            rv_show_pop_main_plot$open <- FALSE
-            rv_sandbox_stressors$dat <- list()
+            session$userData$rv_pop_data_huc_ts$dat <- list()
+            session$userData$rv_pop_data_huc_ts$run_counter <- 1
+            session$userData$rv_pop_data_huc_ts$update_ts_plots <- FALSE
+            session$userData$rv_show_pop_main_plot$open <- FALSE
+            session$userData$rv_sandbox_stressors$dat <- list()
 
             # Clear out sample plot data
-            # rv_show_sample_plot$open <- FALSE
-            rv_pop_sample_plot_data$dat <- list()
-            rv_pop_sample_plot_data$run_counter <- 1
+            # session$userData$rv_show_sample_plot$open <- FALSE
+            session$userData$rv_pop_sample_plot_data$dat <- list()
+            session$userData$rv_pop_sample_plot_data$run_counter <- 1
             
             # Hide system capacity button
             addClass(id = "main_map-var_id", class = "hide-this", asis = TRUE)
@@ -301,37 +301,37 @@ module_import_server <- function(id) {
             session$userData$rv_stressor_magnitude$sm_dat <- sm_wb_dat
 
             # Trigger redraw to clear selection
-            rv_redraw$redraw <- 0
+            session$userData$rv_redraw$redraw <- 0
 
             # Selected HUCs - Create an empty vector to hold all HUC click ids
-            rv_clickedIds$ids <- vector()
+            session$userData$rv_clickedIds$ids <- vector()
 
             # Selected HUCs Cumulative System Capacity - store temporary CSC for selected HUCs
-            rv_clickedIds_csc$csc <- NA
-            rv_clickedIds_csc$var_csc <- NA
+            session$userData$rv_clickedIds_csc$csc <- NA
+            session$userData$rv_clickedIds_csc$var_csc <- NA
 
             # Joe model results holder - assume multiple runs
-            rv_joe_model_results$sims <- list()
+            session$userData$rv_joe_model_results$sims <- list()
 
             # Joe model scenario name holder - assume multiple runs
-            rv_joe_model_sim_names$scenario_names <-
+            session$userData$rv_joe_model_sim_names$scenario_names <-
               list()
 
             # Place holder for Joe Model estimated run times
-            rv_joe_model_run_time$run_time_seconds <-
+            session$userData$rv_joe_model_run_time$run_time_seconds <-
               list()
 
             # Clear out any population model runs
-            rv_pop_data_huc_ts$dat <- list()
-            rv_pop_data_huc_ts$run_counter <- 1
-            rv_pop_data_huc_ts$update_ts_plots <- FALSE
-            rv_show_pop_main_plot$open <- FALSE
-            rv_sandbox_stressors$dat <- list()
+            session$userData$rv_pop_data_huc_ts$dat <- list()
+            session$userData$rv_pop_data_huc_ts$run_counter <- 1
+            session$userData$rv_pop_data_huc_ts$update_ts_plots <- FALSE
+            session$userData$rv_show_pop_main_plot$open <- FALSE
+            session$userData$rv_sandbox_stressors$dat <- list()
 
             # Clear out sample plot data
-            # rv_show_sample_plot$open <- FALSE
-            rv_pop_sample_plot_data$dat <- list()
-            rv_pop_sample_plot_data$run_counter <- 1
+            # session$userData$rv_show_sample_plot$open <- FALSE
+            session$userData$rv_pop_sample_plot_data$dat <- list()
+            session$userData$rv_pop_sample_plot_data$run_counter <- 1
             
             # Hide system capacity button
             addClass(id = "main_map-var_id", class = "hide-this", asis = TRUE)
@@ -413,20 +413,20 @@ module_import_server <- function(id) {
             }
 
             # Save default HUC to reactive values
-            rv_HUC_geom$huc_geom <- hmdl
-            rv_HUC_geom$leg_col <- NA
-            rv_HUC_geom$leg_lab <- NA
-            rv_HUC_geom$color_df <- NA
+            session$userData$rv_HUC_geom$huc_geom <- hmdl
+            session$userData$rv_HUC_geom$leg_col <- NA
+            session$userData$rv_HUC_geom$leg_lab <- NA
+            session$userData$rv_HUC_geom$color_df <- NA
 
             # Initial load
             bbox <- st_bbox(hmdl)
-            rv_HUC_layer_load$data <- hmdl
-            rv_HUC_layer_load$xmin <- bbox$xmin
-            rv_HUC_layer_load$ymin <- bbox$ymin
-            rv_HUC_layer_load$xmax <- bbox$xmax
-            rv_HUC_layer_load$ymax <- bbox$ymax
-            rv_HUC_layer_load$reload_map <- TRUE
-            rv_HUC_layer_load$add_polygons <- FALSE
+            session$userData$rv_HUC_layer_load$data <- hmdl
+            session$userData$rv_HUC_layer_load$xmin <- bbox$xmin
+            session$userData$rv_HUC_layer_load$ymin <- bbox$ymin
+            session$userData$rv_HUC_layer_load$xmax <- bbox$xmax
+            session$userData$rv_HUC_layer_load$ymax <- bbox$ymax
+            session$userData$rv_HUC_layer_load$reload_map <- TRUE
+            session$userData$rv_HUC_layer_load$add_polygons <- FALSE
 
             # First reset the stressor response workbook
             start_time <- Sys.time()
@@ -447,37 +447,37 @@ module_import_server <- function(id) {
               isolate(session$userData$rv_stressor_magnitude$sm_dat)
 
             # Trigger redraw to clear selection
-            rv_redraw$redraw <- 0
+            session$userData$rv_redraw$redraw <- 0
 
             # Selected HUCs - Create an empty vector to hold all HUC click ids
-            rv_clickedIds$ids <- vector()
+            session$userData$rv_clickedIds$ids <- vector()
 
             # Selected HUCs Cumulative System Capacity - store temporary CSC for selected HUCs
-            rv_clickedIds_csc$csc <- NA
-            rv_clickedIds_csc$var_csc <- NA
+            session$userData$rv_clickedIds_csc$csc <- NA
+            session$userData$rv_clickedIds_csc$var_csc <- NA
 
             # Joe model results holder - assume multiple runs
-            rv_joe_model_results$sims <- list()
+            session$userData$rv_joe_model_results$sims <- list()
 
             # Joe model scenario name holder - assume multiple runs
-            rv_joe_model_sim_names$scenario_names <-
+            session$userData$rv_joe_model_sim_names$scenario_names <-
               list()
 
             # Place holder for Joe Model estimated run times
-            rv_joe_model_run_time$run_time_seconds <-
+            session$userData$rv_joe_model_run_time$run_time_seconds <-
               list()
 
             # Clear out any population model runs
-            rv_pop_data_huc_ts$dat <- list()
-            rv_pop_data_huc_ts$run_counter <- 1
-            rv_pop_data_huc_ts$update_ts_plots <- FALSE
-            rv_show_pop_main_plot$open <- FALSE
-            rv_sandbox_stressors$dat <- list()
+            session$userData$rv_pop_data_huc_ts$dat <- list()
+            session$userData$rv_pop_data_huc_ts$run_counter <- 1
+            session$userData$rv_pop_data_huc_ts$update_ts_plots <- FALSE
+            session$userData$rv_show_pop_main_plot$open <- FALSE
+            session$userData$rv_sandbox_stressors$dat <- list()
 
             # Clear out sample plot data
-            # rv_show_sample_plot$open <- FALSE
-            rv_pop_sample_plot_data$dat <- list()
-            rv_pop_sample_plot_data$run_counter <- 1
+            # session$userData$rv_show_sample_plot$open <- FALSE
+            session$userData$rv_pop_sample_plot_data$dat <- list()
+            session$userData$rv_pop_sample_plot_data$run_counter <- 1
             
             # Hide system capacity button
             addClass(id = "main_map-var_id", class = "hide-this", asis = TRUE)
@@ -530,26 +530,26 @@ module_import_server <- function(id) {
             # Update all numeric inputs through javascript
             js$updateAllInputs(rjson::toJSON(life_stages))
 
-            rv_life_stages$dat <- life_stages
+            session$userData$rv_life_stages$dat <- life_stages
 
-            rv_eigen_analysis$dat <- list()
+            session$userData$rv_eigen_analysis$dat <- list()
 
-            rv_ea_errors$possible_error_state <- FALSE
-            rv_ea_errors$possible_error_msg <- ""
+            session$userData$rv_ea_errors$possible_error_state <- FALSE
+            session$userData$rv_ea_errors$possible_error_msg <- ""
 
-            # rv_show_sample_plot$open <- FALSE
+            # session$userData$rv_show_sample_plot$open <- FALSE
 
-            rv_pop_sample_plot_data$dat <- list()
-            rv_pop_sample_plot_data$run_counter <- 1
+            session$userData$rv_pop_sample_plot_data$dat <- list()
+            session$userData$rv_pop_sample_plot_data$run_counter <- 1
 
             # Sand box stressor values
-            rv_sandbox_stressors$dat <- list()
+            session$userData$rv_sandbox_stressors$dat <- list()
 
-            rv_pop_data_huc_ts$dat <- list()
-            rv_pop_data_huc_ts$run_counter <- 1
-            rv_pop_data_huc_ts$update_ts_plots <- FALSE
+            session$userData$rv_pop_data_huc_ts$dat <- list()
+            session$userData$rv_pop_data_huc_ts$run_counter <- 1
+            session$userData$rv_pop_data_huc_ts$update_ts_plots <- FALSE
 
-            rv_show_pop_main_plot$open <- FALSE
+            session$userData$rv_show_pop_main_plot$open <- FALSE
 
             output$upload_error_msg_sheds <-
               renderText({

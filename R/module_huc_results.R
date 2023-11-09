@@ -145,7 +145,7 @@ module_huc_results_server <- function(id) {
                  
                  # Show count the number of selected HUCs (e.g., 3 U)
                  output$n_watersheds_selected <- renderText({
-                   hus_selected <- rv_clickedIds$ids
+                   hus_selected <- session$userData$rv_clickedIds$ids
                    print(hus_selected)
                    if (length(hus_selected) == 0) {
                      return("0 HUCs selected - click on a unit on the map to select")
@@ -183,7 +183,7 @@ module_huc_results_server <- function(id) {
                  
                  # Deselect any selected watersheds - clear selection
                  observeEvent(input$deselect_watersheds, {
-                   rv_clickedIds$ids <- vector() # Set to empty vector
+                   session$userData$rv_clickedIds$ids <- vector() # Set to empty vector
                    q_code <-
                      paste0(
                        "jQuery('#main_map-huc_results-deselect_watersheds').addClass('hide-this');"
@@ -194,14 +194,14 @@ module_huc_results_server <- function(id) {
                    shinyjs::disable("scp_by_stressors")
                    shinyjs::disable("scp_for_selected_sheds")
                    # Redraw layer and clear selection
-                   rv_redraw$redraw <- 1 + rv_redraw$redraw
+                   session$userData$rv_redraw$redraw <- 1 + session$userData$rv_redraw$redraw
                  })
                  
                  
                  # Show or hide the csc result buttons
                  observe({
                    print("Joe model has...")
-                   sim_index <- rv_joe_model_results$sims
+                   sim_index <- session$userData$rv_joe_model_results$sims
                    if(length(sim_index) < 1) {
                      print("...not been run (hide buttons)")
                      shinyjs::hide("sys_cap_buttons_all")

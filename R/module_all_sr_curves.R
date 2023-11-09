@@ -52,7 +52,7 @@ module_all_sr_curves_server <- function(id) {
                    
                    print("Plotting all SR curves...")
                    # Trigger with time
-                   retrigger <- rv_timer$time
+                   retrigger <- session$userData$rv_timer$time
                    
                    # Get main sheet and split stressors for adult and non adult
                    # Only show joe model stressors here
@@ -188,7 +188,7 @@ module_all_sr_curves_server <- function(id) {
                    # By default shiny will cache the dygraphs
                    # This causes some issues with the css
                    # but we need them to rebuild every time
-                   rv_timer$time <- Sys.time()
+                   session$userData$rv_timer$time <- Sys.time()
                    
                    
                    showModal(modalDialog(

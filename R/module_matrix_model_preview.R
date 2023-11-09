@@ -98,7 +98,7 @@ module_matrix_model_preview_server <- function(id) {
                    ms_stress$Up_Limit <- NA
                    
                    isolate({
-                     rv_sandbox_stressors$dat <- ms_stress
+                     session$userData$rv_sandbox_stressors$dat <- ms_stress
                    })
 
                    # Call sub modules
@@ -135,13 +135,13 @@ module_matrix_model_preview_server <- function(id) {
                    isolate({
                      
                      # Modal is hidden or reset
-                     rv_show_sample_plot$open <- FALSE
+                     session$userData$rv_show_sample_plot$open <- FALSE
                      test_n_years <- input$test_n_years
                      test_n_replicates <- input$test_n_replicates
-                     dat <- rv_life_stages$dat
+                     dat <- session$userData$rv_life_stages$dat
                      
                      # Gather the environmental stressors (if any)
-                     CE_df <- rv_sandbox_stressors$dat
+                     CE_df <- session$userData$rv_sandbox_stressors$dat
                      
                      
                      if(length(CE_df) == 0) {
@@ -263,18 +263,18 @@ module_matrix_model_preview_server <- function(id) {
                    
                    # Get the run counter
                    run_counter <-
-                     rv_pop_sample_plot_data$run_counter
+                     session$userData$rv_pop_sample_plot_data$run_counter
                    
                    # Send to reactive object
-                   rv_pop_sample_plot_data$dat[[run_counter]] <-
+                   session$userData$rv_pop_sample_plot_data$dat[[run_counter]] <-
                      all_outputs
                    
                    # Update the run counter
-                   rv_pop_sample_plot_data$run_counter <-
+                   session$userData$rv_pop_sample_plot_data$run_counter <-
                      run_counter + 1
                    
                    # Open the modal
-                   rv_show_sample_plot$open <- TRUE
+                   session$userData$rv_show_sample_plot$open <- TRUE
                    
                    
                  })
@@ -305,13 +305,13 @@ module_matrix_model_preview_server <- function(id) {
                    # (first time of is there a previous run to show)
                    isolate({
                      # In isolate no not trigger
-                     crun <- rv_pop_sample_plot_data$run_counter
+                     crun <- session$userData$rv_pop_sample_plot_data$run_counter
                      # Correction: counter is updated
                      crun <- crun - 1
                    })
                    
                    # Get data for current run (from above)
-                   pdat <- rv_pop_sample_plot_data$dat[[crun]]
+                   pdat <- session$userData$rv_pop_sample_plot_data$dat[[crun]]
                    
                    # Which data frame should be sources from the results object
                    # either counts of individuals N or lambdas
@@ -383,7 +383,7 @@ module_matrix_model_preview_server <- function(id) {
                    # Gather values for previous run
                    if(crun > 1) {
                      # Data for previous runs are available - compile here.
-                     pdat_old <- rv_pop_sample_plot_data$dat[[crun - 1]]
+                     pdat_old <- session$userData$rv_pop_sample_plot_data$dat[[crun - 1]]
                      pdata_1_old <- lapply(pdat_old, get_n_obj, name = t_var)
                      pdata_1_old <- do.call("rbind", pdata_1_old)
                      pdata_1_old$sim <- "two"
@@ -469,7 +469,7 @@ module_matrix_model_preview_server <- function(id) {
                  #-------------------------------------------------------
                  # Open the demo projection modal
                  #-------------------------------------------------------
-                 observeEvent(rv_show_sample_plot$open, {
+                 observeEvent(session$userData$rv_show_sample_plot$open, {
                    showModal(
                      modalDialog(
                        title = "Sample Time Series Projection",

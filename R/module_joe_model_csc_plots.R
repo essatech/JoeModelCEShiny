@@ -41,7 +41,7 @@ module_joe_model_csc_plots_server <- function(id) {
       #------------------------------------------------------- 
       # this module is disabled if the Joe Model results are empty
       observe({
-        sims <- rv_joe_model_results$sims
+        sims <- session$userData$rv_joe_model_results$sims
         if(length(sims) > 0) {
           shinyjs::enable("open_joe_modal_csc_plots_all")
         } else {
@@ -108,9 +108,9 @@ module_joe_model_csc_plots_server <- function(id) {
         
         # Build summary table of Joe Model results
         # Get the most recent result set
-        simulation_index <- length(rv_joe_model_results$sims)
+        simulation_index <- length(session$userData$rv_joe_model_results$sims)
         # Get the Joe model results object 
-        jmr <- rv_joe_model_results$sims[[simulation_index]]
+        jmr <- session$userData$rv_joe_model_results$sims[[simulation_index]]
         
         # Summary across simulations
         # Look at system wide CE scores
@@ -166,9 +166,9 @@ module_joe_model_csc_plots_server <- function(id) {
         
         # Build summary table of Joe Model results
         # Get the most recent result set
-        simulation_index <- length(rv_joe_model_results$sims)
+        simulation_index <- length(session$userData$rv_joe_model_results$sims)
         # Get the Joe model results object 
-        jmr <- rv_joe_model_results$sims[[simulation_index]]
+        jmr <- session$userData$rv_joe_model_results$sims[[simulation_index]]
         
         # Summary across HUCs
         # Look at system wide CE scores
@@ -191,9 +191,9 @@ module_joe_model_csc_plots_server <- function(id) {
         
         # Build summary table of Joe Model results
         # Get the most recent result set
-        simulation_index <- length(rv_joe_model_results$sims)
+        simulation_index <- length(session$userData$rv_joe_model_results$sims)
         # Get the Joe model results object 
-        jmr <- rv_joe_model_results$sims[[simulation_index]]
+        jmr <- session$userData$rv_joe_model_results$sims[[simulation_index]]
         
         
         # Get the Joe Model result object
@@ -322,8 +322,8 @@ module_joe_model_csc_plots_server <- function(id) {
       heightSize <- reactive({
         print("Adjust csc plot height size...")
         # Get the Joe model results object 
-        simulation_index <- length(rv_joe_model_results$sims)
-        jmr <- rv_joe_model_results$sims[[simulation_index]]
+        simulation_index <- length(session$userData$rv_joe_model_results$sims)
+        jmr <- session$userData$rv_joe_model_results$sims[[simulation_index]]
         n_hucs <- unique(jmr$ce.df$HUC)
         my_df_rows <- length(n_hucs) / 5 # 5 columns
         plot_height <- 60 + as.integer(120 * my_df_rows)

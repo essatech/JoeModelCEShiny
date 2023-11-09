@@ -62,7 +62,6 @@ module_joe_model_run_server <- function(id) {
                 choices = c(),
                 selected = c(),
                 inline = TRUE),
-                
                 actionButton(ns("selectall"),
                              label = "Select/Deselect all"),
                 
@@ -152,11 +151,12 @@ module_joe_model_run_server <- function(id) {
       # Select and deselect all boxes
       #-------------------------------------------------------
       observe({
+        
         print("select deletect joe model variables ...")
         req(input$selectall)
         req(input$open_joe_modal_form)
         req(session$userData$rv_stressor_response$stressor_names)
-        
+
         stressors <- session$userData$rv_stressor_response$stressor_names
       
         # Exclude variables that are not associated with adults
@@ -166,6 +166,12 @@ module_joe_model_run_server <- function(id) {
         
         # Filter to exlcude any variables associated with early life stages
         stressors <- stressors[which(stressors %in% s_acceptable)]
+        
+        # Add on matrix interaction surfaces - if any exist
+        mmat_nms <- session$userData$rv_stressor_response$interaction_names
+        if(!is.null(mmat_nms)) {
+          stressors <- c(stressors, mmat_nms)
+        }
         
         if(input$selectall > 0) {
           if (input$selectall %% 2 == 0) {
@@ -238,7 +244,7 @@ module_joe_model_run_server <- function(id) {
             n_hucs*n_stressor*n_sims*2.615058e-05
           
           # Place holder for Joe Model estimated run times
-          rv_joe_model_run_time$run_time_seconds <-  pred_time
+          session$userData$rv_joe_model_run_time$run_time_seconds <-  pred_time
         
           tl <- tagList(
                 tags$p(paste0("Review: (n) HUCs: ", n_hucs, " (n) Stressors: ", n_stressor, " (n) replicates: ", n_sims)),
@@ -257,7 +263,7 @@ module_joe_model_run_server <- function(id) {
       observeEvent(input$go_button_run_joe, {
 
           # Get the estimated run time 
-          e_run_time <- pretty_print_seconds(rv_joe_model_run_time$run_time_seconds)
+          e_run_time <- pretty_print_seconds(session$userData$rv_joe_model_run_time$run_time_seconds)
 
           # Show a loading spinner to the user
           show_modal_spinner(
@@ -314,20 +320,21 @@ module_joe_model_run_server <- function(id) {
           jm <- JoeModelCE::JoeModel_Run(
               dose = sm_wb_dat_in,
               sr_wb_dat = sr_wb_dat_in,
-              MC_sims = n_mc_sims
+              MC_sims = n_mc_sims,
+              adult_sys_cap = FALSE # do not filter out non-target stressors
           )
         
           
           print("Finished the Joe Model run...")
           # Store the scenario in the list object - index + 1 to prevent overwrite
-          simulation_index <- length(rv_joe_model_results$sims) + 1
+          simulation_index <- length(session$userData$rv_joe_model_results$sims) + 1
           
           # Store the Joe Model results in this list object
-          rv_joe_model_results$sims[[simulation_index]] <- jm
+          session$userData$rv_joe_model_results$sims[[simulation_index]] <- jm
 
           # Also store the name of the simulation (if set by user)
           sim_name <- input$name_of_simulation
-          rv_joe_model_sim_names$scenario_names[[simulation_index]] <- sim_name
+          session$userData$rv_joe_model_sim_names$scenario_names[[simulation_index]] <- sim_name
           
           # Update the active layer on the map to show 
           session$userData$rv_stressor_response$active_layer <- "system_capacity"

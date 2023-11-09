@@ -113,8 +113,8 @@ module_main_map_server <- function(id) {
             )
           ) %>%
           addPolygons(
-            data = rv_HUC_layer_load$data,
-            layerId = rv_HUC_layer_load$data$uid,
+            data = session$userData$rv_HUC_layer_load$data,
+            layerId = session$userData$rv_HUC_layer_load$data$uid,
             color = "#444444",
             weight = 1.2,
             smoothFactor = 0.5,
@@ -138,13 +138,13 @@ module_main_map_server <- function(id) {
         print("r_huc_polygons() triggered ...")
 
         # If clear all selected - then trigger redraw.
-        rv_redraw$redraw
+        session$userData$rv_redraw$redraw
 
         # Name of the variable to display
         var_name <- session$userData$rv_stressor_response$active_layer
 
         # HUC spatial geometry
-        huc_geom <- rv_HUC_geom$huc_geom
+        huc_geom <- session$userData$rv_HUC_geom$huc_geom
 
         # Get values from magnitude table if normal variable
         if (var_name != "system_capacity") {
@@ -163,6 +163,7 @@ module_main_map_server <- function(id) {
           if (is.null(resp_curv)) {
             
             # Special case for interaction matrix
+            print("Interaction matrix...")
             sm_df <- session$userData$rv_stressor_magnitude$sm_dat
             MInt_all <- session$userData$rv_stressor_response$interaction_values
             MInt <- MInt_all[[var_name]]
@@ -177,7 +178,10 @@ module_main_map_server <- function(id) {
             # Assign values to HUC
             huc_geom$values <- sys_cap_resp$sys.cap[match(huc_geom$HUC_ID, sys_cap_resp$HUC)]
             huc_geom$values_sc <- huc_geom$values
-
+            
+            # Convert to percent for matrix surface
+            huc_geom$values_sc <- huc_geom$values_sc * 100
+            
           } else {
             # Normal stressor interpolation using curve
             # Convert raw variable values to system capacity
@@ -192,7 +196,7 @@ module_main_map_server <- function(id) {
 
         } else {
           # Otherwise look at system capacity from Joe mode
-          res <- rv_joe_model_results$sims
+          res <- session$userData$rv_joe_model_results$sims
           res <- res[[length(res)]] # Get the latest result (if multiple)
           # Take the average by each watershed
           df_vals <- res$ce.df %>%
@@ -208,7 +212,7 @@ module_main_map_server <- function(id) {
 
         # Update reference color dataframe rv to reset colors after selection
         col_df <- data.frame(id = huc_geom$HUC_ID, col = huc_geom$color_vec)
-        rv_HUC_geom$color_df <- col_df
+        session$userData$rv_HUC_geom$color_df <- col_df
 
         return(huc_geom)
       })
@@ -252,10 +256,10 @@ module_main_map_server <- function(id) {
 
 
         # Add on selected HUCs (if any)
-        selected_hucs <- isolate(rv_clickedIds$ids)
+        selected_hucs <- isolate(session$userData$rv_clickedIds$ids)
         if (length(selected_hucs) > 0) {
           print("Adding selected HUCs")
-          huc_geom_sel <- rv_HUC_geom$huc_geom
+          huc_geom_sel <- session$userData$rv_HUC_geom$huc_geom
           # Get subset of selected HUCs
           huc_geom_sel <- huc_geom_sel[which(huc_geom_sel$uid %in% selected_hucs), ]
           # Update special ID
@@ -290,10 +294,10 @@ module_main_map_server <- function(id) {
         # create object for clicked polygon
         click <- input$mainmap_shape_click
         # Get all the previous clicked polys
-        previous_click_ids <- rv_clickedIds$ids
+        previous_click_ids <- session$userData$rv_clickedIds$ids
 
         # Get the HUC geom for the specific click
-        huc_geom <- rv_HUC_geom$huc_geom
+        huc_geom <- session$userData$rv_HUC_geom$huc_geom
         this_uid <- gsub("select\\|", "", click$id)
         huc_geom_single <- huc_geom[which(huc_geom$uid == this_uid), ]
         huc_geom_single$uid <- paste0("select|", huc_geom_single$uid)
@@ -303,14 +307,14 @@ module_main_map_server <- function(id) {
           # Polygon has already been clicked
           # Need to remove it from the click vector
           new_click_vec <- previous_click_ids[previous_click_ids != this_uid]
-          rv_clickedIds$ids <- new_click_vec
+          session$userData$rv_clickedIds$ids <- new_click_vec
           leafletProxy("mainmap") %>%
             removeShape(huc_geom_single$uid)
         } else {
           print("Add to selected")
           # User select a new polygon - nedd to update the color and add it to select list
           # Need to add it from the click vector
-          rv_clickedIds$ids <- c(rv_clickedIds$ids, this_uid)
+          session$userData$rv_clickedIds$ids <- c(session$userData$rv_clickedIds$ids, this_uid)
 
           leafletProxy("mainmap") %>%
             addPolygons(
@@ -379,16 +383,16 @@ module_main_map_server <- function(id) {
       # Show the HUC Code and Basin Name Above Map
       # ---------------------------------------------------------
       output$txt_huc_code <- renderUI({
-        if (rv_map_shape()) {
-          tags$p(rv_map_location$huc_id, style = "float: right; color:#3b9ab2;")
+        if (session$userData$rv_map_shape()) {
+          tags$p(session$userData$rv_map_location$huc_id, style = "float: right; color:#3b9ab2;")
         } else {
           tags$p("HUC ID", style = "float: right; color:#3b9ab2;")
         }
       })
 
       output$txt_basin_name <- renderUI({
-        if (rv_map_shape()) {
-          tags$p(rv_map_location$huc_name, style = "float: left; color:#3b9ab2;")
+        if (session$userData$rv_map_shape()) {
+          tags$p(session$userData$rv_map_location$huc_name, style = "float: left; color:#3b9ab2;")
         } else {
           tags$p("Basin Name", style = "float: left; color:#3b9ab2;")
         }
@@ -401,7 +405,7 @@ module_main_map_server <- function(id) {
       # Observe mouseover events over leaflet map
       # note the event concatenation 'object name' + '_click'; 'object name' + '_shape_mouseover'
       observeEvent(input$mainmap_shape_mouseout, {
-        rv_map_shape(FALSE)
+        session$userData$rv_map_shape(FALSE)
         session$userData$rv_stressor_response$active_values_raw <- NULL
       })
 
@@ -411,13 +415,13 @@ module_main_map_server <- function(id) {
 
         if (!(is.null(mainmap_shape_mouseover_info))) {
           # Parse the ID and HUC name
-          rv_map_shape(TRUE)
+          session$userData$rv_map_shape(TRUE)
           poly_obj <- mainmap_shape_mouseover_info$id # note leaflet id slot
           parse_id <- strsplit(as.character(poly_obj), "\\|")[[1]]
           huc_id <- parse_id[1]
           huc_name <- parse_id[2]
-          rv_map_location$huc_id <- huc_id
-          rv_map_location$huc_name <- huc_name
+          session$userData$rv_map_location$huc_id <- huc_id
+          session$userData$rv_map_location$huc_name <- huc_name
 
           # Check box for user to toggle mouse-over display
           # lag and time intensive so turned off by default

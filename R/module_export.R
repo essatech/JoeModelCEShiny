@@ -80,7 +80,7 @@ module_export_server <- function(id) {
                  #-------------------------------------------------------
                  # Disable and enable pop model exports
                  observe({
-                   pop_data <- rv_pop_data_huc_ts$dat
+                   pop_data <- session$userData$rv_pop_data_huc_ts$dat
                    if (length(pop_data) > 0) {
                      shinyjs::enable("dl_pop_mod_out")
                    } else {
@@ -93,7 +93,7 @@ module_export_server <- function(id) {
                  #-------------------------------------------------------
                  # Disable and enable joe model exports
                  observe({
-                   jm_data <- rv_joe_model_results$sims
+                   jm_data <- session$userData$rv_joe_model_results$sims
                    if (length(jm_data) > 0) {
                      shinyjs::enable("dl_jm_data")
                    } else {
@@ -165,7 +165,7 @@ module_export_server <- function(id) {
                    },
                    content = function(file) {
                      # Gather worksheets
-                     poly <- isolate(rv_HUC_layer_load$data)
+                     poly <- isolate(session$userData$rv_HUC_layer_load$data)
                      poly_sp <- as(poly, "Spatial")
                      
                      
@@ -184,7 +184,7 @@ module_export_server <- function(id) {
                    },
                    content = function(file) {
                      # Gather worksheets
-                     life_cycles <- isolate(rv_life_stages$dat)
+                     life_cycles <- isolate(session$userData$rv_life_stages$dat)
                      write.csv(life_cycles, file = file, row.names = FALSE)
                      
                    }
@@ -198,7 +198,7 @@ module_export_server <- function(id) {
                      "PopulationModel.RData"
                    },
                    content = function(file) {
-                     pop_data <- isolate(rv_pop_data_huc_ts$dat)
+                     pop_data <- isolate(session$userData$rv_pop_data_huc_ts$dat)
                      save(pop_data, file = file)
                      
                    }
@@ -212,7 +212,7 @@ module_export_server <- function(id) {
                      "JoeModelResults.xlsx"
                    },
                    content = function(file) {
-                     jm_data <- isolate(rv_joe_model_results$sims)
+                     jm_data <- isolate(session$userData$rv_joe_model_results$sims)
                      jm_data <- jm_data[[length(jm_data)]]
                      write_xlsx(jm_data, path = file)
                    }

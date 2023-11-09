@@ -37,7 +37,7 @@ module_joe_vs_population_server <- function(id) {
                  #-------------------------------------------------------
                  # disable sm adjust button unless at least one HUC is selected
                  observe({
-                   click_hucs <- rv_clickedIds$ids
+                   click_hucs <- session$userData$rv_clickedIds$ids
                    if (length(click_hucs) > 0) {
                      shinyjs::enable("module_joe_vs_population")
                    } else {
@@ -50,7 +50,7 @@ module_joe_vs_population_server <- function(id) {
                  # Labels of selected HUCs
                  #------------------------------------------------------
                  output$list_selected_hucs <- renderText({
-                   selected <- rv_clickedIds$ids
+                   selected <- session$userData$rv_clickedIds$ids
                    res_n <- paste(selected, collapse = "; ")
                    res_n
                  })
@@ -176,10 +176,10 @@ module_joe_vs_population_server <- function(id) {
                      test_n_replicates <-
                        ifelse(test_n_replicates > 100, 100, test_n_replicates)
                      
-                     dat <- rv_life_stages$dat
+                     dat <- session$userData$rv_life_stages$dat
                      
                      # Gather the environmental stressors for selected HUCs
-                     click_hucs <- rv_clickedIds$ids
+                     click_hucs <- session$userData$rv_clickedIds$ids
                      splits <- lapply(click_hucs, strsplit, "\\|")
                      splits <- sapply(splits, head, 1)
                      splits <- sapply(splits, head, 1)
@@ -424,21 +424,21 @@ module_joe_vs_population_server <- function(id) {
                    
                    
                    # Gather all data and send to reactive object
-                   rv_pop_data_huc_ts$dat <-
+                   session$userData$rv_pop_data_huc_ts$dat <-
                      all_outputs
                    
-                   rv_pop_data_huc_ts$dat_baseline <-
+                   session$userData$rv_pop_data_huc_ts$dat_baseline <-
                      all_outputs_baseline
                    
-                   rv_pop_data_huc_ts$joe_model_comp <- CE_df
+                   session$userData$rv_pop_data_huc_ts$joe_model_comp <- CE_df
                    
                    # Update the run counter
-                   rc <- rv_pop_data_huc_ts$run_counter
-                   rv_pop_data_huc_ts$run_counter <-
+                   rc <- session$userData$rv_pop_data_huc_ts$run_counter
+                   session$userData$rv_pop_data_huc_ts$run_counter <-
                      rc + 1
                    
                    # Show plot in the modal
-                   rv_show_pop_main_plot$open <- TRUE
+                   session$userData$rv_show_pop_main_plot$open <- TRUE
                    
                    
                  }) # end of a time series projections for target watersheds ...
@@ -460,7 +460,7 @@ module_joe_vs_population_server <- function(id) {
                    # adult; subadult; juv; yoy; lambda; allstage
                    
                    # First time the modal is open plot screen should be blank
-                   if (rv_pop_data_huc_ts$run_counter == 1) {
+                   if (session$userData$rv_pop_data_huc_ts$run_counter == 1) {
                      # No data to plot yet - grey empty plot
                      p <- ggplot()
                      return(p)
@@ -468,11 +468,11 @@ module_joe_vs_population_server <- function(id) {
                    
                    
                    # Generate time series plots for target watersheds
-                   length(rv_pop_data_huc_ts$dat)
+                   length(session$userData$rv_pop_data_huc_ts$dat)
                    
                    
                    # Get data for current run (from above)
-                   pdat <- rv_pop_data_huc_ts$dat
+                   pdat <- session$userData$rv_pop_data_huc_ts$dat
                    
                    # Which data frame should be sources from the results object
                    # either counts of individuals N or lambdas
@@ -611,7 +611,7 @@ module_joe_vs_population_server <- function(id) {
                    # overview; by dose or Joe Model comparison
                    
                    # First time the modal is open plot screen should be blank
-                   if (rv_pop_data_huc_ts$run_counter == 1) {
+                   if (session$userData$rv_pop_data_huc_ts$run_counter == 1) {
                      # No data to plot yet - grey empty plot
                      p <- ggplot()
                      return(p)
@@ -619,12 +619,12 @@ module_joe_vs_population_server <- function(id) {
                    
                    # Generate time series plots for target watersheds
                    # Data object is structured as follows
-                   # Reactive Value for data from model run: rv_pop_data_huc_ts
+                   # Reactive Value for data from model run: session$userData$rv_pop_data_huc_ts
                    # dat: scenario reference; dat_baseline: no stressors
                    # Object structure: [[watershed]][[replicate]]$N
                    
-                   stress <- rv_pop_data_huc_ts$dat
-                   bl <- rv_pop_data_huc_ts$dat_baseline
+                   stress <- session$userData$rv_pop_data_huc_ts$dat
+                   bl <- session$userData$rv_pop_data_huc_ts$dat_baseline
                    
                    # Gather data from large data objects
                    gather_ts_data <- function(obj) {
@@ -700,14 +700,14 @@ module_joe_vs_population_server <- function(id) {
                  # Stressor response plots for selection
                  output$sr_plots <- renderPlotly({
                    # First time the modal is open plot screen should be blank
-                   if (rv_pop_data_huc_ts$run_counter == 1) {
+                   if (session$userData$rv_pop_data_huc_ts$run_counter == 1) {
                      # No data to plot yet - grey empty plot
                      p <- ggplot()
                      return(p)
                    }
                    
                    # Gather the Joe Model response object
-                   dr_plot <- rv_pop_data_huc_ts$joe_model_comp
+                   dr_plot <- session$userData$rv_pop_data_huc_ts$joe_model_comp
                    
                    # Give single meaningful name
                    dr_plot$uvar <-

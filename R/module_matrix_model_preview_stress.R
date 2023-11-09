@@ -127,15 +127,15 @@ module_matrix_model_preview_stress_server <-
                        # Update values in reference object
                        this_stressor <- stressor_variable$Stressors
                        
-                       rv_sandbox_stressors$dat$Mean[which(rv_sandbox_stressors$dat$Stressors == this_stressor)] <- input$pm_ps_val_mean
-                       rv_sandbox_stressors$dat$SD[which(rv_sandbox_stressors$dat$Stressors == this_stressor)] <- input$pm_ps_val_sd
-                       rv_sandbox_stressors$dat$Low_Limit[which(rv_sandbox_stressors$dat$Stressors == this_stressor)] <- input$pm_ps_val_lwr
-                       rv_sandbox_stressors$dat$Up_Limit[which(rv_sandbox_stressors$dat$Stressors == this_stressor)] <- input$pm_ps_val_upr
+                       session$userData$rv_sandbox_stressors$dat$Mean[which(session$userData$rv_sandbox_stressors$dat$Stressors == this_stressor)] <- input$pm_ps_val_mean
+                       session$userData$rv_sandbox_stressors$dat$SD[which(session$userData$rv_sandbox_stressors$dat$Stressors == this_stressor)] <- input$pm_ps_val_sd
+                       session$userData$rv_sandbox_stressors$dat$Low_Limit[which(session$userData$rv_sandbox_stressors$dat$Stressors == this_stressor)] <- input$pm_ps_val_lwr
+                       session$userData$rv_sandbox_stressors$dat$Up_Limit[which(session$userData$rv_sandbox_stressors$dat$Stressors == this_stressor)] <- input$pm_ps_val_upr
                        
                        # Checkbox status
-                       rv_sandbox_stressors$dat$check_on[which(rv_sandbox_stressors$dat$Stressors == this_stressor)] <- input$pm_ps_check
+                       session$userData$rv_sandbox_stressors$dat$check_on[which(session$userData$rv_sandbox_stressors$dat$Stressors == this_stressor)] <- input$pm_ps_check
                        
-                       #print(as.data.frame(rv_sandbox_stressors$dat))
+                       #print(as.data.frame(session$userData$rv_sandbox_stressors$dat))
                        
                      })
                      

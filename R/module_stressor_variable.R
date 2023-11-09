@@ -343,7 +343,7 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
         # print(paste0("Edit value for ... ", this_var))
 
         # HUCs currently selected
-        selected_raw <- rv_clickedIds$ids
+        selected_raw <- session$userData$rv_clickedIds$ids
         # Fix format
         getID <- function(x) {
           strsplit(x, "\\|")[[1]][1]
@@ -374,7 +374,7 @@ module_stressor_variable_server <- function(id, stressor_index = NA) {
 
         # Also invalidate the cumulative system capacity score in the stressor magnitude table
         print("click csc invalidated...")
-        rv_clickedIds_csc$csc <- NA
+        session$userData$rv_clickedIds_csc$csc <- NA
 
         
       })
