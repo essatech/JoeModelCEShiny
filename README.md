@@ -1,46 +1,31 @@
+# JoeModelCEShiny - Deprecated
 
-# JoeModelCEShiny <img src="www/img/JoeModelCE_small.png" align="right" style="max-width: 120px;"/>
+## <span style="color: red;">⚠️ Deprecation Notice ⚠️</span>
 
-<!-- badges: start -->
-<!-- badges: end -->
+<span style="font-size: larger; color: red;">As of November 1, 2023, the repository `JoeModelCEShiny` at [https://github.com/essatech/JoeModelCEShiny](https://github.com/essatech/JoeModelCEShiny) is no longer actively maintained. We appreciate the support and contributions from our community over the years. However, to provide better features and more efficient support, we have moved to a new repository.</span>
 
+## <span style="color: red;">🔗 New Repository</span>
 
-## Developing a Cumulative Effects Modelling Framework for the Recovery of Aquatic Species at Risk
+**Please visit our new repository `CEMPRAShiny` for the latest updates, issues, and contributions.**
 
-This is the location of the Shiny UI associated with the [`JoeModelCE`](https://github.com/essatech/JoeModelCE) package. `JoeModelCE` is a collection of functions to support the application of the <a href="https://waves-vagues.dfo-mpo.gc.ca/Library/40871344.pdf" target="_blank">Alberta Environmental Parks Cumulative Effects Assessment Joe Model (DFO 2019)</a>, coupled with a flexible population modelling framework.
+- New Repository URL: [https://github.com/essatech/CEMPRAShiny](https://github.com/essatech/CEMPRAShiny)
 
-The `JoeModelCE` package is part of a larger initiative to develop a framework for modelling cumulative impacts to Species at Risk (SAR) to guide recovery planning and adaptive management based on stressor-response functions related to taxa-specific threats.  This framework allows users to generate models across a range of complexity and data quality, treating stressor-response functions as modular entities.
+## Migration Guide
 
+To help with the transition, we have prepared a migration guide. This guide will assist you in understanding the changes and how to adapt your existing projects to the new repository.
 
-#### Contributors:
-This is a broad collaboration between Fisheries and Oceans Canada (DFO), B.C. Ministry of Environment and Climate Change Strategy (ECCS), Alberta Environment and Parks (AEP), and Simon Fraser University (SFU. 
+- [Migration Guide Link](https://link-to-migration-guide.com)
 
-Contributors include:
+## Support
 
--   [Dr. Eva Enders](https://profils-profiles.science.gc.ca/en/profile/eva-enders): Project Lead; DFO Research Scientist
--   [Dr. Jordan Rosenfeld](http://www.aferu.ca/rosenfeld-lab): Project design and coordination; ECCS Aquatic Ecologist
--   [Dr. Andrew Paul](https://github.com/andrewpaul68): Collaborator; AEP Research Scientist
--   [Dr. Kyle Wilson](https://github.com/klwilson23): Population model development.
--   [Isuru Dharmasena](https://www.linkedin.com/in/isuru-dharmasena-90269895/?originalSubdomain=ca): Core Shiny app development
--   [Matthew Bayly](https://github.com/mattjbayly), Marc Porter, Alejandra Urcelay, and [Julian Heavyside](https://github.com/julianheavyside) from [ESSA Technologies Ltd](https://essa.com/): R package and Shiny app development support.
+For any queries or assistance regarding the migration, feel free to raise an issue in the new repository or contact us at `[Support Email/Contact Information]`.
 
+## Archive
 
-## Features
--   Run custom implementations of the Joe Model on non-standard data formats.
--   Batch-run the integrated Joe Model/Population model across large datasets.
--   Run sensitivity tests.
--   Explore model extensions.
+The contents of this repository will remain available in read-only mode for archival purposes. No new updates or merges will be made.
 
+Thank you for your understanding and continued support.
 
-## Installation
+---
 
-The easiest way to install the `JoeModelCE` package is from within the [RStudio IDE](https://www.rstudio.com/products/rstudio/download/) using `remotes::install_github()`. At this time the package has not been published to CRAN so the default `install.packages()` will not work. Instead use remotes (or devtools):
-``` r
-# You may need to install remotes
-library(remotes)
-remotes::install_github("essatech/JoeModelCE")
-```
-
-## Code of Conduct
-
-Please note that the `JoeModelCE` package is released with a [Contributor Code of Conduct](https://pkgs.rstudio.com/rmarkdown/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
+© 2023 [Organization/Your Name], All rights reserved.
